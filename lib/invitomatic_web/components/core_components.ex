@@ -35,7 +35,7 @@ defmodule InvitomaticWeb.CoreComponents do
         <%= @title %>
       </p>
       <p class=""><%= msg %></p>
-      <button type="button">x</button>
+      <button type="button" phx-click={JS.hide(to: "#flash", transition: "fade-out")}>x</button>
     </div>
     """
   end

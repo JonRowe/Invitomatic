@@ -19,6 +19,37 @@ input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focu
   border-color: #a3c2d5;
 }
 
+/* Flash CSS */
+#flash {
+  background: #cbe2f0;
+  border: 1px solid #a3c2d5;
+  border-radius: .5em;
+  color: white;
+  text-align: center;
+}
+
+#flash p {
+  display: inline-block;
+  margin: 0;
+  padding: 0.5em 0;
+}
+
+#flash button {
+  float: right;
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0 2em;
+  margin: 0;
+}
+
+/* Utility */
+.fade-out {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
