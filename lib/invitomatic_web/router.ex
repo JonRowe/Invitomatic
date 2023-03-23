@@ -1,6 +1,8 @@
 defmodule InvitomaticWeb.Router do
   use InvitomaticWeb, :router
 
+  import InvitomaticWeb.GuestAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule InvitomaticWeb.Router do
     plug :put_root_layout, {InvitomaticWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_guest
   end
 
   pipeline :api do
@@ -35,5 +38,34 @@ defmodule InvitomaticWeb.Router do
       live_dashboard "/dashboard", metrics: InvitomaticWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", InvitomaticWeb do
+    pipe_through [:browser, :redirect_if_guest_is_authenticated]
+
+    live_session :redirect_if_guest_is_authenticated,
+      on_mount: [{InvitomaticWeb.GuestAuth, :redirect_if_guest_is_authenticated}] do
+      live "/guest/log_in", GuestLoginLive, :new
+    end
+
+    post "/guest/log_in", GuestSessionController, :create
+  end
+
+  scope "/", InvitomaticWeb do
+    pipe_through [:browser, :require_authenticated_guest]
+
+    live_session :require_authenticated_guest,
+      on_mount: [{InvitomaticWeb.GuestAuth, :ensure_authenticated}] do
+      live "/guest/settings", GuestSettingsLive, :edit
+      live "/guest/settings/confirm_email/:token", GuestSettingsLive, :confirm_email
+    end
+  end
+
+  scope "/", InvitomaticWeb do
+    pipe_through [:browser]
+
+    delete "/guest/log_out", GuestSessionController, :delete
   end
 end
