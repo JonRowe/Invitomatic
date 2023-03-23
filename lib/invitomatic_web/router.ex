@@ -17,12 +17,6 @@ defmodule InvitomaticWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", InvitomaticWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-  end
-
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:invitomatic, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -58,6 +52,7 @@ defmodule InvitomaticWeb.Router do
 
     live_session :require_authenticated_guest,
       on_mount: [{InvitomaticWeb.GuestAuth, :ensure_authenticated}] do
+      live "/", Live.Invitation, :index
       live "/guest/settings", Live.GuestSettings, :edit
       live "/guest/settings/confirm_email/:token", Live.GuestSettings, :confirm_email
     end
