@@ -1,7 +1,36 @@
 defmodule InvitomaticWeb.CoreComponents do
   use Phoenix.Component
+  use InvitomaticWeb, :verified_routes
 
   alias Phoenix.LiveView.JS
+
+  @doc """
+  Renders our nav bar.
+
+  # Example
+
+      <.nav current_login={@current_login} />
+
+  """
+  attr :current_guest, :map, default: nil, doc: "The current guest if logged in"
+
+  def nav(%{current_guest: %_{}} = assigns) do
+    ~H"""
+    <nav>
+      <%= @current_guest.email %>
+      <.link href={~p"/guest/settings"}>Settings</.link>
+      <.link href={~p"/guest/log_out"} method="delete">Log out</.link>
+    </nav>
+    """
+  end
+
+  def nav(assigns) do
+    ~H"""
+    <nav>
+      <.link href={~p"/guest/log_in"}>Log in</.link>
+    </nav>
+    """
+  end
 
   @doc """
   Renders flash notices.

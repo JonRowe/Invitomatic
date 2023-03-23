@@ -12,29 +12,7 @@
     </script>
   </head>
   <body>
-    <ul>
-      <%= if @current_guest do %>
-        <li>
-          <%= @current_guest.email %>
-        </li>
-        <li>
-          <.link href={~p"/guest/settings"}>
-            Settings
-          </.link>
-        </li>
-        <li>
-          <.link href={~p"/guest/log_out"} method="delete">
-            Log out
-          </.link>
-        </li>
-      <% else %>
-        <li>
-          <.link href={~p"/guest/log_in"}>
-            Log in
-          </.link>
-        </li>
-      <% end %>
-    </ul>
+    <.nav current_guest={@current_guest} />
     <%= @inner_content %>
   </body>
 </html>
