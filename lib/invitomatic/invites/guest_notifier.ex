@@ -19,6 +19,21 @@ defmodule Invitomatic.Invites.GuestNotifier do
   end
 
   @doc """
+  Deliver magic link to a guest.
+  """
+  def deliver_magic_link(guest, url) do
+    deliver(guest.email, "Sign in to", """
+    Hi #{guest.email},
+
+    You can access your invite by visiting the URL below:
+
+    #{url}
+
+    If you don't request this email, please ignore this.
+    """)
+  end
+
+  @doc """
   Deliver instructions to update a guest's email.
   """
   def deliver_update_email_instructions(guest, url) do

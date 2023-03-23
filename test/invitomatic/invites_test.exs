@@ -198,6 +198,25 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "deliver_guest_magic_link/1" do
+    setup do
+      %{guest: guest_fixture()}
+    end
+
+    test "sends token through notification", %{guest: guest} do
+      token =
+        extract_guest_token(fn url ->
+          Invites.deliver_guest_magic_link(guest, url)
+        end)
+
+      {:ok, token} = Base.url_decode64(token, padding: false)
+      assert guest_token = Repo.get_by(GuestToken, token: :crypto.hash(:sha256, token))
+      assert guest_token.guest_id == guest.id
+      assert guest_token.sent_to == guest.email
+      assert guest_token.context == "magic:link"
+    end
+  end
+
   describe "generate_guest_session_token/1" do
     setup do
       %{guest: guest_fixture()}

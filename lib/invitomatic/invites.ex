@@ -152,6 +152,22 @@ defmodule Invitomatic.Invites do
 
   ## Session
 
+  @doc ~S"""
+  Delivers a magic link to the given guest.
+
+  ## Examples
+
+      iex> deliver_guest_magic_link(guest)
+      {:ok, %{to: ..., body: ...}}
+
+  """
+  def deliver_guest_magic_link(%Guest{} = guest, url_fun) when is_function(url_fun, 1) do
+    {encoded_token, guest_token} = GuestToken.build_email_token(guest, "magic:link")
+
+    Repo.insert!(guest_token)
+    GuestNotifier.deliver_magic_link(guest, url_fun.(encoded_token))
+  end
+
   @doc """
   Generates a session token.
   """
