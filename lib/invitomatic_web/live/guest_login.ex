@@ -1,4 +1,4 @@
-defmodule InvitomaticWeb.GuestLoginLive do
+defmodule InvitomaticWeb.Live.GuestLogin do
   use InvitomaticWeb, :live_view
 
   @impl Phoenix.LiveView

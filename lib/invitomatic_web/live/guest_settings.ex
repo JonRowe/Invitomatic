@@ -1,4 +1,4 @@
-defmodule InvitomaticWeb.GuestSettingsLive do
+defmodule InvitomaticWeb.Live.GuestSettings do
   use InvitomaticWeb, :live_view
 
   alias Invitomatic.Invites

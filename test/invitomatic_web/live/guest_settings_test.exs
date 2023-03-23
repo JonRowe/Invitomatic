@@ -1,4 +1,4 @@
-defmodule InvitomaticWeb.GuestSettingsLiveTest do
+defmodule InvitomaticWeb.Live.GuestSettingsTest do
   use InvitomaticWeb.ConnCase
 
   alias Invitomatic.Invites

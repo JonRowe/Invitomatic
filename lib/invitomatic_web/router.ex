@@ -47,7 +47,7 @@ defmodule InvitomaticWeb.Router do
 
     live_session :redirect_if_guest_is_authenticated,
       on_mount: [{InvitomaticWeb.GuestAuth, :redirect_if_guest_is_authenticated}] do
-      live "/guest/log_in", GuestLoginLive, :new
+      live "/guest/log_in", Live.GuestLogin, :new
     end
 
     post "/guest/log_in", GuestSessionController, :create
@@ -58,8 +58,8 @@ defmodule InvitomaticWeb.Router do
 
     live_session :require_authenticated_guest,
       on_mount: [{InvitomaticWeb.GuestAuth, :ensure_authenticated}] do
-      live "/guest/settings", GuestSettingsLive, :edit
-      live "/guest/settings/confirm_email/:token", GuestSettingsLive, :confirm_email
+      live "/guest/settings", Live.GuestSettings, :edit
+      live "/guest/settings/confirm_email/:token", Live.GuestSettings, :confirm_email
     end
   end
 

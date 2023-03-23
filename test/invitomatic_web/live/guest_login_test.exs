@@ -1,4 +1,4 @@
-defmodule InvitomaticWeb.GuestLoginLiveTest do
+defmodule InvitomaticWeb.Live.GuestLoginTest do
   use InvitomaticWeb.ConnCase
 
   import Phoenix.LiveViewTest
