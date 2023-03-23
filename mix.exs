@@ -7,6 +7,7 @@ defmodule Invitomatic.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [warnings_as_errors: true],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -57,7 +58,7 @@ defmodule Invitomatic.MixProject do
         "ecto.create --quiet",
         "ecto.load --quiet --skip-if-loaded",
         "ecto.migrate --quiet",
-        "test"
+        "test --warnings-as-errors"
       ],
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild default"],
