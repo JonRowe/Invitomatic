@@ -49,10 +49,10 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: guest; Type: TABLE; Schema: public; Owner: -
+-- Name: login; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.guest (
+CREATE TABLE public.login (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     email public.citext NOT NULL,
     confirmed_at timestamp(0) without time zone,
@@ -62,12 +62,12 @@ CREATE TABLE public.guest (
 
 
 --
--- Name: guest_tokens; Type: TABLE; Schema: public; Owner: -
+-- Name: login_token; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.guest_tokens (
+CREATE TABLE public.login_token (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    guest_id uuid NOT NULL,
+    login_id uuid NOT NULL,
     token bytea NOT NULL,
     context character varying(255) NOT NULL,
     sent_to character varying(255),
@@ -86,18 +86,18 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: guest guest_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: login guest_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest
+ALTER TABLE ONLY public.login
     ADD CONSTRAINT guest_pkey PRIMARY KEY (id);
 
 
 --
--- Name: guest_tokens guest_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: login_token guest_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest_tokens
+ALTER TABLE ONLY public.login_token
     ADD CONSTRAINT guest_tokens_pkey PRIMARY KEY (id);
 
 
@@ -113,29 +113,29 @@ ALTER TABLE ONLY public.schema_migrations
 -- Name: guest_email_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX guest_email_index ON public.guest USING btree (email);
+CREATE UNIQUE INDEX guest_email_index ON public.login USING btree (email);
 
 
 --
 -- Name: guest_tokens_context_token_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX guest_tokens_context_token_index ON public.guest_tokens USING btree (context, token);
+CREATE UNIQUE INDEX guest_tokens_context_token_index ON public.login_token USING btree (context, token);
 
 
 --
 -- Name: guest_tokens_guest_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX guest_tokens_guest_id_index ON public.guest_tokens USING btree (guest_id);
+CREATE INDEX guest_tokens_guest_id_index ON public.login_token USING btree (login_id);
 
 
 --
--- Name: guest_tokens guest_tokens_guest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: login_token guest_tokens_guest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest_tokens
-    ADD CONSTRAINT guest_tokens_guest_id_fkey FOREIGN KEY (guest_id) REFERENCES public.guest(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.login_token
+    ADD CONSTRAINT guest_tokens_guest_id_fkey FOREIGN KEY (login_id) REFERENCES public.login(id) ON DELETE CASCADE;
 
 
 --
@@ -143,3 +143,4 @@ ALTER TABLE ONLY public.guest_tokens
 --
 
 INSERT INTO public."schema_migrations" (version) VALUES (20230322214643);
+INSERT INTO public."schema_migrations" (version) VALUES (20230324144645);

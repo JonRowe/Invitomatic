@@ -1,4 +1,4 @@
-defmodule InvitomaticWeb.Live.GuestLogin do
+defmodule InvitomaticWeb.Live.Login do
   use InvitomaticWeb, :live_view
 
   @impl Phoenix.LiveView
@@ -19,7 +19,7 @@ defmodule InvitomaticWeb.Live.GuestLogin do
         </:subtitle>
       </.header>
 
-      <.simple_form for={@form} id="login_form" action={~p"/guest/log_in"} phx-update="ignore">
+      <.simple_form for={@form} id="login_form" action={~p"/log_in"} phx-update="ignore">
         <.input field={@form[:email]} type="email" label="Email" required />
 
         <:actions>

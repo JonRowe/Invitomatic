@@ -12,14 +12,14 @@ defmodule InvitomaticWeb.CoreComponents do
       <.nav current_login={@current_login} />
 
   """
-  attr :current_guest, :map, default: nil, doc: "The current guest if logged in"
+  attr :current_login, :map, default: nil, doc: "The current login if any"
 
-  def nav(%{current_guest: %_{}} = assigns) do
+  def nav(%{current_login: %_{}} = assigns) do
     ~H"""
     <nav>
-      <%= @current_guest.email %>
-      <.link href={~p"/guest/settings"}>Settings</.link>
-      <.link href={~p"/guest/log_out"} method="delete">Log out</.link>
+      <%= @current_login.email %>
+      <.link href={~p"/settings"}>Settings</.link>
+      <.link href={~p"/log_out"} method="delete">Log out</.link>
     </nav>
     """
   end
@@ -27,7 +27,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def nav(assigns) do
     ~H"""
     <nav>
-      <.link href={~p"/guest/log_in"}>Log in</.link>
+      <.link href={~p"/log_in"}>Log in</.link>
     </nav>
     """
   end

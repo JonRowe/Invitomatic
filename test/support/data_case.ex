@@ -43,7 +43,7 @@ defmodule Invitomatic.DataCase do
   @doc """
   A helper that transforms changeset errors into a map of messages.
 
-      assert {:error, changeset} = Invites.register_guest(%{email: "invalid"})
+      assert {:error, changeset} = Invites.register(%{email: "invalid"})
       assert "must have the @ sign and no spaces" in errors_on(changeset).email
       assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
 

@@ -37,28 +37,28 @@ defmodule InvitomaticWeb.ConnCase do
   end
 
   @doc """
-  Setup helper that registers and logs in a guest.
+  Setup helper that registers and logs in.
 
-      setup :register_and_log_in_guest
+      setup :register_and_log_in
 
-  It stores an updated connection and a registered guest in the
+  It stores an updated connection and a registered login in the
   test context.
   """
-  def create_and_log_in_guest(%{conn: conn}) do
-    guest = Invitomatic.InvitesFixtures.guest_fixture()
-    %{conn: log_in_guest(conn, guest), guest: guest}
+  def create_and_log_in(%{conn: conn}) do
+    login = Invitomatic.AccountsFixtures.login_fixture()
+    %{conn: log_in(conn, login), login: login}
   end
 
   @doc """
-  Logs the given `guest` into the `conn`.
+  Logs in the given `conn`.
 
   It returns an updated `conn`.
   """
-  def log_in_guest(conn, guest) do
-    token = Invitomatic.Invites.generate_guest_session_token(guest)
+  def log_in(conn, login) do
+    token = Invitomatic.Accounts.generate_session_token(login)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:guest_token, token)
+    |> Plug.Conn.put_session(:login_token, token)
   end
 end

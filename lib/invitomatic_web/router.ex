@@ -1,7 +1,7 @@
 defmodule InvitomaticWeb.Router do
   use InvitomaticWeb, :router
 
-  import InvitomaticWeb.GuestAuth
+  import InvitomaticWeb.Auth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -10,7 +10,7 @@ defmodule InvitomaticWeb.Router do
     plug :put_root_layout, {InvitomaticWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_guest
+    plug :fetch_current_login
   end
 
   pipeline :api do
@@ -37,31 +37,31 @@ defmodule InvitomaticWeb.Router do
   ## Authentication routes
 
   scope "/", InvitomaticWeb do
-    pipe_through [:browser, :redirect_if_guest_is_authenticated]
+    pipe_through [:browser, :redirect_if_authenticated]
 
-    live_session :redirect_if_guest_is_authenticated,
-      on_mount: [{InvitomaticWeb.GuestAuth, :redirect_if_guest_is_authenticated}] do
-      live "/guest/log_in", Live.GuestLogin, :new
+    live_session :redirect_if_authenticated,
+      on_mount: [{InvitomaticWeb.Auth, :redirect_if_authenticated}] do
+      live "/log_in", Live.Login, :new
     end
 
-    post "/guest/log_in", GuestSessionController, :create
-    get "/guest/log_in/:token", GuestSessionController, :create
+    post "/log_in", SessionController, :create
+    get "/log_in/:token", SessionController, :create
   end
 
   scope "/", InvitomaticWeb do
-    pipe_through [:browser, :require_authenticated_guest]
+    pipe_through [:browser, :require_authenticated]
 
-    live_session :require_authenticated_guest,
-      on_mount: [{InvitomaticWeb.GuestAuth, :ensure_authenticated}] do
+    live_session :require_authenticated,
+      on_mount: [{InvitomaticWeb.Auth, :ensure_authenticated}] do
       live "/", Live.Invitation, :index
-      live "/guest/settings", Live.GuestSettings, :edit
-      live "/guest/settings/confirm_email/:token", Live.GuestSettings, :confirm_email
+      live "/settings", Live.Settings, :edit
+      live "/settings/confirm_email/:token", Live.Settings, :confirm_email
     end
   end
 
   scope "/", InvitomaticWeb do
     pipe_through [:browser]
 
-    delete "/guest/log_out", GuestSessionController, :delete
+    delete "/log_out", SessionController, :delete
   end
 end

@@ -1,9 +1,9 @@
-defmodule Invitomatic.Invites.GuestToken do
+defmodule Invitomatic.Accounts.Token do
   use Ecto.Schema
 
   import Ecto.Query
 
-  alias Invitomatic.Invites.GuestToken
+  alias Invitomatic.Accounts.Token
 
   @hash_algorithm :sha256
   @rand_size 32
@@ -14,11 +14,11 @@ defmodule Invitomatic.Invites.GuestToken do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "guest_tokens" do
+  schema "login_token" do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :guest, Invitomatic.Invites.Guest
+    belongs_to :login, Invitomatic.Accounts.Login
 
     timestamps(updated_at: false)
   end
@@ -40,16 +40,16 @@ defmodule Invitomatic.Invites.GuestToken do
   valid indefinitely, unless you change the signing/encryption
   salt.
 
-  Therefore, storing them allows individual guest
+  Therefore, storing them allows individual login
   sessions to be expired. The token system can also be extended
   to store additional data, such as the device used for logging in.
   You could then use this information to display all valid sessions
   and devices in the UI and allow users to explicitly expire any
   session they deem invalid.
   """
-  def build_session_token(guest) do
+  def build_session_token(login) do
     token = :crypto.strong_rand_bytes(@rand_size)
-    {token, %GuestToken{token: token, context: "session", guest_id: guest.id}}
+    {token, %Token{token: token, context: "session", login_id: login.id}}
   end
 
   @doc """
@@ -65,7 +65,7 @@ defmodule Invitomatic.Invites.GuestToken do
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
 
-  The query returns the guest found by the token, if any.
+  The query returns the login found by the token, if any.
 
   The token is valid if it matches the value in the database and it has
   not expired (after @session_validity_in_days).
@@ -73,17 +73,17 @@ defmodule Invitomatic.Invites.GuestToken do
   def verify_session_token_query(token) do
     query =
       from token in token_and_context_query(token, "session"),
-        join: guest in assoc(token, :guest),
+        join: login in assoc(token, :login),
         where: token.inserted_at > ago(@session_validity),
-        select: guest
+        select: login
 
     {:ok, query}
   end
 
   @doc """
-  Builds a token and its hash to be delivered to the guest's email.
+  Builds a token and its hash to be delivered to the login's email.
 
-  The non-hashed token is sent to the guest email while the
+  The non-hashed token is sent to the login email while the
   hashed part is stored in the database. The original token cannot be reconstructed,
   which means anyone with read-only access to the database cannot directly use
   the token in the application to gain access. Furthermore, if the user changes
@@ -93,29 +93,29 @@ defmodule Invitomatic.Invites.GuestToken do
   Users can easily adapt the existing code to provide other types of delivery methods,
   for example, by phone numbers.
   """
-  def build_email_token(guest, context) do
-    build_hashed_token(guest, context, guest.email)
+  def build_email_token(login, context) do
+    build_hashed_token(login, context, login.email)
   end
 
-  defp build_hashed_token(guest, context, sent_to) do
+  defp build_hashed_token(login, context, sent_to) do
     token = :crypto.strong_rand_bytes(@rand_size)
     hashed_token = :crypto.hash(@hash_algorithm, token)
 
     {Base.url_encode64(token, padding: false),
-     %GuestToken{
+     %Token{
        token: hashed_token,
        context: context,
        sent_to: sent_to,
-       guest_id: guest.id
+       login_id: login.id
      }}
   end
 
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
 
-  The query returns the guest found by the token, if any.
+  The query returns the login found by the token, if any.
 
-  This is used to validate requests to change the guest
+  This is used to validate requests to change the login
   email. It is different from `verify_email_token_query/2` precisely because
   `verify_email_token_query/2` validates the email has not changed, which is
   the starting point by this function.
@@ -129,7 +129,7 @@ defmodule Invitomatic.Invites.GuestToken do
   end
 
   def verify_magic_link_token(token) do
-    verify_email_token_query(token, "magic:link", @magic_link_validity, [:guest])
+    verify_email_token_query(token, "magic:link", @magic_link_validity, [:login])
   end
 
   defp verify_email_token_query(token, context, {n, unit} = _validity, preloads \\ []) do
@@ -160,17 +160,17 @@ defmodule Invitomatic.Invites.GuestToken do
   Returns the token struct for the given token value and context.
   """
   def token_and_context_query(token, context) do
-    from GuestToken, where: [token: ^token, context: ^context]
+    from Token, where: [token: ^token, context: ^context]
   end
 
   @doc """
-  Gets all tokens for the given guest for the given contexts.
+  Gets all tokens for the given login for the given contexts.
   """
-  def guest_and_contexts_query(guest, :all) do
-    from t in GuestToken, where: t.guest_id == ^guest.id
+  def login_and_contexts_query(login, :all) do
+    from t in Token, where: t.login_id == ^login.id
   end
 
-  def guest_and_contexts_query(guest, [_ | _] = contexts) do
-    from t in GuestToken, where: t.guest_id == ^guest.id and t.context in ^contexts
+  def login_and_contexts_query(login, [_ | _] = contexts) do
+    from t in Token, where: t.login_id == ^login.id and t.context in ^contexts
   end
 end

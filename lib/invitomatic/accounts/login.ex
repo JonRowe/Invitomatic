@@ -1,11 +1,11 @@
-defmodule Invitomatic.Invites.Guest do
+defmodule Invitomatic.Accounts.Login do
   use Ecto.Schema
 
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "guest" do
+  schema "login" do
     field :email, :string
     field :confirmed_at, :naive_datetime
 
@@ -13,7 +13,7 @@ defmodule Invitomatic.Invites.Guest do
   end
 
   @doc """
-  A guest changeset for registration.
+  A login changeset for registration.
 
   It is important to validate the length of the email.
   Otherwise databases may truncate the email without warnings, which
@@ -27,8 +27,8 @@ defmodule Invitomatic.Invites.Guest do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def registration_changeset(guest, attrs, opts \\ []) do
-    guest
+  def registration_changeset(login, attrs, opts \\ []) do
+    login
     |> cast(attrs, [:email])
     |> validate_email(opts)
   end
@@ -52,12 +52,12 @@ defmodule Invitomatic.Invites.Guest do
   end
 
   @doc """
-  A guest changeset for changing the email.
+  A login changeset for changing the email.
 
   It requires the email to change otherwise an error is added.
   """
-  def email_changeset(guest, attrs, opts \\ []) do
-    guest
+  def email_changeset(login, attrs, opts \\ []) do
+    login
     |> cast(attrs, [:email])
     |> validate_email(opts)
     |> case do
@@ -69,8 +69,8 @@ defmodule Invitomatic.Invites.Guest do
   @doc """
   Confirms the account by setting `confirmed_at`.
   """
-  def confirm_changeset(guest) do
+  def confirm_changeset(login) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    change(guest, confirmed_at: now)
+    change(login, confirmed_at: now)
   end
 end

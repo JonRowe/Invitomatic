@@ -1,20 +1,20 @@
-defmodule InvitomaticWeb.GuestAuth do
+defmodule InvitomaticWeb.Auth do
   use InvitomaticWeb, :verified_routes
 
   import Plug.Conn
   import Phoenix.Controller
 
-  alias Invitomatic.Invites
+  alias Invitomatic.Accounts
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
-  # the token expiry itself in GuestToken.
+  # the token expiry itself in Token.
   @max_age 60 * 60 * 24 * 60
-  @remember_me_cookie "_invitomatic_web_guest_remember_me"
+  @remember_me_cookie "_invitomatic_web_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
   @doc """
-  Logs the guest in.
+  Logs in.
 
   It renews the session ID and clears the whole session
   to avoid fixation attacks. See the renew_session
@@ -25,15 +25,15 @@ defmodule InvitomaticWeb.GuestAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_guest(conn, guest, params \\ %{}) do
-    token = Invites.generate_guest_session_token(guest)
-    guest_return_to = get_session(conn, :guest_return_to)
+  def log_in(conn, login, params \\ %{}) do
+    token = Accounts.generate_session_token(login)
+    return_to = get_session(conn, :return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: guest_return_to || signed_in_path(conn))
+    |> redirect(to: return_to || signed_in_path(conn))
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -66,13 +66,13 @@ defmodule InvitomaticWeb.GuestAuth do
   end
 
   @doc """
-  Logs the guest out.
+  Logs out.
 
   It clears all session data for safety. See renew_session.
   """
-  def log_out_guest(conn) do
-    guest_token = get_session(conn, :guest_token)
-    guest_token && Invites.delete_guest_session_token(guest_token)
+  def log_out(conn) do
+    token = get_session(conn, :login_token)
+    token && Accounts.delete_session_token(token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       InvitomaticWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -85,17 +85,17 @@ defmodule InvitomaticWeb.GuestAuth do
   end
 
   @doc """
-  Authenticates the guest by looking into the session
+  Authenticates by looking into the session
   and remember me token.
   """
-  def fetch_current_guest(conn, _opts) do
-    {guest_token, conn} = ensure_guest_token(conn)
-    guest = guest_token && Invites.get_guest_by_session_token(guest_token)
-    assign(conn, :current_guest, guest)
+  def fetch_current_login(conn, _opts) do
+    {token, conn} = ensure_token(conn)
+    login = token && Accounts.get_login_by_session_token(token)
+    assign(conn, :current_login, login)
   end
 
-  defp ensure_guest_token(conn) do
-    if token = get_session(conn, :guest_token) do
+  defp ensure_token(conn) do
+    if token = get_session(conn, :login_token) do
       {token, conn}
     else
       conn = fetch_cookies(conn, signed: [@remember_me_cookie])
@@ -109,82 +109,82 @@ defmodule InvitomaticWeb.GuestAuth do
   end
 
   @doc """
-  Handles mounting and authenticating the current_guest in LiveViews.
+  Handles mounting and authenticating the current_login in LiveViews.
 
   ## `on_mount` arguments
 
-    * `:mount_current_guest` - Assigns current_guest
-      to socket assigns based on guest_token, or nil if
-      there's no guest_token or no matching guest.
+    * `:mount_current_login` - Assigns current_login
+      to socket assigns based on login_token, or nil if
+      there's no login_token or no matching login.
 
-    * `:ensure_authenticated` - Authenticates the guest from the session,
-      and assigns the current_guest to socket assigns based
-      on guest_token.
-      Redirects to login page if there's no logged guest.
+    * `:ensure_authenticated` - Authenticates the login from the session,
+      and assigns the current_login to socket assigns based
+      on login_token.
+      Redirects to login page if there's no logged login.
 
-    * `:redirect_if_guest_is_authenticated` - Authenticates the guest from the session.
-      Redirects to signed_in_path if there's a logged in guest.
+    * `:redirect_if_authenticated` - Authenticates from the session.
+      Redirects to signed_in_path if there's a login.
 
   ## Examples
 
   Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
-  the current_guest:
+  the current_login:
 
       defmodule InvitomaticWeb.PageLive do
         use InvitomaticWeb, :live_view
 
-        on_mount {InvitomaticWeb.GuestAuth, :mount_current_guest}
+        on_mount {InvitomaticWeb.Auth, :mount_current_login}
         ...
       end
 
   Or use the `live_session` of your router to invoke the on_mount callback:
 
-      live_session :authenticated, on_mount: [{InvitomaticWeb.GuestAuth, :ensure_authenticated}] do
+      live_session :authenticated, on_mount: [{InvitomaticWeb.Auth, :ensure_authenticated}] do
         live "/profile", ProfileLive, :index
       end
   """
-  def on_mount(:mount_current_guest, _params, session, socket) do
-    {:cont, mount_current_guest(session, socket)}
+  def on_mount(:mount_current_login, _params, session, socket) do
+    {:cont, mount_current_login(session, socket)}
   end
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = mount_current_guest(session, socket)
+    socket = mount_current_login(session, socket)
 
-    if socket.assigns.current_guest do
+    if socket.assigns.current_login do
       {:cont, socket}
     else
       socket =
         socket
         |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
-        |> Phoenix.LiveView.redirect(to: ~p"/guest/log_in")
+        |> Phoenix.LiveView.redirect(to: ~p"/log_in")
 
       {:halt, socket}
     end
   end
 
-  def on_mount(:redirect_if_guest_is_authenticated, _params, session, socket) do
-    socket = mount_current_guest(session, socket)
+  def on_mount(:redirect_if_authenticated, _params, session, socket) do
+    socket = mount_current_login(session, socket)
 
-    if socket.assigns.current_guest do
+    if socket.assigns.current_login do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
     end
   end
 
-  defp mount_current_guest(session, socket) do
-    Phoenix.Component.assign_new(socket, :current_guest, fn ->
-      if guest_token = session["guest_token"] do
-        Invites.get_guest_by_session_token(guest_token)
+  defp mount_current_login(session, socket) do
+    Phoenix.Component.assign_new(socket, :current_login, fn ->
+      if login_token = session["login_token"] do
+        Accounts.get_login_by_session_token(login_token)
       end
     end)
   end
 
   @doc """
-  Used for routes that require the guest to not be authenticated.
+  Used for routes that require not being authenticated.
   """
-  def redirect_if_guest_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_guest] do
+  def redirect_if_authenticated(conn, _opts) do
+    if conn.assigns[:current_login] do
       conn
       |> redirect(to: signed_in_path(conn))
       |> halt()
@@ -194,31 +194,31 @@ defmodule InvitomaticWeb.GuestAuth do
   end
 
   @doc """
-  Used for routes that require the guest to be authenticated.
+  Used for routes that require being authenticated.
 
-  If you want to enforce the guest email is confirmed before
+  If you want to enforce the login email is confirmed before
   they use the application at all, here would be a good place.
   """
-  def require_authenticated_guest(conn, _opts) do
-    if conn.assigns[:current_guest] do
+  def require_authenticated(conn, _opts) do
+    if conn.assigns[:current_login] do
       conn
     else
       conn
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
-      |> redirect(to: ~p"/guest/log_in")
+      |> redirect(to: ~p"/log_in")
       |> halt()
     end
   end
 
   defp put_token_in_session(conn, token) do
     conn
-    |> put_session(:guest_token, token)
-    |> put_session(:live_socket_id, "guest_sessions:#{Base.url_encode64(token)}")
+    |> put_session(:login_token, token)
+    |> put_session(:live_socket_id, "login_sessions:#{Base.url_encode64(token)}")
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :guest_return_to, current_path(conn))
+    put_session(conn, :return_to, current_path(conn))
   end
 
   defp maybe_store_return_to(conn), do: conn

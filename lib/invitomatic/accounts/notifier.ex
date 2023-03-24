@@ -1,4 +1,4 @@
-defmodule Invitomatic.Invites.GuestNotifier do
+defmodule Invitomatic.Accounts.Notifier do
   import Swoosh.Email
 
   alias Invitomatic.Mailer
@@ -19,11 +19,11 @@ defmodule Invitomatic.Invites.GuestNotifier do
   end
 
   @doc """
-  Deliver magic link to a guest.
+  Deliver magic link to login.
   """
-  def deliver_magic_link(guest, url) do
-    deliver(guest.email, "Sign in to", """
-    Hi #{guest.email},
+  def deliver_magic_link(login, url) do
+    deliver(login.email, "Sign in to", """
+    Hi #{login.email},
 
     You can access your invite by visiting the URL below:
 
@@ -34,14 +34,14 @@ defmodule Invitomatic.Invites.GuestNotifier do
   end
 
   @doc """
-  Deliver instructions to update a guest's email.
+  Deliver instructions to update a login's email.
   """
-  def deliver_update_email_instructions(guest, url) do
-    deliver(guest.email, "Update email instructions", """
+  def deliver_update_email_instructions(login, url) do
+    deliver(login.email, "Update email instructions", """
 
     ==============================
 
-    Hi #{guest.email},
+    Hi #{login.email},
 
     You can change your email by visiting the URL below:
 

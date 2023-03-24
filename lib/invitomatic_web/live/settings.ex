@@ -1,15 +1,15 @@
-defmodule InvitomaticWeb.Live.GuestSettings do
+defmodule InvitomaticWeb.Live.Settings do
   use InvitomaticWeb, :live_view
 
-  alias Invitomatic.Invites
+  alias Invitomatic.Accounts
 
   @impl Phoenix.LiveView
   def handle_event("validate_email", params, socket) do
-    %{"guest" => guest_params} = params
+    %{"guest" => login_params} = params
 
     email_form =
-      socket.assigns.current_guest
-      |> Invites.change_guest_email(guest_params)
+      socket.assigns.current_login
+      |> Accounts.change_email(login_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
@@ -17,29 +17,30 @@ defmodule InvitomaticWeb.Live.GuestSettings do
   end
 
   def handle_event("update_email", params, socket) do
-    %{"guest" => guest_params} = params
-    guest = socket.assigns.current_guest
+    %{"guest" => login_params} = params
+    login = socket.assigns.current_login
 
-    case Invites.apply_guest_email(guest, guest_params) do
-      {:ok, applied_guest} ->
-        Invites.deliver_guest_update_email_instructions(
-          applied_guest,
-          guest.email,
-          &url(~p"/guest/settings/confirm_email/#{&1}")
+    case Accounts.apply_email(login, login_params) do
+      {:ok, applied_login} ->
+        Accounts.deliver_update_email_instructions(
+          applied_login,
+          login.email,
+          &url(~p"/settings/confirm_email/#{&1}")
         )
 
         info = "A link to confirm your email change has been sent to the new address."
         {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert)))}
+        {:noreply,
+         assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert), as: "guest"))}
     end
   end
 
   @impl Phoenix.LiveView
   def mount(%{"token" => token}, _session, socket) do
     socket =
-      case Invites.update_guest_email(socket.assigns.current_guest, token) do
+      case Accounts.update_email(socket.assigns.current_login, token) do
         :ok ->
           put_flash(socket, :info, "Email changed successfully.")
 
@@ -47,17 +48,17 @@ defmodule InvitomaticWeb.Live.GuestSettings do
           put_flash(socket, :error, "Email change link is invalid or it has expired.")
       end
 
-    {:ok, push_navigate(socket, to: ~p"/guest/settings")}
+    {:ok, push_navigate(socket, to: ~p"/settings")}
   end
 
   def mount(_params, _session, socket) do
-    guest = socket.assigns.current_guest
-    email_changeset = Invites.change_guest_email(guest)
+    login = socket.assigns.current_login
+    email_changeset = Accounts.change_email(login)
 
     socket =
       socket
-      |> assign(:current_email, guest.email)
-      |> assign(:email_form, to_form(email_changeset))
+      |> assign(:current_email, login.email)
+      |> assign(:email_form, to_form(email_changeset, as: "guest"))
       |> assign(:trigger_submit, false)
 
     {:ok, socket}
