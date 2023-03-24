@@ -8,8 +8,8 @@ defmodule Invitomatic.Invites.GuestToken do
   @hash_algorithm :sha256
   @rand_size 32
 
-  @change_email_validity_in_days 7
-  @session_validity_in_days 60
+  @change_email_validity {7, "day"}
+  @session_validity {60, "day"}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -20,6 +20,11 @@ defmodule Invitomatic.Invites.GuestToken do
     belongs_to :guest, Invitomatic.Invites.Guest
 
     timestamps(updated_at: false)
+  end
+
+  defmacrop ago({:@, _, _} = validity) do
+    {n, unit} = Macro.expand(validity, __CALLER__)
+    quote(do: ago(unquote(n), unquote(unit)))
   end
 
   @doc """
@@ -58,7 +63,7 @@ defmodule Invitomatic.Invites.GuestToken do
     query =
       from token in token_and_context_query(token, "session"),
         join: guest in assoc(token, :guest),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
+        where: token.inserted_at > ago(@session_validity),
         select: guest
 
     {:ok, query}
@@ -115,7 +120,7 @@ defmodule Invitomatic.Invites.GuestToken do
 
         query =
           from token in token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity_in_days, "day")
+            where: token.inserted_at > ago(@change_email_validity)
 
         {:ok, query}
 
