@@ -8,58 +8,46 @@ defmodule InvitomaticWeb.GuestSessionControllerTest do
   end
 
   describe "POST /guest/log_in" do
-    test "logs the guest in", %{conn: conn, guest: guest} do
+    test "it sends the guest a magic link", %{conn: conn, guest: guest} do
       conn =
         post(conn, ~p"/guest/log_in", %{
           "guest" => %{"email" => guest.email}
         })
 
-      assert get_session(conn, :guest_token)
-      assert redirected_to(conn) == ~p"/"
+      refute get_session(conn, :guest_token)
+      assert redirected_to(conn) == ~p"/guest/log_in"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Link sent to your email."
+
+      assert_received {:email, email}
+      assert email.subject =~ ~r/Sign in to/
+
+      "http://localhost" <> path =
+        email.text_body
+        |> String.split("\n")
+        |> Enum.find(fn line -> line =~ "/guest/log_in/" end)
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ "Welcome back!"
-      assert response =~ guest.email
-      assert response =~ ~p"/guest/settings"
-      assert response =~ ~p"/guest/log_out"
-    end
-
-    test "logs the guest in with remember me", %{conn: conn, guest: guest} do
-      conn =
-        post(conn, ~p"/guest/log_in", %{
-          "guest" => %{
-            "email" => guest.email,
-            "remember_me" => "true"
-          }
-        })
-
-      assert conn.resp_cookies["_invitomatic_web_guest_remember_me"]
+      conn = get(conn, path)
+      assert get_session(conn, :guest_token)
       assert redirected_to(conn) == ~p"/"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Welcome back!"
+    end
+  end
+
+  describe "GET /guest/log_in/:token" do
+    test "logs the guest in when token is valid", %{conn: conn, guest: guest} do
+      conn = get(conn, ~p"/guest/log_in/#{magic_link_token(guest)}")
+
+      assert get_session(conn, :guest_token)
+      assert redirected_to(conn) == ~p"/"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Welcome back!"
     end
 
-    test "logs the guest in with return to", %{conn: conn, guest: guest} do
-      conn =
-        conn
-        |> init_test_session(guest_return_to: "/foo/bar")
-        |> post(~p"/guest/log_in", %{
-          "guest" => %{
-            "email" => guest.email
-          }
-        })
+    test "redirects to login page with an invalid token", %{conn: conn} do
+      conn = get(conn, ~p"/guest/log_in/invalid")
 
-      assert redirected_to(conn) == "/foo/bar"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
-    end
-
-    test "redirects to login page with invalid credentials", %{conn: conn} do
-      conn =
-        post(conn, ~p"/guest/log_in", %{
-          "guest" => %{"email" => "invalid@email.com"}
-        })
-
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      refute get_session(conn, :guest_token)
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid link, please login again."
       assert redirected_to(conn) == ~p"/guest/log_in"
     end
   end

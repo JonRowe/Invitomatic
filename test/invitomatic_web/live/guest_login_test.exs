@@ -23,7 +23,7 @@ defmodule InvitomaticWeb.Live.GuestLoginTest do
   end
 
   describe "guest login" do
-    test "redirects if guest login with valid credentials", %{conn: conn} do
+    test "sends an email to the guest to login and displays a message", %{conn: conn} do
       guest = guest_fixture()
 
       {:ok, lv, _html} = live(conn, ~p"/guest/log_in")
@@ -32,24 +32,7 @@ defmodule InvitomaticWeb.Live.GuestLoginTest do
 
       conn = submit_form(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
-    end
-
-    test "redirects to login page with a flash error if there are no valid credentials", %{
-      conn: conn
-    } do
-      {:ok, lv, _html} = live(conn, ~p"/guest/log_in")
-
-      form =
-        form(lv, "#login_form",
-          guest: %{email: "test@email.com", password: "123456", remember_me: true}
-        )
-
-      conn = submit_form(form, conn)
-
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
-
-      assert redirected_to(conn) == "/guest/log_in"
+      assert redirected_to(conn) == ~p"/guest/log_in"
     end
   end
 end

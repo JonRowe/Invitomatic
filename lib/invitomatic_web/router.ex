@@ -45,6 +45,7 @@ defmodule InvitomaticWeb.Router do
     end
 
     post "/guest/log_in", GuestSessionController, :create
+    get "/guest/log_in/:token", GuestSessionController, :create
   end
 
   scope "/", InvitomaticWeb do

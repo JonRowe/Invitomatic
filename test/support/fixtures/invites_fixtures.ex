@@ -26,4 +26,8 @@ defmodule Invitomatic.InvitesFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  def magic_link_token(guest) do
+    extract_guest_token(&Invitomatic.Invites.deliver_guest_magic_link(guest, &1))
+  end
 end
