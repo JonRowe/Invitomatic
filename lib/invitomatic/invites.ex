@@ -122,7 +122,15 @@ defmodule Invitomatic.Invites do
 
     with {:ok, query} <- GuestToken.verify_change_email_token_query(token, context),
          %GuestToken{sent_to: email} <- Repo.one(query),
-         {:ok, _} <- Repo.transaction(guest_email_multi(guest, email, context)) do
+         changeset <- Guest.confirm_changeset(Guest.email_changeset(guest, %{email: email})),
+         {:ok, _} <-
+           Ecto.Multi.new()
+           |> Ecto.Multi.update(:guest, changeset)
+           |> Ecto.Multi.delete_all(
+             :tokens,
+             GuestToken.guest_and_contexts_query(guest, [context])
+           )
+           |> Repo.transaction() do
       :ok
     else
       _ -> :error
@@ -191,16 +199,5 @@ defmodule Invitomatic.Invites do
   def delete_guest_session_token(token) do
     Repo.delete_all(GuestToken.token_and_context_query(token, "session"))
     :ok
-  end
-
-  defp guest_email_multi(guest, email, context) do
-    changeset =
-      guest
-      |> Guest.email_changeset(%{email: email})
-      |> Guest.confirm_changeset()
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:guest, changeset)
-    |> Ecto.Multi.delete_all(:tokens, GuestToken.guest_and_contexts_query(guest, [context]))
   end
 end
