@@ -9,6 +9,7 @@ defmodule Invitomatic.Invites.GuestToken do
   @rand_size 32
 
   @change_email_validity {7, "day"}
+  @magic_link_validity {6, "hour"}
   @session_validity {60, "day"}
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -49,6 +50,16 @@ defmodule Invitomatic.Invites.GuestToken do
   def build_session_token(guest) do
     token = :crypto.strong_rand_bytes(@rand_size)
     {token, %GuestToken{token: token, context: "session", guest_id: guest.id}}
+  end
+
+  @doc """
+  Decode a url token into a binary, these tokens come via emails generally
+  """
+  def decode_url_token(token_string) do
+    case Base.url_decode64(token_string, padding: false) do
+      {:ok, decoded_token} -> {:ok, _hashed_token = :crypto.hash(@hash_algorithm, decoded_token)}
+      _ -> :error
+    end
   end
 
   @doc """
@@ -114,18 +125,34 @@ defmodule Invitomatic.Invites.GuestToken do
   The context must always start with "change:".
   """
   def verify_change_email_token_query(token, "change:" <> _ = context) do
-    case Base.url_decode64(token, padding: false) do
-      {:ok, decoded_token} ->
-        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+    verify_email_token_query(token, context, @change_email_validity)
+  end
 
+  def verify_magic_link_token(token) do
+    verify_email_token_query(token, "magic:link", @magic_link_validity, [:guest])
+  end
+
+  defp verify_email_token_query(token, context, {n, unit} = _validity, preloads \\ []) do
+    case decode_url_token(token) do
+      {:ok, hashed_token} ->
         query =
           from token in token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity)
+            where: token.inserted_at > ago(^n, ^unit),
+            preload: ^preloads
 
         {:ok, query}
 
       :error ->
         :error
+    end
+  end
+
+  @doc """
+  """
+  def magic_link_query(url_token) do
+    case decode_url_token(url_token) do
+      {:ok, token} -> token_and_context_query(token, "magic:link")
+      _ -> :error
     end
   end
 

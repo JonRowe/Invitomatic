@@ -186,6 +186,25 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Gets the guest from the given magic link token.
+
+  If the token matches, the token is deleted, and the confirmed_at date is also updated to the current time.
+  """
+  def get_guest_from_magic_link_token(token) do
+    with {:ok, query} <- GuestToken.verify_magic_link_token(token),
+         %GuestToken{guest: guest, sent_to: _email} <- Repo.one(query),
+         {:ok, %{guest: confirmed_guest}} <-
+           Ecto.Multi.new()
+           |> Ecto.Multi.update(:guest, Guest.confirm_changeset(guest))
+           |> Ecto.Multi.delete_all(:tokens, GuestToken.magic_link_query(token))
+           |> Repo.transaction() do
+      {:ok, confirmed_guest}
+    else
+      _ -> :error
+    end
+  end
+
+  @doc """
   Gets the guest with the given signed token.
   """
   def get_guest_by_session_token(token) do

@@ -238,6 +238,46 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "get_guest_from_magic_link_token/1" do
+    setup do
+      guest = guest_fixture()
+      token = extract_guest_token(&Invites.deliver_guest_magic_link(guest, &1))
+
+      %{guest: guest, token: token}
+    end
+
+    test "returns the guest from a valid token", %{guest: guest, token: token} do
+      assert {:ok, returned_guest} = Invites.get_guest_from_magic_link_token(token)
+      assert returned_guest == Repo.get!(Guest, guest.id)
+      assert returned_guest.email == guest.email
+      assert returned_guest.confirmed_at
+      assert returned_guest.confirmed_at != guest.confirmed_at
+    end
+
+    test "only removes the token for the used magic link", %{guest: guest, token: token} do
+      other_token = extract_guest_token(&Invites.deliver_guest_magic_link(guest, &1))
+
+      assert {:ok, _guest} = Invites.get_guest_from_magic_link_token(token)
+
+      {:ok, db_token} = GuestToken.decode_url_token(token)
+      {:ok, other_db_token} = GuestToken.decode_url_token(other_token)
+
+      refute Repo.get_by(GuestToken, token: db_token)
+      assert Repo.get_by(GuestToken, token: other_db_token)
+    end
+
+    test "does not return a guest from a invalid token", %{guest: guest} do
+      assert Invites.get_guest_from_magic_link_token("oops") == :error
+      assert Repo.get_by(GuestToken, guest_id: guest.id)
+    end
+
+    test "does not return a guest if the token expired", %{guest: guest, token: token} do
+      {1, nil} = Repo.update_all(GuestToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      assert Invites.get_guest_from_magic_link_token(token) == :error
+      assert Repo.get_by(GuestToken, guest_id: guest.id)
+    end
+  end
+
   describe "get_guest_by_session_token/1" do
     setup do
       guest = guest_fixture()
