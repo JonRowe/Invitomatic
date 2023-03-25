@@ -1,7 +1,6 @@
 defmodule InvitomaticWeb.AuthTest do
   use InvitomaticWeb.ConnCase, async: true
 
-  alias Phoenix.LiveView
   alias Invitomatic.Accounts
   alias InvitomaticWeb.Auth
 
@@ -122,8 +121,7 @@ defmodule InvitomaticWeb.AuthTest do
       token = Accounts.generate_session_token(login)
       session = conn |> put_session(:login_token, token) |> get_session()
 
-      {:cont, updated_socket} =
-        Auth.on_mount(:mount_current_login, %{}, session, %LiveView.Socket{})
+      {:cont, updated_socket} = Auth.on_mount(:mount_current_login, %{}, session, socket())
 
       assert updated_socket.assigns.current_login.id == login.id
     end
@@ -132,8 +130,7 @@ defmodule InvitomaticWeb.AuthTest do
       token = "invalid_token"
       session = conn |> put_session(:login_token, token) |> get_session()
 
-      {:cont, updated_socket} =
-        Auth.on_mount(:mount_current_login, %{}, session, %LiveView.Socket{})
+      {:cont, updated_socket} = Auth.on_mount(:mount_current_login, %{}, session, socket())
 
       assert updated_socket.assigns.current_login == nil
     end
@@ -141,8 +138,7 @@ defmodule InvitomaticWeb.AuthTest do
     test "assigns nil to current_login assign if there isn't a token", %{conn: conn} do
       session = conn |> get_session()
 
-      {:cont, updated_socket} =
-        Auth.on_mount(:mount_current_login, %{}, session, %LiveView.Socket{})
+      {:cont, updated_socket} = Auth.on_mount(:mount_current_login, %{}, session, socket())
 
       assert updated_socket.assigns.current_login == nil
     end
@@ -153,8 +149,7 @@ defmodule InvitomaticWeb.AuthTest do
       token = Accounts.generate_session_token(login)
       session = conn |> put_session(:login_token, token) |> get_session()
 
-      {:cont, updated_socket} =
-        Auth.on_mount(:ensure_authenticated, %{}, session, %LiveView.Socket{})
+      {:cont, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
 
       assert updated_socket.assigns.current_login.id == login.id
     end
@@ -163,24 +158,14 @@ defmodule InvitomaticWeb.AuthTest do
       token = "invalid_token"
       session = conn |> put_session(:login_token, token) |> get_session()
 
-      socket = %LiveView.Socket{
-        endpoint: InvitomaticWeb.Endpoint,
-        assigns: %{__changed__: %{}, flash: %{}}
-      }
-
-      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket)
+      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
       assert updated_socket.assigns.current_login == nil
     end
 
     test "redirects to login page if there isn't a token ", %{conn: conn} do
       session = conn |> get_session()
 
-      socket = %LiveView.Socket{
-        endpoint: InvitomaticWeb.Endpoint,
-        assigns: %{__changed__: %{}, flash: %{}}
-      }
-
-      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket)
+      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
       assert updated_socket.assigns.current_login == nil
     end
   end
@@ -195,7 +180,7 @@ defmodule InvitomaticWeb.AuthTest do
                  :redirect_if_authenticated,
                  %{},
                  session,
-                 %LiveView.Socket{}
+                 socket()
                )
     end
 
@@ -207,7 +192,7 @@ defmodule InvitomaticWeb.AuthTest do
                  :redirect_if_authenticated,
                  %{},
                  session,
-                 %LiveView.Socket{}
+                 socket()
                )
     end
   end

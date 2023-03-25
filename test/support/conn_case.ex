@@ -61,4 +61,13 @@ defmodule InvitomaticWeb.ConnCase do
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:login_token, token)
   end
+
+  def socket(attrs \\ []) do
+    [
+      endpoint: InvitomaticWeb.Endpoint,
+      assigns: %{__changed__: %{}, flash: %{}}
+    ]
+    |> Keyword.merge(attrs)
+    |> then(&struct(Phoenix.LiveView.Socket, &1))
+  end
 end
