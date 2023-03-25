@@ -19,6 +19,10 @@ input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focu
   border-color: #a3c2d5;
 }
 
+main {
+  padding: 1em;
+}
+
 /* Flash CSS */
 #flash {
   background: #cbe2f0;
@@ -47,6 +51,26 @@ input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focu
 /* Nav */
 nav {
   text-align: right;
+}
+
+/* Tables */
+table {
+  border-radius: 0.2em;
+  overflow: hidden;
+}
+
+table thead {
+  background: #d7dbdd;
+}
+
+table thead th, table tbody td,
+table thead th:first-child, table tbody td:first-child,
+table thead th:last-child, table tbody td:last-child {
+  padding: 0.5em 1em;
+}
+
+table tbody tr:hover {
+  background: #f1f3f4;
 }
 
 /* Utility */
