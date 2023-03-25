@@ -18,6 +18,7 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <nav>
       <%= @current_login.email %>
+      <.link :if={@current_login.admin} href={~p"/manage"}>Manage Guests</.link>
       <.link href={~p"/settings"}>Settings</.link>
       <.link href={~p"/log_out"} method="delete">Log out</.link>
     </nav>
