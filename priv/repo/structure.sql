@@ -57,7 +57,8 @@ CREATE TABLE public.login (
     email public.citext NOT NULL,
     confirmed_at timestamp(0) without time zone,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    admin boolean DEFAULT false
 );
 
 
@@ -144,3 +145,4 @@ ALTER TABLE ONLY public.login_token
 
 INSERT INTO public."schema_migrations" (version) VALUES (20230322214643);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324144645);
+INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);

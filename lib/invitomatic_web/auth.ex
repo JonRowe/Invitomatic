@@ -162,6 +162,24 @@ defmodule InvitomaticWeb.Auth do
     end
   end
 
+  def on_mount(:ensure_authenticated_admin, params, session, socket) do
+    case on_mount(:ensure_authenticated, params, session, socket) do
+      {:cont, %{assigns: %{current_login: %_{admin: true}}} = authenticated_socket} ->
+        {:cont, authenticated_socket}
+
+      {:cont, socket} ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(:error, "You cannot access this page.")
+          |> Phoenix.LiveView.redirect(to: ~p"/")
+
+        {:halt, socket}
+
+      {:halt, socket} ->
+        {:halt, socket}
+    end
+  end
+
   def on_mount(:redirect_if_authenticated, _params, session, socket) do
     socket = mount_current_login(session, socket)
 
@@ -208,6 +226,22 @@ defmodule InvitomaticWeb.Auth do
       |> maybe_store_return_to()
       |> redirect(to: ~p"/log_in")
       |> halt()
+    end
+  end
+
+  @doc """
+  Used for routes that require being an admin.
+  """
+  def require_admin(conn, _opts) do
+    case conn.assigns[:current_login] do
+      %_{admin: true} ->
+        conn
+
+      _ ->
+        conn
+        |> put_flash(:error, "You cannot access this page.")
+        |> redirect(to: ~p"/")
+        |> halt()
     end
   end
 

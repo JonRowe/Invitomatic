@@ -12,6 +12,15 @@ defmodule Invitomatic.AccountsFixtures do
     })
   end
 
+  def admin_fixture(attrs \\ %{}) do
+    login_changeset =
+      attrs
+      |> login_fixture()
+      |> Ecto.Changeset.change(%{admin: true})
+
+    Invitomatic.Repo.update!(login_changeset)
+  end
+
   def login_fixture(attrs \\ %{}) do
     {:ok, login} =
       attrs

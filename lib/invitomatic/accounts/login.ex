@@ -6,6 +6,7 @@ defmodule Invitomatic.Accounts.Login do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "login" do
+    field :admin, :boolean, default: false
     field :email, :string
     field :confirmed_at, :naive_datetime
 

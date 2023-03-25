@@ -159,6 +159,7 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> put_session(:login_token, token) |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
       assert updated_socket.assigns.current_login == nil
     end
 
@@ -166,6 +167,48 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.assigns.current_login == nil
+    end
+  end
+
+  describe "on_mount: ensure_authenticated_admin" do
+    test "allows admin current_login to continue", %{conn: conn} do
+      admin = admin_fixture()
+      token = Accounts.generate_session_token(admin)
+      session = conn |> put_session(:login_token, token) |> get_session()
+
+      {:cont, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
+
+      assert updated_socket.assigns.current_login.id == admin.id
+      assert updated_socket.assigns.current_login.admin == true
+    end
+
+    test "authenticated non admin current_login but redirects to / ", %{conn: conn, login: login} do
+      token = Accounts.generate_session_token(login)
+      session = conn |> put_session(:login_token, token) |> get_session()
+
+      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
+
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/"}}
+      assert updated_socket.assigns.current_login.id == login.id
+      assert updated_socket.assigns.current_login.admin == false
+    end
+
+    test "redirects to login page if there isn't a valid token ", %{conn: conn} do
+      token = "invalid_token"
+      session = conn |> put_session(:login_token, token) |> get_session()
+
+      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.assigns.current_login == nil
+    end
+
+    test "redirects to login page if there isn't a token ", %{conn: conn} do
+      session = conn |> get_session()
+
+      {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
       assert updated_socket.assigns.current_login == nil
     end
   end
@@ -175,25 +218,29 @@ defmodule InvitomaticWeb.AuthTest do
       token = Accounts.generate_session_token(login)
       session = conn |> put_session(:login_token, token) |> get_session()
 
-      assert {:halt, _updated_socket} =
+      assert {:halt, updated_socket} =
                Auth.on_mount(
                  :redirect_if_authenticated,
                  %{},
                  session,
                  socket()
                )
+
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/"}}
     end
 
     test "Don't redirect is there is no authenticated login", %{conn: conn} do
       session = conn |> get_session()
 
-      assert {:cont, _updated_socket} =
+      assert {:cont, updated_socket} =
                Auth.on_mount(
                  :redirect_if_authenticated,
                  %{},
                  session,
                  socket()
                )
+
+      assert updated_socket.redirected == nil
     end
   end
 
@@ -251,6 +298,23 @@ defmodule InvitomaticWeb.AuthTest do
 
     test "does not redirect if authenticated", %{conn: conn, login: login} do
       conn = conn |> assign(:current_login, login) |> Auth.require_authenticated([])
+      refute conn.halted
+      refute conn.status
+    end
+  end
+
+  describe "require_admin/2" do
+    test "redirects if not an admin", %{conn: conn} do
+      conn = conn |> fetch_flash() |> Auth.require_admin([])
+      assert conn.halted
+
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "You cannot access this page."
+    end
+
+    test "does not redirect if an admin", %{conn: conn} do
+      conn = conn |> assign(:current_login, admin_fixture()) |> Auth.require_authenticated([])
       refute conn.halted
       refute conn.status
     end
