@@ -71,6 +71,8 @@ defmodule InvitomaticWeb.Router do
         {InvitomaticWeb.Auth, :ensure_authenticated_admin}
       ] do
       live "/manage", Live.InvitationManager, :index
+      live "/manage/guests/:id/edit", Live.InvitationManager, :edit
+      live "/manage/guests/new", Live.InvitationManager, :new
     end
   end
 
