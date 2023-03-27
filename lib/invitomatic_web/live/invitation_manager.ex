@@ -36,9 +36,16 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     <nav>
       <.link class="button" patch={~p"/manage/guests/new"}>Add Guest</.link>
     </nav>
-    <.table id="guests" rows={@streams.guests}>
+    <.table
+      id="guests"
+      rows={@streams.guests}
+      row_click={fn {_id, guest} -> JS.patch(~p"/manage/guests/#{guest}") end}
+    >
       <:col :let={{_id, guest}} label="EMail"><%= guest.email %></:col>
       <:action :let={{_id, guest}}>
+        <div class="sr-only">
+          <.link patch={~p"/manage/guests/#{guest}"}>Show</.link>
+        </div>
         <.link patch={~p"/manage/guests/#{guest}/edit"}>Edit</.link>
       </:action>
       <:action :let={{id, guest}}>
@@ -50,6 +57,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
         </.link>
       </:action>
     </.table>
+    <.modal :if={@live_action == :show} id="guest-modal" show on_cancel={JS.patch(~p"/manage")}>
+      <InvitomaticWeb.Live.InvitiationManager.GuestComponent.show guest={@guest} />
+    </.modal>
     <.modal
       :if={@live_action in [:new, :edit]}
       id="new-guest-modal"
@@ -78,6 +88,12 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     socket
     |> assign(:page_title, "New Guest")
     |> assign(:guest, %Login{})
+  end
+
+  defp apply_action(socket, :show, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Guest")
+    |> assign(:guest, Accounts.get_login!(id))
   end
 
   defp apply_action(socket, :index, _params) do

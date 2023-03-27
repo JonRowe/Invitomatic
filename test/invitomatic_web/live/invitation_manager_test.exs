@@ -43,6 +43,18 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
+    test "it can display a guest", %{conn: conn, guest: guest} do
+      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
+
+      result =
+        index_live
+        |> element("#guest-#{guest.id} td:last-child a", "Show")
+        |> render_click()
+
+      assert result =~ "Guest"
+      assert_patch(index_live, ~p"/manage/guests/#{guest}")
+    end
+
     test "it can create a new guest", %{conn: conn} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
