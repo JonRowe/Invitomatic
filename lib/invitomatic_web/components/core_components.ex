@@ -454,10 +454,10 @@ defmodule InvitomaticWeb.CoreComponents do
   def list(assigns) do
     ~H"""
     <dl>
-      <div :for={item <- @item}>
+      <%= for item <- @item do %>
         <dt><%= item.title %></dt>
         <dd><%= render_slot(item) %></dd>
-      </div>
+      <% end %>
     </dl>
     """
   end

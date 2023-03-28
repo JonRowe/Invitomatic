@@ -3,14 +3,22 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
 
   import Phoenix.LiveViewTest
   import Invitomatic.AccountsFixtures
+  import Invitomatic.InvitesFixtures
 
-  @guest_create_attrs %{"email" => "another@example.com"}
-  @guest_update_attrs %{"email" => "new@example.com"}
-  @guest_invalid_attrs %{"email" => ""}
+  @invite_create_attrs %{
+    "name" => "Namey McName",
+    "logins" => %{"0" => %{"email" => "another@example.com"}}
+  }
+  @invite_update_attrs %{
+    "name" => "Janey McName",
+    "logins" => %{"0" => %{"email" => "new@example.com"}}
+  }
+  @invite_invalid_attrs %{"name" => "", "logins" => %{"0" => %{"email" => ""}}}
 
   describe "Management page" do
     setup do
-      %{guest: guest_fixture()}
+      invite = invite_fixture()
+      %{invite: invite, guest: List.first(invite.logins)}
     end
 
     test "renders the index table", %{conn: conn} do
@@ -43,7 +51,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "it can display a guest", %{conn: conn, guest: guest} do
+    test "it can display a guest", %{conn: conn, guest: guest, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
       result =
@@ -51,52 +59,52 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
         |> element("#guest-#{guest.id} td:last-child a", "Show")
         |> render_click()
 
-      assert result =~ "Guest"
-      assert_patch(index_live, ~p"/manage/guests/#{guest}")
+      assert result =~ "Invitation"
+      assert_patch(index_live, ~p"/manage/invites/#{invite}")
     end
 
-    test "it can create a new guest", %{conn: conn} do
+    test "it can create a new invite", %{conn: conn} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
-      assert index_live |> element("a", "Add Guest") |> render_click() =~
-               "New Guest"
+      assert index_live |> element("a", "New Invite") |> render_click() =~
+               "New Invite"
 
-      assert_patch(index_live, ~p"/manage/guests/new")
+      assert_patch(index_live, ~p"/manage/invites/new")
 
       assert index_live
-             |> form("#guest-form", guest: @guest_invalid_attrs)
+             |> form("#invite-form", invite: @invite_invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
       assert index_live
-             |> form("#guest-form", guest: @guest_create_attrs)
+             |> form("#invite-form", invite: @invite_create_attrs)
              |> render_submit()
 
       assert_patch(index_live, ~p"/manage")
 
       html = render(index_live)
-      assert html =~ "Guest created successfully"
+      assert html =~ "Invite created successfully"
     end
 
-    test "it can update a guest", %{conn: conn, guest: guest} do
+    test "it can update a invite", %{conn: conn, guest: guest, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
       assert index_live |> element("#guest-#{guest.id} a", "Edit") |> render_click() =~
-               "Edit Guest"
+               "Edit Invite"
 
-      assert_patch(index_live, ~p"/manage/guests/#{guest}/edit")
+      assert_patch(index_live, ~p"/manage/invites/#{invite}/edit")
 
       assert index_live
-             |> form("#guest-form", guest: @guest_invalid_attrs)
+             |> form("#invite-form", invite: @invite_invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
       assert index_live
-             |> form("#guest-form", guest: @guest_update_attrs)
+             |> form("#invite-form", invite: @invite_update_attrs)
              |> render_submit()
 
       assert_patch(index_live, ~p"/manage")
 
       html = render(index_live)
-      assert html =~ "Guest updated successfully"
+      assert html =~ "Invite updated successfully"
     end
 
     test "it can delete a guest in listing", %{conn: conn, guest: guest} do

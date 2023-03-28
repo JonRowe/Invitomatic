@@ -21,14 +21,8 @@ defmodule Invitomatic.AccountsFixtures do
     Invitomatic.Repo.update!(login_changeset)
   end
 
-  def guest_fixture(attrs \\ %{}), do: login_fixture(attrs)
-
-  def login_fixture(attrs \\ %{}) do
-    {:ok, login} =
-      attrs
-      |> valid_login_attributes()
-      |> Invitomatic.Accounts.register()
-
+  def login_fixture(_attrs \\ %{}) do
+    %_{logins: [login | _]} = Invitomatic.InvitesFixtures.invite_fixture()
     login
   end
 

@@ -49,6 +49,18 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: invite; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.invite (
+    id uuid NOT NULL,
+    name text NOT NULL,
+    inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: login; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -58,7 +70,8 @@ CREATE TABLE public.login (
     confirmed_at timestamp(0) without time zone,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    admin boolean DEFAULT false
+    admin boolean DEFAULT false,
+    invite_id uuid NOT NULL
 );
 
 
@@ -103,6 +116,14 @@ ALTER TABLE ONLY public.login_token
 
 
 --
+-- Name: invite invite_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.invite
+    ADD CONSTRAINT invite_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -140,9 +161,18 @@ ALTER TABLE ONLY public.login_token
 
 
 --
+-- Name: login login_invite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.login
+    ADD CONSTRAINT login_invite_id_fkey FOREIGN KEY (invite_id) REFERENCES public.invite(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 INSERT INTO public."schema_migrations" (version) VALUES (20230322214643);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324144645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);
+INSERT INTO public."schema_migrations" (version) VALUES (20230328091645);

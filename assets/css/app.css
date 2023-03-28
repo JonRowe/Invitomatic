@@ -141,6 +141,17 @@ nav {
   text-align: right;
 }
 
+/* .list */
+
+dl dt {
+  font-weight: bold;
+  margin: 0;
+}
+
+dl dd {
+  margin: 0 0 1em 0;
+}
+
 /* Tables */
 table {
   border-radius: 0.2em;
