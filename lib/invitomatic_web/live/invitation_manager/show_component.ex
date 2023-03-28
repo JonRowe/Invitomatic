@@ -19,8 +19,11 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
           <% end %>
         </:item>
         <:item title="Guests for this invite">
-          <%= for _guest <- [] do %>
-          <% end %>
+          <.table id={"invite-#{@invite.id}-guests"} rows={@invite.guests}>
+            <:col :let={guest} label="Name"><%= guest.name %></:col>
+            <:col :let={guest} label="Age"><%= guest.age %></:col>
+            <:col :let={guest} label="RSVP"><%= guest.rsvp %></:col>
+          </.table>
         </:item>
       </.list>
     </div>

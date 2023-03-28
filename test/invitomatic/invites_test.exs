@@ -19,12 +19,21 @@ defmodule Invitomatic.InvitesTest do
     test "with valid data creates an invite with a login" do
       valid_attrs = %{
         name: "Foo McName and Bar McName",
+        guests: [
+          %{name: name_one = unique_name(), age: :adult},
+          %{name: name_two = unique_name(), age: :child}
+        ],
         logins: [%{email: email = Invitomatic.AccountsFixtures.unique_email()}]
       }
 
-      assert {:ok, %Invite{logins: [login]} = invite} = Invites.create(valid_attrs)
+      assert {:ok, %Invite{guests: [guest_one, guest_two], logins: [login]} = invite} = Invites.create(valid_attrs)
+
       assert invite.name == "Foo McName and Bar McName"
       assert login.email == email
+      assert guest_one.name == name_one
+      assert guest_one.age == :adult
+      assert guest_two.name == name_two
+      assert guest_two.age == :child
     end
 
     test "with invalid data returns an error" do
@@ -38,8 +47,7 @@ defmodule Invitomatic.InvitesTest do
       assert invite = Invites.get(fixture.id)
       assert invite.name == fixture.name
       assert [%_{}] = invite.logins
-      # TODO:
-      # assert [%_{}] = invite.guests
+      assert [%_{}] = invite.guests
     end
   end
 

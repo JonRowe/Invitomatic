@@ -44,9 +44,46 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
+--
+-- Name: age_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.age_enum AS ENUM (
+    'adult',
+    'child',
+    'under_three'
+);
+
+
+--
+-- Name: rsvp_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.rsvp_enum AS ENUM (
+    'yes',
+    'no',
+    'maybe'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: guest; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.guest (
+    id uuid NOT NULL,
+    name text DEFAULT ''::text NOT NULL,
+    age public.age_enum DEFAULT 'adult'::public.age_enum NOT NULL,
+    rsvp public.rsvp_enum,
+    invite_id uuid,
+    inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+);
+
 
 --
 -- Name: invite; Type: TABLE; Schema: public; Owner: -
@@ -108,6 +145,14 @@ ALTER TABLE ONLY public.login
 
 
 --
+-- Name: guest guest_pkey1; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.guest
+    ADD CONSTRAINT guest_pkey1 PRIMARY KEY (id);
+
+
+--
 -- Name: login_token guest_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -153,6 +198,14 @@ CREATE INDEX guest_tokens_guest_id_index ON public.login_token USING btree (logi
 
 
 --
+-- Name: guest guest_invite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.guest
+    ADD CONSTRAINT guest_invite_id_fkey FOREIGN KEY (invite_id) REFERENCES public.invite(id) ON DELETE CASCADE;
+
+
+--
 -- Name: login_token guest_tokens_guest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -176,3 +229,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230322214643);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324144645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328091645);
+INSERT INTO public."schema_migrations" (version) VALUES (20230328174800);

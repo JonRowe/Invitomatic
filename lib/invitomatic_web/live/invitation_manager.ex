@@ -2,9 +2,10 @@ defmodule InvitomaticWeb.Live.InvitationManager do
   use InvitomaticWeb, :live_view
 
   alias Invitomatic.Accounts
-  alias Invitomatic.Accounts.Login, as: Guest
+  alias Invitomatic.Accounts.Login
   alias Invitomatic.Guests
   alias Invitomatic.Invites
+  alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
   alias InvitomaticWeb.Live.InvitiationManager.FormComponent
 
@@ -82,7 +83,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Invite")
-    |> assign(:invite, %Invite{logins: [%Guest{}]})
+    |> assign(:invite, %Invite{guests: [%Guest{}], logins: [%Login{}]})
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do

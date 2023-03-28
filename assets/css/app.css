@@ -136,6 +136,10 @@ main {
  opacity: 0.4;
 }
 
+.modal .focus-wrap form button[type=submit] {
+  width: 100%;
+}
+
 /* Nav */
 nav {
   text-align: right;
@@ -150,6 +154,10 @@ dl dt {
 
 dl dd {
   margin: 0 0 1em 0;
+}
+
+dl dd table thead {
+  background: transparent;
 }
 
 /* Tables */
@@ -189,4 +197,30 @@ table tbody tr:hover {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* components */
+
+form .guest .name {
+  display: inline-block;
+  width: calc(100% - 11em);
+}
+
+form .guest .age {
+  display: inline-block;
+  width: 8em;
+  vertical-align: top;
+}
+
+form .guest button {
+  background: #eee;
+  border: #ddd 1px solid;
+  border-radius: 50%;
+  width: 2.2em;
+  height: 2.2em;
+  padding: 0;
+  line-height: 1em;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0.5em;
 }

@@ -44,7 +44,7 @@ defmodule Invitomatic.Invites do
   Returns an invite with guests and logins preloaded.
   """
   def get(id) do
-    Repo.one(from invite in Invite, where: invite.id == ^id, preload: [:logins])
+    Repo.one(from invite in Invite, where: invite.id == ^id, preload: [:guests, :logins])
   end
 
   @doc """
