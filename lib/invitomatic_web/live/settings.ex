@@ -32,8 +32,7 @@ defmodule InvitomaticWeb.Live.Settings do
         {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
 
       {:error, changeset} ->
-        {:noreply,
-         assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert), as: "guest"))}
+        {:noreply, assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert), as: "guest"))}
     end
   end
 
@@ -74,12 +73,7 @@ defmodule InvitomaticWeb.Live.Settings do
 
     <div>
       <div>
-        <.simple_form
-          for={@email_form}
-          id="email_form"
-          phx-submit="update_email"
-          phx-change="validate_email"
-        >
+        <.simple_form for={@email_form} id="email_form" phx-submit="update_email" phx-change="validate_email">
           <.input field={@email_form[:email]} type="email" label="Email" required />
           <:actions>
             <.button phx-disable-with="Changing...">Change Email</.button>

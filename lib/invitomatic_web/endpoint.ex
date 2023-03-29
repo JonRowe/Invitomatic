@@ -8,8 +8,7 @@ defmodule InvitomaticWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_invitomatic_key",
-    encryption_salt:
-      Application.compile_env(:invitomatic, [__MODULE__, :session, :encryption_salt]),
+    encryption_salt: Application.compile_env(:invitomatic, [__MODULE__, :session, :encryption_salt]),
     signing_salt: Application.compile_env(:invitomatic, [__MODULE__, :session, :signing_salt]),
     same_site: "Lax"
   ]

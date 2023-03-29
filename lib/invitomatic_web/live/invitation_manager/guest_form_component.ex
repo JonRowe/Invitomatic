@@ -26,13 +26,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.GuestFormComponent do
         <:subtitle>Use this form to manage guest records in your database.</:subtitle>
       </.header>
 
-      <.simple_form
-        for={@form}
-        id="guest-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
+      <.simple_form for={@form} id="guest-form" phx-target={@myself} phx-change="validate" phx-submit="save">
         <.input field={@form[:email]} label="Email" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Guest</.button>
