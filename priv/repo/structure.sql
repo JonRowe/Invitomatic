@@ -108,7 +108,8 @@ CREATE TABLE public.login (
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     admin boolean DEFAULT false,
-    invite_id uuid NOT NULL
+    invite_id uuid NOT NULL,
+    "primary" boolean DEFAULT false
 );
 
 
@@ -198,6 +199,13 @@ CREATE INDEX guest_tokens_guest_id_index ON public.login_token USING btree (logi
 
 
 --
+-- Name: login_invite_id_primary_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX login_invite_id_primary_index ON public.login USING btree (invite_id, "primary") WHERE ("primary" = true);
+
+
+--
 -- Name: guest guest_invite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -230,3 +238,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230324144645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328091645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328174800);
+INSERT INTO public."schema_migrations" (version) VALUES (20230404130737);

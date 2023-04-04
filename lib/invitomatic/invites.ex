@@ -35,8 +35,14 @@ defmodule Invitomatic.Invites do
 
   """
   def create(attrs \\ %{}) do
+    attrs_with_primary_login =
+      case attrs do
+        %{logins: [login]} -> Map.put(attrs, :logins, [Map.put(login, :primary, true)])
+        _ -> attrs
+      end
+
     %Invite{}
-    |> Invite.changeset(attrs)
+    |> Invite.changeset(attrs_with_primary_login)
     |> Repo.insert()
   end
 

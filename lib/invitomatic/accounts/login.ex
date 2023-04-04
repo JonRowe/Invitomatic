@@ -11,6 +11,7 @@ defmodule Invitomatic.Accounts.Login do
     field :admin, :boolean, default: false
     field :email, :string
     field :confirmed_at, :naive_datetime
+    field :primary, :boolean, default: false
 
     timestamps()
   end
@@ -32,8 +33,9 @@ defmodule Invitomatic.Accounts.Login do
   """
   def registration_changeset(login, attrs, opts \\ []) do
     login
-    |> cast(attrs, [:email])
+    |> cast(attrs, [:email, :primary])
     |> validate_email(opts)
+    |> unique_constraint([:invite_id, :primary], name: "login_invite_id_primary_index")
   end
 
   defp validate_email(changeset, opts) do

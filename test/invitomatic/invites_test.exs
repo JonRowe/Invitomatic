@@ -30,6 +30,7 @@ defmodule Invitomatic.InvitesTest do
 
       assert invite.name == "Foo McName and Bar McName"
       assert login.email == email
+      assert login.primary == true
       assert guest_one.name == name_one
       assert guest_one.age == :adult
       assert guest_two.name == name_two

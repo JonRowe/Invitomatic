@@ -13,13 +13,14 @@ defmodule Invitomatic.Invites.Invite do
 
     has_many :guests, Guest, on_replace: :delete
     has_many :logins, Login
+    has_one :primary_login, Login, where: [primary: true]
 
     timestamps()
   end
 
   @doc false
-  def changeset(guest, attrs) do
-    guest
+  def changeset(invite, attrs) do
+    invite
     |> cast(attrs, [:name])
     |> validate_required([:name])
     |> cast_assoc(:guests, required: true)
