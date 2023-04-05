@@ -1,21 +1,11 @@
 defmodule InvitomaticWeb.Live.InvitationManager do
   use InvitomaticWeb, :live_view
 
-  alias Invitomatic.Accounts
   alias Invitomatic.Accounts.Login
-  alias Invitomatic.Guests
   alias Invitomatic.Invites
   alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
   alias InvitomaticWeb.Live.InvitiationManager.FormComponent
-
-  @impl Phoenix.LiveView
-  def handle_event("delete", %{"id" => id}, socket) do
-    guest = Accounts.get_login!(id)
-    {:ok, _} = Guests.delete(guest)
-
-    {:noreply, stream_delete(socket, :guests, guest)}
-  end
 
   @impl Phoenix.LiveView
   def handle_info({FormComponent, {:saved, invite}}, socket) do
@@ -51,11 +41,6 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <.link patch={~p"/manage/invites/#{guest.invite}"}>Show</.link>
         </div>
         <.link patch={~p"/manage/invites/#{guest.invite}/edit"}>Edit</.link>
-      </:action>
-      <:action :let={{id, guest}}>
-        <.link phx-click={JS.push("delete", value: %{id: guest.id}) |> hide("##{id}")} data-confirm="Are you sure?">
-          Delete
-        </.link>
       </:action>
     </.table>
     <.modal :if={@live_action == :show} id="invite-modal" show on_cancel={JS.patch(~p"/manage")}>

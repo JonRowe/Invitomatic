@@ -167,13 +167,6 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert guest_one.name == "Name 1"
       assert guest_two.name == "Name 3"
     end
-
-    test "it can delete a guest in listing", %{conn: conn, guest: guest} do
-      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
-
-      assert index_live |> element("#guest-#{guest.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#guest-#{guest.id}")
-    end
   end
 
   defp get_invite(attrs), do: Repo.preload(Repo.get_by(Login, attrs), invite: [:guests]).invite
