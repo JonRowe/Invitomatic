@@ -185,6 +185,13 @@ CREATE UNIQUE INDEX guest_email_index ON public.login USING btree (email);
 
 
 --
+-- Name: guest_invite_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX guest_invite_id_index ON public.guest USING btree (invite_id);
+
+
+--
 -- Name: guest_tokens_context_token_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -196,6 +203,13 @@ CREATE UNIQUE INDEX guest_tokens_context_token_index ON public.login_token USING
 --
 
 CREATE INDEX guest_tokens_guest_id_index ON public.login_token USING btree (login_id);
+
+
+--
+-- Name: login_invite_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX login_invite_id_index ON public.login USING btree (invite_id);
 
 
 --
@@ -239,3 +253,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328091645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328174800);
 INSERT INTO public."schema_migrations" (version) VALUES (20230404130737);
+INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
