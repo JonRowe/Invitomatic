@@ -37,8 +37,9 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
     test "renders the index table", %{conn: conn} do
       invite_fixture(%{
         guests: [
-          valid_guest_attributes(%{name: "Invite 1 Guest 1"}),
-          valid_guest_attributes(%{name: "Invite 1 Guest 2"})
+          valid_guest_attributes(%{name: "Invite 1 Guest 1", rsvp: :yes}),
+          valid_guest_attributes(%{name: "Invite 1 Guest 2", age: :child, rsvp: :maybe}),
+          valid_guest_attributes(%{name: "Invite 1 Guest 3", age: :under_three, rsvp: :no})
         ],
         logins: [%{email: "invitee_1@example.com"}]
       })
@@ -57,12 +58,14 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
 
       assert html =~ "Invitation Management"
 
-      invite_1_html = render(element(view, "tbody", "invitee_1@example.com"))
-      assert invite_1_html =~ "Invite 1 Guest 1"
-      assert invite_1_html =~ "Invite 1 Guest 2"
+      invite_1_rows = render_rows(element(view, "tbody", "invitee_1@example.com"))
 
-      invite_2_html = render(element(view, "tbody", "invitee_2@example.com"))
-      assert invite_2_html =~ "Invite 2 Guest 1"
+      assert render_row(invite_1_rows, "Invite 1 Guest 1") =~ "Invite 1 Guest 1 | Adult | Yes"
+      assert render_row(invite_1_rows, "Invite 1 Guest 2") =~ "Invite 1 Guest 2 | Child | Maybe"
+      assert render_row(invite_1_rows, "Invite 1 Guest 3") =~ "Invite 1 Guest 3 | < 3 | No"
+
+      invite_2_rows = render_rows(element(view, "tbody", "invitee_2@example.com"))
+      assert render_row(invite_2_rows, "Invite 2 Guest 1") =~ "Invite 2 Guest 1 | Adult | Not replied"
     end
 
     test "redirects if not an admin", %{conn: conn} do
@@ -187,4 +190,19 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
   end
 
   defp get_invite(attrs), do: Repo.preload(Repo.get_by(Login, attrs), invite: [:guests]).invite
+
+  defp render_row(rows, text) do
+    rows
+    |> Enum.map(&String.replace(Floki.text(&1, sep: " | "), ~r/\s+/, " "))
+    |> Enum.find(&(&1 =~ text))
+    |> case do
+      nil -> raise ArgumentError, "No row containing #{inspect(text)} found."
+      row -> row
+    end
+  end
+
+  defp render_rows(element) do
+    [{"tbody", _, rows}] = Floki.parse_fragment!(render(element))
+    rows
+  end
 end

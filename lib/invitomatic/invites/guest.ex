@@ -20,7 +20,7 @@ defmodule Invitomatic.Invites.Guest do
   @doc false
   def changeset(guest, attrs) do
     guest
-    |> cast(attrs, [:name, :age])
+    |> cast(attrs, [:name, :age, :rsvp])
     |> validate_required([:name, :age])
   end
 end

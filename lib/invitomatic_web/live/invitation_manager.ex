@@ -36,6 +36,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <th>Invite Name</th>
           <th>Guest Name</th>
           <th>Age</th>
+          <th>RSVP</th>
           <th class="actions"><span class="sr-only">Actions</span></th>
         </tr>
       </thead>
@@ -48,7 +49,8 @@ defmodule InvitomaticWeb.Live.InvitationManager do
             <%= invite.name %>
           </td>
           <td><%= guest.name %></td>
-          <td><%= guest.age %></td>
+          <td><%= format_age(guest) %></td>
+          <td><%= format_rsvp(guest) %></td>
           <td :if={index == 0} rowspan={length(invite.guests)} class="actions">
             <div class="sr-only">
               <.link patch={~p"/manage/invites/#{invite}"}>Show</.link>
@@ -97,4 +99,10 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     |> assign(:page_title, "Listing Guest")
     |> assign(:invite, nil)
   end
+
+  defp format_age(%Guest{age: :under_three}), do: "< 3"
+  defp format_age(%Guest{age: age}), do: String.capitalize(to_string(age))
+
+  defp format_rsvp(%Guest{rsvp: nil}), do: "Not replied"
+  defp format_rsvp(%Guest{rsvp: rsvp}), do: String.capitalize(to_string(rsvp))
 end
