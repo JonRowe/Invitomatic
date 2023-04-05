@@ -2,6 +2,7 @@ defmodule Invitomatic.InvitesTest do
   use Invitomatic.DataCase
 
   alias Invitomatic.Invites
+  alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
 
   import Invitomatic.InvitesFixtures
@@ -42,6 +43,21 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "delete_guest/2" do
+    test "deletes the guest when the guest is on the invite" do
+      %{guests: [guest]} = invite = invite_fixture()
+      assert {:ok, %Guest{}} = Invites.delete_guest(invite, guest.id)
+      assert nil == Invites.get_guest(invite, guest.id)
+    end
+
+    test "will not delete the guest when the guest is on a different invite" do
+      invite = invite_fixture()
+      guest = guest_fixture()
+      assert {:error, changeset} = Invites.delete_guest(invite, guest.id)
+      assert %{invite: ["did not match"]} == errors_on(changeset)
+    end
+  end
+
   describe "get/1" do
     test "it returns the invite with guests and logins preloaded" do
       fixture = invite_fixture()
@@ -49,6 +65,19 @@ defmodule Invitomatic.InvitesTest do
       assert invite.name == fixture.name
       assert [%_{}] = invite.logins
       assert [%_{}] = invite.guests
+    end
+  end
+
+  describe "get_guest/2" do
+    test "returns the guest when on the invite" do
+      %{guests: [%Guest{id: id}]} = invite = invite_fixture()
+      assert %Guest{id: ^id} = Invites.get_guest(invite, id)
+    end
+
+    test "returns when on a different invite" do
+      invite = invite_fixture()
+      guest = guest_fixture()
+      assert nil == Invites.get_guest(invite, guest.id)
     end
   end
 
