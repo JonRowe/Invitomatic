@@ -5,8 +5,7 @@ defmodule Invitomatic.Invites do
 
   import Ecto.Query, warn: false
 
-  alias Invitomatic.Accounts.Login, as: Guest
-  alias Invitomatic.Invites.Guest, as: InviteGuest
+  alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
   alias Invitomatic.Repo
 
@@ -53,17 +52,17 @@ defmodule Invitomatic.Invites do
   ## Examples
 
       iex> delete_guest(invite, guest)
-      {:ok, %InviteGuest{}}
+      {:ok, %Guest{}}
 
       iex> delete_guest(invite, guest)
       {:error, %Ecto.Changeset{}}
 
   """
   def delete_guest(%Invite{} = invite, guest_id) do
-    with %InviteGuest{} = guest <- get_guest(invite, guest_id) do
+    with %Guest{} = guest <- get_guest(invite, guest_id) do
       Repo.delete(guest)
     else
-      _ -> {:error, Ecto.Changeset.add_error(Ecto.Changeset.change(%InviteGuest{}), :invite, "did not match", [])}
+      _ -> {:error, Ecto.Changeset.add_error(Ecto.Changeset.change(%Guest{}), :invite, "did not match", [])}
     end
   end
 
@@ -79,13 +78,13 @@ defmodule Invitomatic.Invites do
   ## Examples
 
       iex> get_guest(invite, guest_id)
-      %InviteGuest{}
+      %Guest{}
 
       iex> get_guest(invite, missing_guest_id)
       nil
   """
   def get_guest(%Invite{id: invite_id}, id) do
-    Repo.one(from(guest in InviteGuest, where: guest.invite_id == ^invite_id and guest.id == ^id))
+    Repo.one(from(guest in Guest, where: guest.invite_id == ^invite_id and guest.id == ^id))
   end
 
   @doc """
@@ -99,24 +98,6 @@ defmodule Invitomatic.Invites do
   """
   def list do
     Repo.all(from invite in Invite, preload: [:guests, :logins])
-  end
-
-  @doc """
-  Returns the list of guests ordered by invite.
-
-  ## Examples
-
-      iex> list_guests()
-      [%Guest{}, ...]
-
-  """
-  def list_guests do
-    Repo.all(
-      from guest in Guest,
-        join: invite in assoc(guest, :invite),
-        preload: [invite: invite],
-        order_by: invite.id
-    )
   end
 
   @doc """

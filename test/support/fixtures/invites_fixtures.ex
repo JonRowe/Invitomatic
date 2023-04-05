@@ -12,7 +12,7 @@ defmodule Invitomatic.InvitesFixtures do
   Generate a guest.
   """
   def guest_fixture(attrs \\ %{}) do
-    %Invite{logins: [guest | _]} = invite_fixture(%{logins: [attrs]})
+    %Invite{guests: [guest | _]} = invite_fixture(%{logins: [attrs]})
     Repo.preload(guest, :invite)
   end
 

@@ -174,9 +174,16 @@ table thead th, table tbody td,
 table thead th:first-child, table tbody td:first-child,
 table thead th:last-child, table tbody td:last-child {
   padding: 0.5em 1em;
+  vertical-align: top;
 }
 
-table tbody tr:hover {
+table th.actions, table td.actions {
+  /* as small as possible */
+  width: 1em;
+  white-space: nowrap;
+}
+
+table tbody:hover {
   background: #f1f3f4;
 }
 

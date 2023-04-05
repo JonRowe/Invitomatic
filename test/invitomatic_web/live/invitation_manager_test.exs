@@ -35,17 +35,34 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
     end
 
     test "renders the index table", %{conn: conn} do
-      guest_fixture(email: "invitee_1@example.com")
-      guest_fixture(email: "invitee_2@example.com")
+      invite_fixture(%{
+        guests: [
+          valid_guest_attributes(%{name: "Invite 1 Guest 1"}),
+          valid_guest_attributes(%{name: "Invite 1 Guest 2"})
+        ],
+        logins: [%{email: "invitee_1@example.com"}]
+      })
 
-      {:ok, _lv, html} =
+      invite_fixture(%{
+        guests: [
+          valid_guest_attributes(%{name: "Invite 2 Guest 1"})
+        ],
+        logins: [%{email: "invitee_2@example.com"}]
+      })
+
+      {:ok, view, html} =
         conn
         |> log_in(admin_fixture())
         |> live(~p"/manage")
 
       assert html =~ "Invitation Management"
-      assert html =~ "invitee_1@example.com"
-      assert html =~ "invitee_2@example.com"
+
+      invite_1_html = render(element(view, "tbody", "invitee_1@example.com"))
+      assert invite_1_html =~ "Invite 1 Guest 1"
+      assert invite_1_html =~ "Invite 1 Guest 2"
+
+      invite_2_html = render(element(view, "tbody", "invitee_2@example.com"))
+      assert invite_2_html =~ "Invite 2 Guest 1"
     end
 
     test "redirects if not an admin", %{conn: conn} do
@@ -64,12 +81,12 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "it can display a guest", %{conn: conn, guest: guest, invite: invite} do
+    test "it can display an invite", %{conn: conn, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
       result =
         index_live
-        |> element("#guest-#{guest.id} td:last-child a", "Show")
+        |> element("#invite-#{invite.id} td:last-child a", "Show")
         |> render_click()
 
       assert result =~ "Invitation"
@@ -98,10 +115,10 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert html =~ "Invite created successfully"
     end
 
-    test "it can update a invite", %{conn: conn, guest: guest, invite: invite} do
+    test "it can update a invite", %{conn: conn, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
-      assert index_live |> element("#guest-#{guest.id} a", "Edit") |> render_click() =~
+      assert index_live |> element("#invite-#{invite.id} a", "Edit") |> render_click() =~
                "Edit Invite"
 
       assert_patch(index_live, ~p"/manage/invites/#{invite}/edit")
@@ -142,10 +159,10 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert length(get_invite(email: "another@example.com").guests) == 3
     end
 
-    test "it can manipulate guests on an invite", %{conn: conn, guest: guest} do
+    test "it can manipulate guests on an invite", %{conn: conn, guest: guest, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 
-      assert index_live |> element("#guest-#{guest.id} a", "Edit") |> render_click() =~
+      assert index_live |> element("#invite-#{invite.id} a", "Edit") |> render_click() =~
                "Edit Invite"
 
       assert index_live |> element("button", "Add Guest") |> render_click()
@@ -157,7 +174,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
 
       assert length(get_invite(email: guest.email).guests) == 3
 
-      assert index_live |> element("#guest-#{guest.id} a", "Edit") |> render_click() =~
+      assert index_live |> element("#invite-#{invite.id} a", "Edit") |> render_click() =~
                "Edit Invite"
 
       assert index_live |> element("button[phx-value-index=1]", "X") |> render_click()

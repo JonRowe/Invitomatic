@@ -95,14 +95,6 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
-  describe "list_guests/0" do
-    test "returns all guests grouped by invite" do
-      # TODO: actual guests
-      guest = guest_fixture()
-      assert Invites.list_guests() == [guest]
-    end
-  end
-
   describe "update/2" do
     test "with valid data updates the invite" do
       invite = invite_fixture()

@@ -9,7 +9,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   @impl Phoenix.LiveView
   def handle_info({FormComponent, {:saved, invite}}, socket) do
-    {:noreply, Enum.reduce(invite.logins, socket, &stream_insert(&2, :guests, Map.put(&1, :invite, invite)))}
+    {:noreply, stream_insert(socket, :invites, invite)}
   end
 
   @impl Phoenix.LiveView
@@ -19,7 +19,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :guests, Invites.list_guests(), dom_id: &"guest-#{&1.id}")}
+    {:ok, stream(socket, :invites, Invites.list(), dom_id: &"invite-#{&1.id}")}
   end
 
   @impl Phoenix.LiveView
@@ -29,20 +29,35 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     <nav>
       <.link class="button" patch={~p"/manage/invites/new"}>New Invite</.link>
     </nav>
-    <.table
-      id="guests"
-      rows={@streams.guests}
-      row_click={fn {_id, guest} -> JS.patch(~p"/manage/invites/#{guest.invite}") end}
-    >
-      <:col :let={{_id, guest}} label="Email"><%= guest.email %></:col>
-      <:col :let={{_id, guest}} label="Name"><%= guest.invite.name %></:col>
-      <:action :let={{_id, guest}}>
-        <div class="sr-only">
-          <.link patch={~p"/manage/invites/#{guest.invite}"}>Show</.link>
-        </div>
-        <.link patch={~p"/manage/invites/#{guest.invite}/edit"}>Edit</.link>
-      </:action>
-    </.table>
+    <table id="guests" phx-update="stream">
+      <thead id="invite-header">
+        <tr>
+          <th>Email</th>
+          <th>Invite Name</th>
+          <th>Guest Name</th>
+          <th>Age</th>
+          <th class="actions"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody :for={{row_id, invite} <- @streams.invites} id={row_id}>
+        <tr :for={{guest, index} <- Enum.with_index(invite.guests)} phx-click={JS.patch(~p"/manage/invites/#{invite}")}>
+          <td :if={index == 0} rowspan={length(invite.guests)}>
+            <%= List.first(invite.logins).email %>
+          </td>
+          <td :if={index == 0} rowspan={length(invite.guests)}>
+            <%= invite.name %>
+          </td>
+          <td><%= guest.name %></td>
+          <td><%= guest.age %></td>
+          <td :if={index == 0} rowspan={length(invite.guests)} class="actions">
+            <div class="sr-only">
+              <.link patch={~p"/manage/invites/#{invite}"}>Show</.link>
+            </div>
+            <.link patch={~p"/manage/invites/#{invite}/edit"}>Edit</.link>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <.modal :if={@live_action == :show} id="invite-modal" show on_cancel={JS.patch(~p"/manage")}>
       <InvitomaticWeb.Live.InvitiationManager.ShowComponent.details invite={@invite} />
     </.modal>
