@@ -81,6 +81,20 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "list/0" do
+    test "returns invites with guests and invites" do
+      %{guests: [%{name: name_one}, %{name: name_two}]} =
+        invite_fixture(%{guests: [valid_guest_attributes(), valid_guest_attributes()]})
+
+      %{guests: [%{name: name_three}]} = invite_fixture(%{guests: [valid_guest_attributes()]})
+
+      assert [
+               %Invite{guests: [%Guest{name: ^name_one}, %Guest{name: ^name_two}]},
+               %Invite{guests: [%Guest{name: ^name_three}]}
+             ] = Invites.list()
+    end
+  end
+
   describe "list_guests/0" do
     test "returns all guests grouped by invite" do
       # TODO: actual guests

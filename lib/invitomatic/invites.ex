@@ -89,6 +89,19 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Returns the list of invites with guests and logins.
+
+  ## Examples
+
+      iex> list()
+      [%Invite{}, ...]
+
+  """
+  def list do
+    Repo.all(from invite in Invite, preload: [:guests, :logins])
+  end
+
+  @doc """
   Returns the list of guests ordered by invite.
 
   ## Examples
