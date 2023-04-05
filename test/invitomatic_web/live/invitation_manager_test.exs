@@ -77,7 +77,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
     end
 
     test "redirects if not logged in", %{conn: conn} do
-      assert {:error, redirect} = live(conn, ~p"/settings")
+      assert {:error, redirect} = live(conn, ~p"/manage")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/log_in"
