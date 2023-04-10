@@ -1,0 +1,54 @@
+name: CI
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  mix_format:
+    name: mix format
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: erlef/setup-elixir@v1
+        with:
+          otp-version: '25.3'
+          elixir-version: '1.14.3'
+      - name: Install Dependencies
+        run: mix deps.get
+      - name: Check format
+        run: mix format --check-formatted
+
+  mix_test:
+    name: mix test
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        image: postgis/postgis:15-3.3
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: erlef/setup-elixir@v1
+        with:
+          otp-version: '25.3'
+          elixir-version: '1.14.3'
+      - name: Install Dependencies
+        run: mix deps.get
+      - name: Setup DB
+        env:
+          DB_USER: postgres
+          MIX_ENV: test
+        run: |
+          sudo apt-get -yqq install postgresql-client
+          mix ecto.create --quiet && mix ecto.load && mix ecto.migrate
+      - name: Run Tests
+        env:
+          DB_USER: postgres
+          MIX_ENV: test
+        run: mix do compile --warnings-as-errors, test --warnings-as-errors
