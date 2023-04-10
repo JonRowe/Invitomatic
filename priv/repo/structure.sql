@@ -81,7 +81,8 @@ CREATE TABLE public.guest (
     rsvp public.rsvp_enum,
     invite_id uuid,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    menu_option_id uuid
 );
 
 
@@ -128,6 +129,40 @@ CREATE TABLE public.login_token (
 
 
 --
+-- Name: menu_option; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.menu_option (
+    id uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    description text NOT NULL,
+    "order" smallint NOT NULL,
+    inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: menu_option_order_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.menu_option_order_seq
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: menu_option_order_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.menu_option_order_seq OWNED BY public.menu_option."order";
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -135,6 +170,13 @@ CREATE TABLE public.schema_migrations (
     version bigint NOT NULL,
     inserted_at timestamp(0) without time zone
 );
+
+
+--
+-- Name: menu_option order; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_option ALTER COLUMN "order" SET DEFAULT nextval('public.menu_option_order_seq'::regclass);
 
 
 --
@@ -170,6 +212,14 @@ ALTER TABLE ONLY public.invite
 
 
 --
+-- Name: menu_option menu_option_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_option
+    ADD CONSTRAINT menu_option_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -189,6 +239,13 @@ CREATE UNIQUE INDEX guest_email_index ON public.login USING btree (email);
 --
 
 CREATE INDEX guest_invite_id_index ON public.guest USING btree (invite_id);
+
+
+--
+-- Name: guest_menu_option_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX guest_menu_option_id_index ON public.guest USING btree (menu_option_id);
 
 
 --
@@ -220,11 +277,26 @@ CREATE UNIQUE INDEX login_invite_id_primary_index ON public.login USING btree (i
 
 
 --
+-- Name: menu_option_order_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX menu_option_order_index ON public.menu_option USING btree ("order");
+
+
+--
 -- Name: guest guest_invite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.guest
     ADD CONSTRAINT guest_invite_id_fkey FOREIGN KEY (invite_id) REFERENCES public.invite(id) ON DELETE CASCADE;
+
+
+--
+-- Name: guest guest_menu_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.guest
+    ADD CONSTRAINT guest_menu_option_id_fkey FOREIGN KEY (menu_option_id) REFERENCES public.menu_option(id);
 
 
 --
@@ -253,4 +325,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230324154709);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328091645);
 INSERT INTO public."schema_migrations" (version) VALUES (20230328174800);
 INSERT INTO public."schema_migrations" (version) VALUES (20230404130737);
+INSERT INTO public."schema_migrations" (version) VALUES (20230405123240);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
