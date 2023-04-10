@@ -63,17 +63,21 @@ defmodule InvitomaticWeb.Router do
     end
   end
 
-  scope "/", InvitomaticWeb do
+  scope "/manage", InvitomaticWeb do
     pipe_through [:browser, :require_authenticated, :require_admin]
 
     live_session :require_admin,
       on_mount: [
         {InvitomaticWeb.Auth, :ensure_authenticated_admin}
       ] do
-      live "/manage", Live.InvitationManager, :index
-      live "/manage/invites/new", Live.InvitationManager, :new
-      live "/manage/invites/:id", Live.InvitationManager, :show
-      live "/manage/invites/:id/edit", Live.InvitationManager, :edit
+      live "/", Live.InvitationManager, :index
+      live "/invites/new", Live.InvitationManager, :new
+      live "/invites/:id", Live.InvitationManager, :show
+      live "/invites/:id/edit", Live.InvitationManager, :edit
+      live "/menu", Live.MenuManager, :index
+      live "/menu/new", Live.MenuManager, :new
+      live "/menu/:id", Live.MenuManager, :show
+      live "/menu/:id/edit", Live.MenuManager, :edit
     end
   end
 

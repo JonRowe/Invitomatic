@@ -307,7 +307,7 @@ defmodule InvitomaticWeb.CoreComponents do
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
     </div>
     """
   end

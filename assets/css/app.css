@@ -89,7 +89,7 @@ main {
 .modal .inlay > div > div {
   padding: 1rem;
   width: 100%;
-  max-width: 48rem;
+  max-width: fit-content;
 }
 
 @media (min-width: 640px) {
