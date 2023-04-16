@@ -56,6 +56,17 @@ CREATE TYPE public.age_enum AS ENUM (
 
 
 --
+-- Name: content_section; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.content_section AS ENUM (
+    'invitation',
+    'rsvp',
+    'other'
+);
+
+
+--
 -- Name: rsvp_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -69,6 +80,20 @@ CREATE TYPE public.rsvp_enum AS ENUM (
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: content; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.content (
+    id uuid NOT NULL,
+    section public.content_section NOT NULL,
+    text text NOT NULL,
+    other_index integer,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
 
 --
 -- Name: guest; Type: TABLE; Schema: public; Owner: -
@@ -177,6 +202,14 @@ CREATE TABLE public.schema_migrations (
 --
 
 ALTER TABLE ONLY public.menu_option ALTER COLUMN "order" SET DEFAULT nextval('public.menu_option_order_seq'::regclass);
+
+
+--
+-- Name: content content_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.content
+    ADD CONSTRAINT content_pkey PRIMARY KEY (id);
 
 
 --
@@ -327,3 +360,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230328174800);
 INSERT INTO public."schema_migrations" (version) VALUES (20230404130737);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405123240);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
+INSERT INTO public."schema_migrations" (version) VALUES (20230415170419);
