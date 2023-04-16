@@ -1,5 +1,5 @@
 defmodule Invitomatic.AccountsTest do
-  use Invitomatic.DataCase
+  use Invitomatic.DataCase, async: true
 
   alias Invitomatic.Accounts
   alias Invitomatic.Accounts.Login

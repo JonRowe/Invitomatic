@@ -1,5 +1,5 @@
 defmodule Invitomatic.InvitesTest do
-  use Invitomatic.DataCase
+  use Invitomatic.DataCase, async: true
 
   alias Invitomatic.Invites
   alias Invitomatic.Invites.Guest

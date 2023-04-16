@@ -1,5 +1,5 @@
 defmodule Invitomatic.MenuTest do
-  use Invitomatic.DataCase
+  use Invitomatic.DataCase, async: true
 
   alias Invitomatic.Menu
   alias Invitomatic.Menu.Option

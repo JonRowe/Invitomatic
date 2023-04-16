@@ -1,5 +1,5 @@
 defmodule InvitomaticWeb.Live.SettingsTest do
-  use InvitomaticWeb.ConnCase
+  use InvitomaticWeb.ConnCase, async: true
 
   alias Invitomatic.Accounts
 

@@ -1,5 +1,5 @@
 defmodule InvitomaticWeb.Live.InvitationManagerTest do
-  use InvitomaticWeb.ConnCase
+  use InvitomaticWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
   import Invitomatic.AccountsFixtures
