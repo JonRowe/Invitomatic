@@ -56,6 +56,16 @@ defmodule Invitomatic.Content do
   end
 
   @doc """
+  Returns content for a type.
+  """
+  def get(type) do
+    case Repo.all(from(section in Section, where: section.type == ^type)) do
+      [] -> [%Section{}]
+      results -> results
+    end
+  end
+
+  @doc """
   Gets a single section.
 
   Raises `Ecto.NoResultsError` if the Section does not exist.

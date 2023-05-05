@@ -36,6 +36,20 @@ defmodule Invitomatic.ContentTest do
     end
   end
 
+  describe "get/1" do
+    test "returns the sections with given type" do
+      section_one = content_fixture(type: :invitation)
+      assert Content.get(:invitation) == [section_one]
+
+      section_two = content_fixture(type: :invitation)
+      assert Content.get(:invitation) == [section_one, section_two]
+    end
+
+    test "returns blank if the section does not exist" do
+      assert Content.get(:invitation) == [%Section{text: ""}]
+    end
+  end
+
   describe "get_section!/1" do
     test "returns the section with given id" do
       section = content_fixture()
