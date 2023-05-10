@@ -31,6 +31,7 @@ defmodule Invitomatic.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:ecto_sql, "~> 3.6"},
+      {:earmark_parser, "~> 1.4"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:finch, "~> 0.13"},
       {:floki, ">= 0.30.0", only: :test},
