@@ -74,6 +74,12 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Returns an invite with guests and logins preloaded for a relation, convience funciton
+  to hide details of the primary key.
+  """
+  def get_for(%_{invite_id: id}), do: get(id)
+
+  @doc """
 
   ## Examples
 

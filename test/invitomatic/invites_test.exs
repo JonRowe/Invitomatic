@@ -68,6 +68,24 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "get_for/1" do
+    test "it returns the invite with guests and logins preloaded for a login" do
+      %{logins: [login]} = fixture = invite_fixture()
+      assert invite = Invites.get_for(login)
+      assert invite.name == fixture.name
+      assert [login] == invite.logins
+      assert [%_{}] = invite.guests
+    end
+
+    test "it returns the invite with guests and logins preloaded for a guest" do
+      %{guests: [guest]} = fixture = invite_fixture()
+      assert invite = Invites.get_for(guest)
+      assert invite.name == fixture.name
+      assert [%_{}] = invite.logins
+      assert [guest] == invite.guests
+    end
+  end
+
   describe "get_guest/2" do
     test "returns the guest when on the invite" do
       %{guests: [%Guest{id: id}]} = invite = invite_fixture()
