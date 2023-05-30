@@ -40,10 +40,25 @@ defmodule InvitomaticWeb.Components.Content do
   defp maybe_log_message(_type, [], _function), do: :ok
   defp maybe_log_message(type, contents, function), do: function.(logger_message(type, contents))
 
-  defp render_ast(ast, bindings) do
+  defp render_ast(ast, user_bindings_with_content) do
     source = Enum.join(Enum.map(ast, &build(&1)), "\n")
 
-    {result, _binding} =
+    user_bindings = Map.delete(user_bindings_with_content, :content)
+
+    bindings =
+      ~r/@(\w+)(\.\w+)?/
+      |> Regex.scan(source)
+      |> Enum.map(fn
+        ["@" <> name, name | _] -> {:value, String.to_atom(name)}
+        ["@" <> _, name, "." <> key] -> {:map_value, String.to_atom(name), String.to_atom(key)}
+      end)
+      |> Enum.reduce(user_bindings, fn
+        {:value, name}, map when not is_map_key(map, name) -> Map.put(map, name, "")
+        {:map_value, name, key}, map when not is_map_key(map, name) -> Map.put(map, name, %{key => ""})
+        _, map -> map
+      end)
+
+    {result, _result_binding} =
       Code.eval_quoted(
         EEx.compile_string(
           source,
@@ -54,7 +69,7 @@ defmodule InvitomaticWeb.Components.Content do
           source: source,
           tag_handler: Phoenix.LiveView.HTMLEngine
         ),
-        assigns: Map.delete(bindings, :content)
+        assigns: bindings
       )
 
     result
