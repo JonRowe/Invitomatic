@@ -16,6 +16,13 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "change_rsvp/2" do
+    test "change_rsvp/1 returns a guest changeset" do
+      guest = guest_fixture()
+      assert %Ecto.Changeset{} = Invites.change_rsvp(guest)
+    end
+  end
+
   describe "create/1" do
     test "with valid data creates an invite with a login" do
       valid_attrs = %{

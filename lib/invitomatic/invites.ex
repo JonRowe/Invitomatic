@@ -23,6 +23,19 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for tracking guest rsvp changes.
+
+  ## Examples
+
+      iex> change_rsvp(guest, %{})
+      %Ecto.Changeset{data: %Guest{}}
+
+  """
+  def change_rsvp(%Guest{} = guest, attrs \\ %{}) do
+    Guest.changeset(guest, attrs)
+  end
+
+  @doc """
   Creates an invite.
 
   ## Examples
