@@ -120,6 +120,22 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Sets a guests RSVP.
+
+  ## Examples
+
+      iex> set_rsvp(guest, %{rsvp: :yes})
+      {:ok, %Guest{}}
+
+      iex> set_rsvp(guest, %{rsvp: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def set_rsvp(guest, attrs) do
+    Repo.update(change_rsvp(guest, attrs))
+  end
+
+  @doc """
   Updates an invite.
 
   ## Examples
