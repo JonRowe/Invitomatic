@@ -15,7 +15,9 @@ defmodule InvitomaticWeb.Live.Invitation do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <ContentComponent.render content={@content} invite={@invite} />
+    <section class="content invite">
+      <ContentComponent.render content={@content} invite={@invite} />
+    </section>
     """
   end
 end
