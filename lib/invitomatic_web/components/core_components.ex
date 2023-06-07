@@ -5,6 +5,47 @@ defmodule InvitomaticWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   @doc """
+  Renders a dropdown menu
+
+  # Example
+
+      <.dropdown id="my-dropdown">
+        <:title>Some markkup</:title>
+        <:link href={~p//}>Manage</:link>
+      <.dropwown>
+
+  """
+
+  attr :id, :string
+
+  slot :link do
+    attr :navigate, :string
+    attr :href, :string
+    attr :method, :any
+  end
+
+  slot :title
+
+  def dropdown(assigns) do
+    ~H"""
+    <div class="dropdown" id={"#{@id}-dropdown"}>
+      <a id={@id} phx-click={show_dropdown("##{@id}-dropdown")} aria-haspopup="true">
+        <%= render_slot(@title) %>
+      </a>
+      <div phx-click-away={hide_dropdown("##{@id}-dropdown")} role="menu" aria-labelledby={@id}>
+        <div role="none">
+          <%= for link <- @link do %>
+            <.link tabindex="-1" role="menuitem" {link}>
+              <%= render_slot(link) %>
+            </.link>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Renders our nav bar.
 
   # Example
@@ -491,6 +532,16 @@ defmodule InvitomaticWeb.CoreComponents do
       to: selector,
       time: 200
     )
+  end
+
+  def show_dropdown(to) do
+    JS.add_class("open", to: to)
+    |> JS.set_attribute({"aria-expanded", "true"}, to: to)
+  end
+
+  def hide_dropdown(to) do
+    JS.remove_class("open", to: to)
+    |> JS.remove_attribute("aria-expanded", to: to)
   end
 
   def show_modal(js \\ %JS{}, id) when is_binary(id) do

@@ -56,6 +56,38 @@ form textarea {
   margin: 0;
 }
 
+/* Dropdown */
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown div[role="menu"] {
+  display: none;
+  white-space: nowrap;
+}
+
+.dropdown.open div[role="menu"] {
+  background: white;
+  box-shadow: 3px 3px 10px #cad0d5;
+  border-radius: 5px;
+  display: block;
+  left: -1em;
+  padding: 1em 1em 1em 1em;
+  position: absolute;
+  text-align: left;
+  top: 2em;
+}
+
+.dropdown.open div[role="menu"] a {
+  display: block;
+}
+
+.dropdown button {
+  background: none;
+  border: none;
+}
+
 /* Modal */
 .modal {
   position: relative;
