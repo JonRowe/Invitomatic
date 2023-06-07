@@ -27,7 +27,7 @@ defmodule InvitomaticWeb.Live.ContentManager.FormComponent do
       </.header>
 
       <.simple_form for={@form} id="content-form" phx-target={@myself} phx-change="validate" phx-submit="save">
-        <.input field={@form[:text]} type="text" label="Text" />
+        <.input field={@form[:text]} type="textarea" label="Text" />
         <.input field={@form[:type]} type="text" label="Type" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Content</.button>
