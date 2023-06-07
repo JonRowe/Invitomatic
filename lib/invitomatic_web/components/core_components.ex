@@ -58,7 +58,9 @@ defmodule InvitomaticWeb.CoreComponents do
   def nav(%{current_login: %_{}} = assigns) do
     ~H"""
     <nav>
-      <%= @current_login.email %>
+      <.link href={~p"/"}>
+        <%= @current_login.email %>
+      </.link>
       <.dropdown :if={@current_login.admin} id="manage-dropdown">
         <:title>Manage</:title>
         <:link :if={@current_login.admin} href={~p"/manage"}>Manage Guests</:link>
