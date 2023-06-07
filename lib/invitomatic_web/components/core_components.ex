@@ -59,7 +59,12 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <nav>
       <%= @current_login.email %>
-      <.link :if={@current_login.admin} href={~p"/manage"}>Manage Guests</.link>
+      <.dropdown :if={@current_login.admin} id="manage-dropdown">
+        <:title>Manage</:title>
+        <:link :if={@current_login.admin} href={~p"/manage"}>Manage Guests</:link>
+        <:link :if={@current_login.admin} href={~p"/manage/content"}>Manage Content</:link>
+        <:link :if={@current_login.admin} href={~p"/manage/menu"}>Manage Menu</:link>
+      </.dropdown>
       <.link href={~p"/settings"}>Settings</.link>
       <.link href={~p"/log_out"} method="delete">Log out</.link>
     </nav>
