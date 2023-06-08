@@ -62,7 +62,8 @@ CREATE TYPE public.age_enum AS ENUM (
 CREATE TYPE public.content_section AS ENUM (
     'invitation',
     'rsvp',
-    'other'
+    'other',
+    'stylesheet'
 );
 
 
@@ -361,3 +362,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230404130737);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405123240);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415170419);
+INSERT INTO public."schema_migrations" (version) VALUES (20230608065944);

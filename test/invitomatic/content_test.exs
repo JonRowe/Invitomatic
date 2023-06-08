@@ -45,6 +45,21 @@ defmodule Invitomatic.ContentTest do
       assert Content.get(:invitation) == [section_one, section_two]
     end
 
+    test "handles rsvp content" do
+      section = content_fixture(type: :rsvp)
+      assert Content.get(:rsvp) == [section]
+    end
+
+    test "handles other content" do
+      section = content_fixture(type: :other)
+      assert Content.get(:other) == [section]
+    end
+
+    test "handles stylesheet content" do
+      section = content_fixture(type: :stylesheet)
+      assert Content.get(:stylesheet) == [section]
+    end
+
     test "returns blank if the section does not exist" do
       assert Content.get(:invitation) == [%Section{text: ""}]
     end
