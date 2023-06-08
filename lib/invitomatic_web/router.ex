@@ -11,6 +11,7 @@ defmodule InvitomaticWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_login
+    plug :fetch_custom_stylesheet
   end
 
   pipeline :api do
@@ -88,5 +89,14 @@ defmodule InvitomaticWeb.Router do
     pipe_through [:browser]
 
     delete "/log_out", SessionController, :delete
+  end
+
+  def fetch_custom_stylesheet(%Plug.Conn{} = conn, _opts) do
+    content =
+      Invitomatic.Content.get(:stylesheet)
+      |> Enum.map(& &1.text)
+      |> Enum.join("\n")
+
+    assign(conn, :stylesheet_content, {:safe, content})
   end
 end

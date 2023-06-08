@@ -204,6 +204,7 @@ dl dd table thead {
 table {
   border-radius: 0.2em;
   overflow: hidden;
+  background: rgb(251, 253, 252);
 }
 
 table thead {
@@ -283,6 +284,7 @@ form .guest button {
   border: #ddd 1px solid;
   border-radius: 10px;
   max-width: 50em;
+  background: rgb(251, 253, 252);
 }
 
 .rsvp-group h1 {
