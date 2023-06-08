@@ -28,13 +28,18 @@ defmodule InvitomaticWeb.Live.ContentManager.FormComponent do
 
       <.simple_form for={@form} id="content-form" phx-target={@myself} phx-change="validate" phx-submit="save">
         <.input field={@form[:text]} type="textarea" label="Text" />
-        <.input field={@form[:type]} type="text" label="Type" />
+        <.input field={@form[:type]} type="select" options={@content_types} label="Type" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Content</.button>
         </:actions>
       </.simple_form>
     </div>
     """
+  end
+
+  @impl Phoenix.LiveComponent
+  def mount(socket) do
+    {:ok, assign(socket, content_types: Ecto.Enum.values(Content.Section, :type))}
   end
 
   @impl Phoenix.LiveComponent

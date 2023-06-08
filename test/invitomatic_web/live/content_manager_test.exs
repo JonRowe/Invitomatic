@@ -7,7 +7,7 @@ defmodule InvitomaticWeb.Live.ContentManagerTest do
 
   @create_attrs %{text: "some text", type: "invitation"}
   @update_attrs %{text: "some updated text", type: "rsvp"}
-  @invalid_attrs %{text: nil, type: nil}
+  @invalid_attrs %{text: nil, type: "invitation"}
 
   describe "managing content" do
     setup do
