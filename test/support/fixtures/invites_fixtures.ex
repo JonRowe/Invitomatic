@@ -38,8 +38,9 @@ defmodule Invitomatic.InvitesFixtures do
   """
   def valid_guest_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
+      age: :adult,
       name: unique_name(),
-      age: :adult
+      menu_option: nil
     })
   end
 
