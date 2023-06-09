@@ -41,9 +41,8 @@ defmodule InvitomaticWeb.Components.RSVP do
   def render(assigns) do
     ~H"""
     <section class="rsvp" id={@id}>
-      <%= @guest.name %>
       <.simple_form :let={form} for={@form} phx-target={@myself} phx-change="rsvp">
-        <.input field={form[:rsvp]} label="" options={@rsvp_options} type="select" />
+        <.input field={form[:rsvp]} label={@guest.name} options={@rsvp_options} type="select" />
         <:actions></:actions>
       </.simple_form>
     </section>
