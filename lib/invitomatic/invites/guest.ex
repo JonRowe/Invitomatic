@@ -9,6 +9,7 @@ defmodule Invitomatic.Invites.Guest do
   @foreign_key_type :binary_id
   schema "guest" do
     belongs_to :invite, Invite
+    belongs_to :menu_option, Invitomatic.Menu.Option
 
     field :name, :string
     field :age, Ecto.Enum, values: [:adult, :child, :under_three]
@@ -21,6 +22,7 @@ defmodule Invitomatic.Invites.Guest do
   def changeset(guest, attrs) do
     guest
     |> cast(attrs, [:name, :age, :rsvp])
+    |> cast_assoc(:menu_option)
     |> validate_required([:name, :age])
   end
 end
