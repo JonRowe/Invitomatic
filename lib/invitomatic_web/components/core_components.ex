@@ -100,6 +100,7 @@ defmodule InvitomaticWeb.CoreComponents do
   """
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :no_cancel, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
 
@@ -109,7 +110,7 @@ defmodule InvitomaticWeb.CoreComponents do
       id={@id}
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
-      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      data-cancel={!@no_cancel && JS.exec(@on_cancel, "phx-remove")}
       class="modal"
     >
       <div id={"#{@id}-bg"} class="background" aria-hidden="true" />
@@ -130,7 +131,7 @@ defmodule InvitomaticWeb.CoreComponents do
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
               class="focus-wrap"
             >
-              <div class="close">
+              <div :if={!@no_cancel} class="close">
                 <button phx-click={JS.exec("data-cancel", to: "##{@id}")} type="button" aria-label="close">
                   Close
                 </button>
