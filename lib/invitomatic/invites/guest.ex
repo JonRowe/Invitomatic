@@ -21,7 +21,7 @@ defmodule Invitomatic.Invites.Guest do
   @doc false
   def changeset(guest, attrs) do
     guest
-    |> cast(attrs, [:name, :age, :rsvp])
+    |> cast(attrs, [:name, :age, :rsvp, :menu_option_id])
     |> cast_assoc(:menu_option)
     |> validate_required([:name, :age])
   end
