@@ -1,5 +1,9 @@
 @import "../vendor/milligram/milligram.css";
 
+html, html body {
+  min-height: 100%;
+}
+
 /* Theme override */
 a {
   color: #606c76;
