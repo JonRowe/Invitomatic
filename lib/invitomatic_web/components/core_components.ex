@@ -326,7 +326,7 @@ defmodule InvitomaticWeb.CoreComponents do
         <input type="checkbox" id={@id} name={@name} value="true" checked={@checked} {@rest} />
         <%= @label %>
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
     </div>
     """
   end
@@ -339,7 +339,7 @@ defmodule InvitomaticWeb.CoreComponents do
         <option :if={@prompt} value=""><%= @prompt %></option>
         <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
       </select>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
     </div>
     """
   end
