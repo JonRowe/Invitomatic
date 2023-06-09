@@ -56,6 +56,7 @@ defmodule InvitomaticWeb.Router do
 
     live_session :require_authenticated,
       on_mount: [
+        {InvitomaticWeb.Live.Hooks, :ensure_setup},
         {InvitomaticWeb.Auth, :ensure_authenticated}
       ] do
       live "/", Live.Invitation, :index
@@ -69,6 +70,7 @@ defmodule InvitomaticWeb.Router do
 
     live_session :require_admin,
       on_mount: [
+        {InvitomaticWeb.Live.Hooks, :ensure_setup},
         {InvitomaticWeb.Auth, :ensure_authenticated_admin}
       ] do
       live "/", Live.InvitationManager, :index
