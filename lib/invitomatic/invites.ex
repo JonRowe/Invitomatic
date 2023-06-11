@@ -31,7 +31,7 @@ defmodule Invitomatic.Invites do
       %Ecto.Changeset{data: %Guest{}}
 
   """
-  def change_rsvp(%Guest{} = guest, attrs \\ %{}) do
+  def change_guest(%Guest{} = guest, attrs \\ %{}) do
     Guest.changeset(guest, attrs)
   end
 
@@ -120,19 +120,19 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
-  Sets a guests RSVP.
+  Updates a guest.
 
   ## Examples
 
-      iex> set_rsvp(guest, %{rsvp: :yes})
+      iex> update_guest(guest, %{rsvp: :yes})
       {:ok, %Guest{}}
 
-      iex> set_rsvp(guest, %{rsvp: bad_value})
+      iex> update_guest(guest, %{rsvp: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def set_rsvp(guest, attrs) do
-    Repo.update(change_rsvp(guest, attrs))
+  def update_guest(guest, attrs) do
+    Repo.update(change_guest(guest, attrs))
   end
 
   @doc """

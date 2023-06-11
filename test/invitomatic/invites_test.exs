@@ -16,10 +16,10 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
-  describe "change_rsvp/2" do
-    test "change_rsvp/1 returns a guest changeset" do
+  describe "change_guest/2" do
+    test "change_guest/1 returns a guest changeset" do
       guest = guest_fixture()
-      assert %Ecto.Changeset{} = Invites.change_rsvp(guest)
+      assert %Ecto.Changeset{} = Invites.change_guest(guest)
     end
   end
 
@@ -120,16 +120,16 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
-  describe "set_rsvp/2" do
+  describe "update_guest/2" do
     setup do: %{guest: guest_fixture()}
 
     test "with valid data updates the guests rsvp", %{guest: guest} do
-      assert {:ok, %Guest{} = updated_guest} = Invites.set_rsvp(guest, %{rsvp: "yes"})
+      assert {:ok, %Guest{} = updated_guest} = Invites.update_guest(guest, %{rsvp: "yes"})
       assert updated_guest.rsvp == :yes
     end
 
     test "with invalid data returns error changeset", %{guest: guest} do
-      assert {:error, %Ecto.Changeset{}} = Invites.set_rsvp(guest, %{rsvp: :not_valid})
+      assert {:error, %Ecto.Changeset{}} = Invites.update_guest(guest, %{rsvp: :not_valid})
     end
   end
 

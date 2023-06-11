@@ -31,7 +31,7 @@ defmodule InvitomaticWeb.Components.RSVP do
 
   @impl Phoenix.LiveComponent
   def update(%{guest: guest} = assigns, socket) do
-    {:ok, socket |> assign(assigns) |> assign(form: Invites.change_rsvp(guest, %{}))}
+    {:ok, socket |> assign(assigns) |> assign(form: Invites.change_guest(guest, %{}))}
   end
 
   @impl Phoenix.LiveComponent
@@ -72,10 +72,10 @@ defmodule InvitomaticWeb.Components.RSVP do
   defp rsvp_message(%{rsvp: :no} = guest), do: "We're sorry #{guest.name} can't make it :("
 
   defp update_guest(socket, guest, params, message_generator) do
-    with {:ok, updated_guest} <- Invites.set_rsvp(guest, params) do
+    with {:ok, updated_guest} <- Invites.update_guest(guest, params) do
       send(self(), {:rsvp, message_generator.(updated_guest)})
 
-      assign(socket, guest: updated_guest, form: Invites.change_rsvp(updated_guest, %{}))
+      assign(socket, guest: updated_guest, form: Invites.change_guest(updated_guest, %{}))
     else
       {:error, changeset} ->
         send(self(), {:error, "Something went wrong..."})
