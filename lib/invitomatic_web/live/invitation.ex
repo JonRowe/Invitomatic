@@ -21,7 +21,7 @@ defmodule InvitomaticWeb.Live.Invitation do
   @impl Phoenix.LiveView
   def mount(_session, _params, socket) do
     invite = Invites.get_for(socket.assigns.current_login)
-    [content] = Content.get(:invitation)
+    [content] = Content.get(:rsvp)
     {:ok, assign(socket, content: content, invite: invite, open: already_rsvped?(invite.guests))}
   end
 

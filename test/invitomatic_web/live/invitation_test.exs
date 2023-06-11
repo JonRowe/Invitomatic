@@ -10,7 +10,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
 
   describe "landing page" do
     setup do
-      content_fixture(text: "# Hi <%= @invite.name %>\nSome Text", type: :invitation)
+      content_fixture(text: "# Hi <%= @invite.name %>\nSome Text", type: :rsvp)
 
       guest_attrs = [
         valid_guest_attributes(age: :adult),
