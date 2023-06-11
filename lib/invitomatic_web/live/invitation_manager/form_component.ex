@@ -51,7 +51,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
               <.input field={form[:name]} label="Name" />
             </div>
             <div class="age">
-              <.input field={form[:age]} label="Age" type="select" options={enum(:age)} />
+              <.input field={form[:age]} label="Age" type="select" options={Guest.enum_options(:age)} />
             </div>
             <.button phx-click="remove_guest" phx-value-index={form.index} phx-target={@myself} type="button">
               X
@@ -80,12 +80,6 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset, as: "invite"))
-  end
-
-  defp enum(field) do
-    Guest
-    |> Ecto.Enum.values(field)
-    |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
   end
 
   defp get_change_or_field(changeset, field, default \\ []) do

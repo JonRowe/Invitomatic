@@ -25,4 +25,10 @@ defmodule Invitomatic.Invites.Guest do
     |> cast_assoc(:menu_option)
     |> validate_required([:name, :age])
   end
+
+  def enum_options(field) do
+    __MODULE__
+    |> Ecto.Enum.values(field)
+    |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
+  end
 end
