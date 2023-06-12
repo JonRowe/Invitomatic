@@ -124,6 +124,37 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       assert render(index_live) =~ ~r/New Name/
     end
 
+    test "guests can set dietary requirements", %{conn: conn, invite: invite, login: login} do
+      %{guests: [guest | _]} = invite
+
+      {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
+
+      index_live
+      |> element("button", ~r/rsvp/i)
+      |> render_click()
+
+      index_live
+      |> element("#guest-rsvp-#{guest.id}-rsvp")
+      |> render_change(%{guest: %{rsvp: :yes}})
+
+      index_live
+      |> element("#rsvp-#{guest.id} button")
+      |> render_click()
+
+      index_live
+      |> form(
+        "#rsvp-#{guest.id} form[phx-submit=\"save_dietary_requirements\"]",
+        guest: %{dietary_requirements: "Vegan"}
+      )
+      |> render_submit()
+
+      assert %Invites.Guest{dietary_requirements: "Vegan"} = Invites.get_guest(invite, guest.id)
+      assert render(index_live) =~ ~r/Success!/
+
+      assert render(element(index_live, "*[phx-feedback-for=\"guest[dietary_requirements]\"]")) =~
+               ~r/Dietary Requirements(.*\n)*Vegan/
+    end
+
     test "redirects if not logged in", %{conn: conn} do
       assert {:error, redirect} = live(conn, ~p"/")
 

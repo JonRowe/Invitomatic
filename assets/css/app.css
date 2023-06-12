@@ -310,11 +310,11 @@ form .guest button {
   padding: 0 2em;
 }
 
-.rsvp form label, .rsvp form select {
+.rsvp form label, .rsvp form select, .rsvp form p {
   display: inline-block;
 }
 
-.rsvp div[phx-feedback-for] {
+.rsvp div[phx-feedback-for], .rsvp .actions {
   display: inline-block;
   width: calc(100% - 5em);
 }
@@ -331,6 +331,17 @@ form .guest button {
   width: calc(65% - 1em);
 }
 
-.rsvp form select {
+.rsvp form label[for*="dietary_requirements"] {
+  vertical-align: top;
+}
+
+.rsvp form button {
+  margin-left: calc(65% - 1em);
+  width: 35%;
+  text-align: center;
+  padding: 0;
+}
+
+.rsvp form select, .rsvp form textarea, .rsvp form p {
   width: 35%;
 }

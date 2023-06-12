@@ -16,17 +16,22 @@ defmodule InvitomaticWeb.Components.RSVP do
     {:noreply, update_guest(socket, guest, params, &rsvp_message/1)}
   end
 
+  def handle_event("save_dietary_requirements", %{"guest" => params}, %{assigns: %{guest: guest}} = socket) do
+    {:noreply, update_guest(socket, guest, params, &diet_message/1)}
+  end
+
   def handle_event("save_menu_option", %{"guest" => params}, %{assigns: %{guest: guest}} = socket) do
     {:noreply, update_guest(socket, guest, params, &menu_message/1)}
   end
 
   # Suppress a submit event on a form
   def handle_event("do_nothing", _params, socket), do: {:noreply, socket}
+  def handle_event("open_dietary_requirements", _, socket), do: {:noreply, assign(socket, :dietary_open, true)}
 
   @impl Phoenix.LiveComponent
   def mount(socket) do
     menu = Enum.map(Menu.list(), &{&1.name, &1.id})
-    {:ok, socket |> assign(menu_options: menu, rsvp_options: @rsvp_options)}
+    {:ok, socket |> assign(dietary_open: false, menu_options: menu, rsvp_options: @rsvp_options)}
   end
 
   @impl Phoenix.LiveComponent
@@ -62,12 +67,40 @@ defmodule InvitomaticWeb.Components.RSVP do
           prompt="Please select a menu option"
           type="select"
         />
-        <:actions></:actions>
+      </.simple_form>
+      <.simple_form
+        :let={form}
+        :if={@guest.rsvp in [:yes, :maybe]}
+        for={@form}
+        phx-target={@myself}
+        phx-submit="save_dietary_requirements"
+      >
+        <.input
+          :if={@dietary_open}
+          field={form[:dietary_requirements]}
+          id={ "guest_rsvp_#{@guest.id}_dietary_requirements" }
+          label="Dietary Requirements"
+          prompt="Please enter any specifc dietary requirements you have!"
+          type="textarea"
+        />
+        <div :if={!@dietary_open} phx-feedback-for={form[:dietary_requirements].name}>
+          <label>Dietary Requirements</label>
+          <p><%= @guest.dietary_requirements %></p>
+        </div>
+        <:actions>
+          <button :if={!@dietary_open} phx-click="open_dietary_requirements" phx-target={@myself} type="button">
+            <%= if @guest.dietary_requirements == "", do: "Add", else: "Edit" %> dietary requirements
+          </button>
+          <button :if={@dietary_open} type="submit">
+            Save dietary requirements
+          </button>
+        </:actions>
       </.simple_form>
     </section>
     """
   end
 
+  defp diet_message(_guest), do: "Dietary requirements choice saved!"
   defp menu_message(_guest), do: "Menu choice saved!"
 
   defp rsvp_message(%{rsvp: :yes} = guest), do: "#{guest.name} is going!"
