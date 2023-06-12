@@ -108,7 +108,8 @@ CREATE TABLE public.guest (
     invite_id uuid,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    menu_option_id uuid
+    menu_option_id uuid,
+    dietary_requirements text DEFAULT ''::text NOT NULL
 );
 
 
@@ -363,3 +364,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230405123240);
 INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415170419);
 INSERT INTO public."schema_migrations" (version) VALUES (20230608065944);
+INSERT INTO public."schema_migrations" (version) VALUES (20230612121215);

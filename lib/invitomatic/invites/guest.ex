@@ -14,6 +14,7 @@ defmodule Invitomatic.Invites.Guest do
     field :name, :string
     field :age, Ecto.Enum, values: [:adult, :child, :under_three]
     field :rsvp, Ecto.Enum, values: [:yes, :no, :maybe]
+    field :dietary_requirements, :string, default: ""
 
     timestamps()
   end
@@ -21,7 +22,7 @@ defmodule Invitomatic.Invites.Guest do
   @doc false
   def changeset(guest, attrs) do
     guest
-    |> cast(attrs, [:name, :age, :rsvp, :menu_option_id])
+    |> cast(attrs, [:name, :age, :rsvp, :dietary_requirements, :menu_option_id])
     |> cast_assoc(:menu_option)
     |> validate_required([:name, :age])
   end
