@@ -237,7 +237,7 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
       <%= render_slot(@inner_block, f) %>
-      <div :for={action <- @actions}>
+      <div :for={action <- @actions} class="actions">
         <%= render_slot(action, f) %>
       </div>
     </.form>
