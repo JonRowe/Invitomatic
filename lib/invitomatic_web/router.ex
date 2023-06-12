@@ -60,6 +60,7 @@ defmodule InvitomaticWeb.Router do
         {InvitomaticWeb.Auth, :ensure_authenticated}
       ] do
       live "/", Live.Invitation, :index
+      live "/guests/:id/edit", Live.Invitation, :edit
       live "/settings", Live.Settings, :edit
       live "/settings/confirm_email/:token", Live.Settings, :confirm_email
     end

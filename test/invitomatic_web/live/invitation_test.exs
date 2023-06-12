@@ -102,6 +102,28 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       assert Invites.get_guest(invite, guest.id).menu_option == menu_option_one
     end
 
+    test "guests can change their details", %{conn: conn, invite: invite, login: login} do
+      %{guests: [guest | _]} = invite
+
+      {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
+
+      index_live
+      |> element("button", ~r/rsvp/i)
+      |> render_click()
+
+      assert index_live
+             |> element("#rsvp-#{guest.id} a[role=\"edit-guest\"]")
+             |> render_click() =~ "Edit Guest Details"
+
+      index_live
+      |> form("#edit-guest-#{guest.id}-form", guest: %{name: "New Name", age: :under_three})
+      |> render_submit()
+
+      assert %Invites.Guest{name: "New Name", age: :under_three} = Invites.get_guest(invite, guest.id)
+      assert render(index_live) =~ ~r/Success!/
+      assert render(index_live) =~ ~r/New Name/
+    end
+
     test "redirects if not logged in", %{conn: conn} do
       assert {:error, redirect} = live(conn, ~p"/")
 

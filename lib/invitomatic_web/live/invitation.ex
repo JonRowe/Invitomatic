@@ -5,6 +5,7 @@ defmodule InvitomaticWeb.Live.Invitation do
   alias Invitomatic.Invites
   alias InvitomaticWeb.Components.Content, as: ContentComponent
   alias InvitomaticWeb.Components.RSVP
+  alias InvitomaticWeb.Live.Invitiation.GuestFormComponent
 
   @impl Phoenix.LiveView
   def handle_event("rsvp", _params, socket) do
@@ -16,7 +17,26 @@ defmodule InvitomaticWeb.Live.Invitation do
     {:noreply, socket |> put_flash(:info, message)}
   end
 
+  def handle_info({GuestFormComponent, {:updated, _guest}}, socket) do
+    socket
+    |> assign(:page_title, "")
+    |> assign(:guest, nil)
+    |> assign(:invite, Invites.get_for(socket.assigns.current_login))
+    |> put_flash(:info, "Updated guest details.")
+    |> then(&{:noreply, &1})
+  end
+
   def handle_info({:error, message}, socket), do: {:noreply, put_flash(socket, :error, message)}
+
+  @impl Phoenix.LiveView
+  def handle_params(%{"id" => id}, _url, %{assigns: %{invite: invite, live_action: :edit}} = socket) do
+    socket
+    |> assign(:page_title, "Edit Guest Details")
+    |> assign(:guest, Invites.get_guest(invite, id))
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_params(_params, _url, socket), do: {:noreply, socket}
 
   @impl Phoenix.LiveView
   def mount(_session, _params, socket) do
@@ -40,6 +60,9 @@ defmodule InvitomaticWeb.Live.Invitation do
         <% end %>
       </section>
     <% end %>
+    <.modal :if={@live_action == :edit} id="invite-guest-edit-form-modal" show on_cancel={JS.patch(~p"/")}>
+      <.live_component module={GuestFormComponent} id={ "edit-guest-#{@guest.id}" } guest={@guest} patch={~p"/"} />
+    </.modal>
     """
   end
 

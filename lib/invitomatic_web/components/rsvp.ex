@@ -48,6 +48,9 @@ defmodule InvitomaticWeb.Components.RSVP do
           phx-target={@myself}
           type="select"
         />
+        <.link patch={~p"/guests/#{@guest.id}/edit"} role="edit-guest" class="icon">
+          <img src={~p"/images/gear.svg"} alt="Settings" />
+        </.link>
         <.input
           :if={@guest.rsvp in [:yes, :maybe]}
           field={form[:menu_option_id]}
