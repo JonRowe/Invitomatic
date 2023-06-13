@@ -14,6 +14,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
     "logins" => %{"0" => %{"email" => "another@example.com"}}
   }
   @invite_update_attrs %{
+    "extra_content" => "accommodation",
     "name" => "Janey McName",
     "logins" => %{"0" => %{"email" => "new@example.com"}}
   }

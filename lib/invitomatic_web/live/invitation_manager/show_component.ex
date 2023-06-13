@@ -13,6 +13,9 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
         <:item title="Name for invite">
           <%= @invite.name %>
         </:item>
+        <:item title="Extra content">
+          <%= @invite.extra_content %>
+        </:item>
         <:item title="Emails that can login to the invite">
           <%= for login <- @invite.logins do %>
             <%= login.email %><br />

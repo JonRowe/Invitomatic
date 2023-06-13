@@ -27,4 +27,10 @@ defmodule Invitomatic.Invites.Invite do
     |> cast_assoc(:guests, required: true)
     |> cast_assoc(:logins, required: true, with: {Login, :registration_changeset, []})
   end
+
+  def enum_options(field) do
+    __MODULE__
+    |> Ecto.Enum.values(field)
+    |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
+  end
 end

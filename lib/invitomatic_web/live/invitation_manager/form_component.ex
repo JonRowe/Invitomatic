@@ -3,6 +3,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
 
   alias Invitomatic.Invites
   alias Invitomatic.Invites.Guest
+  alias Invitomatic.Invites.Invite
 
   @impl Phoenix.LiveComponent
   def handle_event("add_guest", _, %{assigns: %{form: %{source: changeset}}} = socket) do
@@ -45,6 +46,13 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
           <.input field={form[:email]} label="Email" />
         </.inputs_for>
         <.input field={@form[:name]} label="Invite name" />
+        <.input
+          field={@form[:extra_content]}
+          label="Extra content"
+          options={Invite.enum_options(:extra_content)}
+          prompt=""
+          type="select"
+        />
         <.inputs_for :let={form} field={@form[:guests]}>
           <div class="guest">
             <div class="name">
