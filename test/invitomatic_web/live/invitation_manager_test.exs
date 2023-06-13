@@ -48,7 +48,8 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
         guests: [
           valid_guest_attributes(%{name: "Invite 2 Guest 1"})
         ],
-        logins: [%{email: "invitee_2@example.com"}]
+        logins: [%{email: "invitee_2@example.com"}],
+        extra_content: :accommodation
       })
 
       {:ok, view, html} =
@@ -65,7 +66,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert render_row(invite_1_rows, "Invite 1 Guest 3") =~ "Invite 1 Guest 3 | < 3 | No"
 
       invite_2_rows = render_rows(element(view, "tbody", "invitee_2@example.com"))
-      assert render_row(invite_2_rows, "Invite 2 Guest 1") =~ "Invite 2 Guest 1 | Adult | Not replied"
+      assert render_row(invite_2_rows, "Invite 2 Guest 1") =~ "accommodation | Invite 2 Guest 1 | Adult | Not replied"
     end
 
     test "redirects if not an admin", %{conn: conn} do

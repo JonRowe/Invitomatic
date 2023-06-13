@@ -34,6 +34,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
         <tr>
           <th>Email</th>
           <th>Invite Name</th>
+          <th>Content</th>
           <th>Guest Name</th>
           <th>Age</th>
           <th>RSVP</th>
@@ -47,6 +48,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <%= invite.name %>
+          </td>
+          <td :if={index == 0} rowspan={length(invite.guests)}>
+            <%= invite.extra_content %>
           </td>
           <td><%= guest.name %></td>
           <td><%= format_age(guest) %></td>
