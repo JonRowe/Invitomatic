@@ -31,6 +31,19 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       assert html =~ "Some Text"
     end
 
+    test "displays an invitations extra content", %{conn: conn, invite: invite, login: login} do
+      content_fixture(text: "You can stay with us.", type: :accommodation)
+      session = log_in(conn, login)
+
+      {:ok, _index_live, html} = live(session, ~p"/")
+      refute html =~ "You can stay with us."
+
+      Invites.update(invite, %{extra_content: :accommodation})
+
+      {:ok, _index_live, updated_html} = live(session, ~p"/")
+      assert updated_html =~ "You can stay with us."
+    end
+
     test "if you've not rsvp'd it invites you to rsvp", %{conn: conn, invite: invite, login: login} do
       %{guests: [guest_one, guest_two, guest_three, guest_four]} = invite
 

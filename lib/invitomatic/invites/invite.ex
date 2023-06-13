@@ -10,6 +10,7 @@ defmodule Invitomatic.Invites.Invite do
   @foreign_key_type :binary_id
   schema "invite" do
     field :name, :string
+    field :extra_content, Ecto.Enum, values: [:accommodation]
 
     has_many :guests, Guest, on_replace: :delete
     has_many :logins, Login
@@ -21,7 +22,7 @@ defmodule Invitomatic.Invites.Invite do
   @doc false
   def changeset(invite, attrs) do
     invite
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :extra_content])
     |> validate_required([:name])
     |> cast_assoc(:guests, required: true)
     |> cast_assoc(:logins, required: true, with: {Login, :registration_changeset, []})

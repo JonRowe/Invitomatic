@@ -6,7 +6,11 @@ defmodule Invitomatic.Content.Section do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "content" do
-    field :type, Ecto.Enum, values: [:invitation, :rsvp, :other, :stylesheet], source: :section, default: :other
+    field :type, Ecto.Enum,
+      values: [:invitation, :rsvp, :other, :stylesheet, :accommodation],
+      source: :section,
+      default: :other
+
     field :text, :string, default: ""
 
     timestamps()

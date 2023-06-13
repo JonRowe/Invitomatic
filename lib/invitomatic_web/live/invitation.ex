@@ -42,7 +42,16 @@ defmodule InvitomaticWeb.Live.Invitation do
   def mount(_session, _params, socket) do
     invite = Invites.get_for(socket.assigns.current_login)
     [content] = Content.get(:rsvp)
-    {:ok, assign(socket, content: content, invite: invite, open: already_rsvped?(invite.guests))}
+
+    extra_content =
+      if invite.extra_content do
+        [invite_extra_content] = Content.get(invite.extra_content)
+        invite_extra_content
+      end
+
+    socket
+    |> assign(content: content, extra_content: extra_content, invite: invite, open: already_rsvped?(invite.guests))
+    |> then(&{:ok, &1})
   end
 
   @impl Phoenix.LiveView
@@ -50,6 +59,7 @@ defmodule InvitomaticWeb.Live.Invitation do
     ~H"""
     <section class="content invite">
       <ContentComponent.render content={@content} invite={@invite} />
+      <ContentComponent.render :if={@extra_content} content={@extra_content} invite={@invite} />
       <button :if={!@open} phx-click="rsvp" type="button">RSVP</button>
     </section>
     <%= if @open do %>
