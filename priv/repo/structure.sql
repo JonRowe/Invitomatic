@@ -63,7 +63,8 @@ CREATE TYPE public.content_section AS ENUM (
     'invitation',
     'rsvp',
     'other',
-    'stylesheet'
+    'stylesheet',
+    'accommodation'
 );
 
 
@@ -121,7 +122,8 @@ CREATE TABLE public.invite (
     id uuid NOT NULL,
     name text NOT NULL,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    extra_content public.content_section
 );
 
 
@@ -365,3 +367,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230405124454);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415170419);
 INSERT INTO public."schema_migrations" (version) VALUES (20230608065944);
 INSERT INTO public."schema_migrations" (version) VALUES (20230612121215);
+INSERT INTO public."schema_migrations" (version) VALUES (20230613202844);
