@@ -20,6 +20,18 @@ if System.get_env("PHX_SERVER") do
   config :invitomatic, InvitomaticWeb.Endpoint, server: true
 end
 
+if config_env() != :test do
+  sender_name =
+    System.get_env("EMAIL_SENDER_NAME") ||
+      raise("environment variable EMAIL_SENDER_NAME is missing, e.g. \"Invitomatic\"")
+
+  sender_email =
+    System.get_env("EMAIL_SENDER_EMAIL") ||
+      raise("environment variable EMAIL_SENDER_EMAIL is missing, e.g. \"contact@example.com\"")
+
+  config :invitomatic, :emails, sender: {sender_name, sender_email}
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

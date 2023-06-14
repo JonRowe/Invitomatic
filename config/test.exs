@@ -3,6 +3,8 @@ import Config
 # Only in tests, remove the complexity from the password hashing algorithm
 config :bcrypt_elixir, :log_rounds, 1
 
+config :invitomatic, :emails, sender: {"Invitomatic", "contact@example.com"}
+
 config :invitomatic, Invitomatic.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10,
