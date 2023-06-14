@@ -5,6 +5,7 @@ defmodule Invitomatic.InvitesFixtures do
   """
 
   alias Invitomatic.Invites
+  alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
   alias Invitomatic.Repo
 
@@ -26,6 +27,16 @@ defmodule Invitomatic.InvitesFixtures do
       |> Invites.create()
 
     invite
+  end
+
+  @doc """
+  Add a guest to an invite with a special ability to set timestamps
+  """
+  def add_guest_to_invite_fixture(invite, attrs \\ %{}) do
+    %Guest{invite: invite}
+    |> Guest.changeset(valid_guest_attributes(attrs))
+    |> Ecto.Changeset.cast(attrs, [:inserted_at])
+    |> Repo.insert!()
   end
 
   @doc """

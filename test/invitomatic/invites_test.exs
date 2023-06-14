@@ -73,6 +73,15 @@ defmodule Invitomatic.InvitesTest do
       assert [%_{}] = invite.logins
       assert [%_{}] = invite.guests
     end
+
+    test "guests are ordered by insert order" do
+      one_minute_from_now = DateTime.add(DateTime.utc_now(), 60)
+      fixture = invite_fixture()
+      add_guest_to_invite_fixture(fixture, %{inserted_at: one_minute_from_now})
+
+      assert [guest_one, guest_two] = Invites.get(fixture.id).guests
+      assert guest_one.inserted_at < guest_two.inserted_at
+    end
   end
 
   describe "get_for/1" do
