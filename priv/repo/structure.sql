@@ -94,7 +94,8 @@ CREATE TABLE public.content (
     other_index integer,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
-    title text NOT NULL
+    title text NOT NULL,
+    slug public.citext NOT NULL
 );
 
 
@@ -266,6 +267,13 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: content_slug_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX content_slug_index ON public.content USING btree (slug);
+
+
+--
 -- Name: guest_email_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -370,3 +378,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230608065944);
 INSERT INTO public."schema_migrations" (version) VALUES (20230612121215);
 INSERT INTO public."schema_migrations" (version) VALUES (20230613202844);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614202355);
+INSERT INTO public."schema_migrations" (version) VALUES (20230614205044);

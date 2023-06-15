@@ -5,9 +5,9 @@ defmodule InvitomaticWeb.Live.ContentManagerTest do
   import Invitomatic.AccountsFixtures
   import Invitomatic.ContentFixtures
 
-  @create_attrs %{text: "some text", title: "invite", type: "invitation"}
-  @update_attrs %{text: "some updated text", title: "rsvp", type: "rsvp"}
-  @invalid_attrs %{text: nil, title: nil, type: "invitation"}
+  @create_attrs %{slug: "some", text: "some text", title: "invite", type: "invitation"}
+  @update_attrs %{slug: "some", text: "some updated text", title: "rsvp", type: "rsvp"}
+  @invalid_attrs %{slug: nil, text: nil, title: nil, type: "invitation"}
 
   describe "managing content" do
     setup do

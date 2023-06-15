@@ -17,7 +17,7 @@ defmodule Invitomatic.ContentTest do
 
   describe "create_section/1" do
     test "with valid data creates a section" do
-      valid_attrs = %{text: "some text", title: "title", type: "rsvp"}
+      valid_attrs = %{text: "some text", slug: "link-to-title", title: "title", type: "rsvp"}
 
       assert {:ok, %Section{} = section} = Content.create_section(valid_attrs)
       assert section.text == "some text"

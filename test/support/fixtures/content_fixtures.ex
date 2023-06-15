@@ -11,6 +11,7 @@ defmodule Invitomatic.ContentFixtures do
     {:ok, section} =
       attrs
       |> Enum.into(%{
+        slug: "some-#{System.unique_integer()}",
         text: "some text",
         title: "something",
         type: :rsvp
