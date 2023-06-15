@@ -23,6 +23,10 @@ defmodule InvitomaticWeb.Components.ContentTest do
       # Hi <%= @person.name %>!
 
       <%= @more %>
+
+      * some bullet points
+
+      [also a link](https://example.com)
       """
     }
 

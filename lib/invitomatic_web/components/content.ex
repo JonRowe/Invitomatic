@@ -22,7 +22,9 @@ defmodule InvitomaticWeb.Components.Content do
     do: fn -> "There were #{type} encountered during content render: #{Enum.map(list, &"\n#{inspect(&1)}")}" end
 
   defp build([]), do: ""
+  defp build(text_node) when is_binary(text_node), do: text_node
   defp build([text_node]) when is_binary(text_node), do: text_node
+  defp build([node | more]), do: build(node) <> build(more)
   defp build({tag, attrs, content, _meta}), do: build({tag, attrs, content})
   defp build({tag, attrs, content}), do: build_tag(tag, build_attrs(attrs), build(content))
 
