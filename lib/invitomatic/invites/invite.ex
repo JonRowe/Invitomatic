@@ -25,7 +25,7 @@ defmodule Invitomatic.Invites.Invite do
     |> cast(attrs, [:name, :extra_content])
     |> validate_required([:name])
     |> cast_assoc(:guests, required: true)
-    |> cast_assoc(:logins, required: true, with: {Login, :registration_changeset, []})
+    |> cast_assoc(:logins, required: true, with: &Login.registration_changeset/2)
   end
 
   def enum_options(field) do
