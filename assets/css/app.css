@@ -188,6 +188,7 @@ main {
 
 .modal form textarea {
   min-width: 100em;
+  min-height: 20em;
 }
 
 /* Nav */
