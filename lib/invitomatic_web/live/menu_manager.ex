@@ -29,7 +29,8 @@ defmodule InvitomaticWeb.Live.MenuManager do
     {:ok,
      socket
      |> assign(:order, length(options))
-     |> stream(:options, options, dom_id: &"option-#{&1.id}")}
+     |> stream_configure(:options, dom_id: &"option-#{&1.id}")
+     |> stream(:options, options)}
   end
 
   @impl Phoenix.LiveView

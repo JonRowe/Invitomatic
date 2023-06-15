@@ -19,7 +19,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :invites, Invites.list(), dom_id: &"invite-#{&1.id}")}
+    {:ok, socket |> stream_configure(:invites, dom_id: &"invite-#{&1.id}") |> stream(:invites, Invites.list())}
   end
 
   @impl Phoenix.LiveView
