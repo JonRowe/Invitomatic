@@ -27,6 +27,7 @@ defmodule InvitomaticWeb.Live.ContentManager.FormComponent do
       </.header>
 
       <.simple_form for={@form} id="content-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+        <.input field={@form[:title]} label="Title" />
         <.input field={@form[:text]} type="textarea" label="Text" />
         <.input field={@form[:type]} type="select" options={@content_types} label="Type" />
         <:actions>

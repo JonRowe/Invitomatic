@@ -93,7 +93,8 @@ CREATE TABLE public.content (
     text text NOT NULL,
     other_index integer,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    title text NOT NULL
 );
 
 
@@ -368,3 +369,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230415170419);
 INSERT INTO public."schema_migrations" (version) VALUES (20230608065944);
 INSERT INTO public."schema_migrations" (version) VALUES (20230612121215);
 INSERT INTO public."schema_migrations" (version) VALUES (20230613202844);
+INSERT INTO public."schema_migrations" (version) VALUES (20230614202355);

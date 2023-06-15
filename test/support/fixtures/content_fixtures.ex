@@ -12,6 +12,7 @@ defmodule Invitomatic.ContentFixtures do
       attrs
       |> Enum.into(%{
         text: "some text",
+        title: "something",
         type: :rsvp
       })
       |> Invitomatic.Content.create_section()

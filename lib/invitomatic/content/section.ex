@@ -12,6 +12,7 @@ defmodule Invitomatic.Content.Section do
       default: :other
 
     field :text, :string, default: ""
+    field :title, :string, default: ""
 
     timestamps()
   end
@@ -19,7 +20,7 @@ defmodule Invitomatic.Content.Section do
   @doc false
   def changeset(section, attrs) do
     section
-    |> cast(attrs, [:text, :type])
-    |> validate_required([:text, :type])
+    |> cast(attrs, [:text, :title, :type])
+    |> validate_required([:text, :title, :type])
   end
 end
