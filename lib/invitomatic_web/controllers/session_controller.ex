@@ -4,11 +4,15 @@ defmodule InvitomaticWeb.SessionController do
   alias Invitomatic.Accounts
   alias InvitomaticWeb.Auth
 
+  require Logger
+
   def create(conn, %{"guest" => %{"email" => email}}) do
     # TODO: rate limit this?
     # TODO: also prevent timing attacks by doing this in a job
     if login = Accounts.get_login_by_email(email) do
       _ = Accounts.deliver_magic_link(login, &url(~p"/log_in/#{&1}/"))
+    else
+      Logger.warn("Warning login attempt for #{email} and no login found.")
     end
 
     conn

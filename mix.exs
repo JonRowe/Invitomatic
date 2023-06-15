@@ -10,7 +10,8 @@ defmodule Invitomatic.MixProject do
       elixirc_options: [warnings_as_errors: true],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      releases: releases()
     ]
   end
 
@@ -64,6 +65,17 @@ defmodule Invitomatic.MixProject do
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild default"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
+    ]
+  end
+
+  defp releases do
+    [
+      invitomatic: [
+        applications: [
+          invitomatic: :permanent
+        ],
+        include_executables_for: [:unix]
+      ]
     ]
   end
 end

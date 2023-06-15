@@ -57,5 +57,8 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
+# Set swoosh to local adapter
+config :invitomatic, Invitomatic.Mailer, adapter: Swoosh.Adapters.Local
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

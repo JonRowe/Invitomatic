@@ -23,15 +23,6 @@ config :invitomatic, InvitomaticWeb.Endpoint,
   session: [signing_salt: "P0FV8yTw", encryption_salt: "yR8pfQ6+oE8="],
   live_view: [signing_salt: "R7YxtnO+"]
 
-# Configures the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
-config :invitomatic, Invitomatic.Mailer, adapter: Swoosh.Adapters.Local
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
