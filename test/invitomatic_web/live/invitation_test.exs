@@ -44,6 +44,29 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       assert updated_html =~ "You can stay with us."
     end
 
+    test "if you've opened the rsvp you can select other content", %{conn: conn, login: login} do
+      content_fixture(text: "Taxi!", slug: "transport", title: "How to get there", type: :other)
+
+      {:ok, index_live, html} = live(log_in(conn, login), ~p"/")
+
+      refute html =~ "Taxi!"
+
+      rsvp =
+        index_live
+        |> element("button", ~r/rsvp/i)
+        |> render_click()
+
+      refute rsvp =~ "Taxi!"
+
+      transport =
+        index_live
+        |> element(".button", ~r/How to get there/i)
+        |> render_click()
+
+      assert transport =~ "Taxi!"
+      assert_patch(index_live, ~p"/transport")
+    end
+
     test "if you've not rsvp'd it invites you to rsvp", %{conn: conn, invite: invite, login: login} do
       %{guests: [guest_one, guest_two, guest_three, guest_four]} = invite
 

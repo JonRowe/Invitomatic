@@ -36,7 +36,24 @@ defmodule InvitomaticWeb.Live.Invitation do
     |> then(&{:noreply, &1})
   end
 
-  def handle_params(_params, _url, socket), do: {:noreply, socket}
+  def handle_params(%{"content" => slug}, url, %{assigns: %{other_content: other_content}} = socket) do
+    if content = other_content[slug] do
+      socket
+      |> assign(:open, true)
+      |> assign(:page_title, content.title)
+      |> assign(:selected_content, content)
+      |> then(&{:noreply, &1})
+    else
+      handle_params(%{}, url, socket)
+    end
+  end
+
+  def handle_params(_params, _url, socket) do
+    socket
+    |> assign(:page_title, "")
+    |> assign(:selected_content, nil)
+    |> then(&{:noreply, &1})
+  end
 
   @impl Phoenix.LiveView
   def mount(_session, _params, socket) do
@@ -49,8 +66,11 @@ defmodule InvitomaticWeb.Live.Invitation do
         invite_extra_content
       end
 
+    other_content = Enum.reduce(Content.get(:other), %{}, fn content, map -> Map.put(map, content.slug, content) end)
+
     socket
-    |> assign(content: content, extra_content: extra_content, invite: invite, open: already_rsvped?(invite.guests))
+    |> assign(content: content, extra_content: extra_content, other_content: other_content, selected_content: nil)
+    |> assign(invite: invite, open: already_rsvped?(invite.guests))
     |> then(&{:ok, &1})
   end
 
@@ -62,14 +82,23 @@ defmodule InvitomaticWeb.Live.Invitation do
       <ContentComponent.render :if={@extra_content} content={@extra_content} invite={@invite} />
       <button :if={!@open} phx-click="rsvp" type="button">RSVP</button>
     </section>
-    <%= if @open do %>
-      <section class="rsvp-group">
+    <nav :if={@open} class="tabs">
+      <.link patch={~p"/"} class="button">RSVP</.link>
+      <%= for {slug, content} <- @other_content do %>
+        <.link patch={~p"/#{slug}"} class="button"><%= content.title %></.link>
+      <% end %>
+    </nav>
+    <%= if @open && !@selected_content do %>
+      <section class="hero rsvp-group">
         <h1>Your Guests:</h1>
         <%= for guest <- @invite.guests do %>
           <.live_component module={RSVP} id={ "rsvp-#{guest.id}" } guest={guest} />
         <% end %>
       </section>
     <% end %>
+    <section :if={@selected_content} class="content hero other">
+      <ContentComponent.render content={@selected_content} invite={@invite} />
+    </section>
     <.modal :if={@live_action == :edit} id="invite-guest-edit-form-modal" show on_cancel={JS.patch(~p"/")}>
       <.live_component module={GuestFormComponent} id={ "edit-guest-#{@guest.id}" } guest={@guest} patch={~p"/"} />
     </.modal>

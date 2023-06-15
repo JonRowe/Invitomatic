@@ -264,6 +264,18 @@ table tbody:hover {
   text-align: center;
 }
 
+.hero {
+  margin: 0 auto;
+  border: #ddd 1px solid;
+  border-radius: 10px;
+  max-width: 50em;
+  background: rgb(251, 253, 252);
+}
+
+.tabs {
+  text-align: center;
+}
+
 form .guest .name {
   display: inline-block;
   width: calc(100% - 11em);
@@ -289,12 +301,7 @@ form .guest button {
 }
 
 .rsvp-group {
-  margin: 0 auto;
   text-align: center;
-  border: #ddd 1px solid;
-  border-radius: 10px;
-  max-width: 50em;
-  background: rgb(251, 253, 252);
 }
 
 .rsvp-group h1 {

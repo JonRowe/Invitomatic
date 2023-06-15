@@ -51,21 +51,6 @@ defmodule InvitomaticWeb.Router do
     get "/log_in/:token", SessionController, :create
   end
 
-  scope "/", InvitomaticWeb do
-    pipe_through [:browser, :require_authenticated]
-
-    live_session :require_authenticated,
-      on_mount: [
-        {InvitomaticWeb.Live.Hooks, :ensure_setup},
-        {InvitomaticWeb.Auth, :ensure_authenticated}
-      ] do
-      live "/", Live.Invitation, :index
-      live "/guests/:id/edit", Live.Invitation, :edit
-      live "/settings", Live.Settings, :edit
-      live "/settings/confirm_email/:token", Live.Settings, :confirm_email
-    end
-  end
-
   scope "/manage", InvitomaticWeb do
     pipe_through [:browser, :require_authenticated, :require_admin]
 
@@ -92,6 +77,22 @@ defmodule InvitomaticWeb.Router do
     pipe_through [:browser]
 
     delete "/log_out", SessionController, :delete
+  end
+
+  scope "/", InvitomaticWeb do
+    pipe_through [:browser, :require_authenticated]
+
+    live_session :require_authenticated,
+      on_mount: [
+        {InvitomaticWeb.Live.Hooks, :ensure_setup},
+        {InvitomaticWeb.Auth, :ensure_authenticated}
+      ] do
+      live "/guests/:id/edit", Live.Invitation, :edit
+      live "/settings", Live.Settings, :edit
+      live "/settings/confirm_email/:token", Live.Settings, :confirm_email
+      live "/:content", Live.Invitation, :index
+      live "/", Live.Invitation, :index
+    end
   end
 
   def fetch_custom_stylesheet(%Plug.Conn{} = conn, _opts) do
