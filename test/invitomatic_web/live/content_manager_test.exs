@@ -6,6 +6,7 @@ defmodule InvitomaticWeb.Live.ContentManagerTest do
   import Invitomatic.ContentFixtures
 
   @create_attrs %{slug: "some", text: "some text", title: "invite", type: "invitation"}
+  @other_attrs %{slug: "some", text: "some text", title: "invite", type: "other", other_index: 1}
   @update_attrs %{slug: "some", text: "some updated text", title: "rsvp", type: "rsvp"}
   @invalid_attrs %{slug: nil, text: nil, title: nil, type: "invitation"}
 
@@ -81,6 +82,19 @@ defmodule InvitomaticWeb.Live.ContentManagerTest do
       html = render(index_live)
       assert html =~ "Content updated successfully"
       assert html =~ "some updated text"
+    end
+
+    test "can set index if content is of type other", %{conn: conn} do
+      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage/content")
+
+      index_live |> element("a", "New Content") |> render_click()
+
+      index_live |> form("#content-form") |> render_change(section: %{type: "other"})
+      index_live |> form("#content-form", section: @other_attrs) |> render_submit()
+
+      html = render(index_live)
+      assert html =~ "other"
+      assert html =~ "1"
     end
 
     test "deletes content in listing", %{conn: conn, section: section} do

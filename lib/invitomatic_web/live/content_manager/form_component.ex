@@ -31,6 +31,7 @@ defmodule InvitomaticWeb.Live.ContentManager.FormComponent do
         <.input field={@form[:slug]} label="Slug" />
         <.input field={@form[:text]} type="textarea" label="Text" />
         <.input field={@form[:type]} type="select" options={@content_types} label="Type" />
+        <.input :if={@form[:type].value in [:other, "other"]} field={@form[:other_index]} type="number" label="Order" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Content</.button>
         </:actions>

@@ -41,6 +41,7 @@ defmodule InvitomaticWeb.Live.ContentManager do
 
     <.table id="content" rows={@streams.content}>
       <:col :let={{_id, section}} label="Type"><%= section.type %></:col>
+      <:col :let={{_id, section}} label="Index"><%= section.other_index %></:col>
       <:col :let={{_id, section}} label="Title"><%= section.title %></:col>
       <:col :let={{_id, section}} label="Slug"><%= section.slug %></:col>
       <:col :let={{_id, section}} label="Text"><%= section.text %></:col>

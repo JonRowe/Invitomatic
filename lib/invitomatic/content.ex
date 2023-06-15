@@ -59,7 +59,7 @@ defmodule Invitomatic.Content do
   Returns content for a type.
   """
   def get(type) do
-    case Repo.all(from(section in Section, where: section.type == ^type)) do
+    case Repo.all(from(section in Section, where: section.type == ^type, order_by: section.other_index)) do
       [] -> [%Section{}]
       results -> results
     end

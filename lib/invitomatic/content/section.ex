@@ -11,6 +11,7 @@ defmodule Invitomatic.Content.Section do
       source: :section,
       default: :other
 
+    field :other_index, :integer
     field :slug, :string, default: ""
     field :text, :string, default: ""
     field :title, :string, default: ""
@@ -21,7 +22,7 @@ defmodule Invitomatic.Content.Section do
   @doc false
   def changeset(section, attrs) do
     section
-    |> cast(attrs, [:slug, :text, :title, :type])
+    |> cast(attrs, [:other_index, :slug, :text, :title, :type])
     |> validate_required([:slug, :text, :title, :type])
   end
 end
