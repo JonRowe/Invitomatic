@@ -10,8 +10,9 @@ defmodule InvitomaticWeb.Live.MenuManager.ShowComponent do
       </.header>
 
       <.list>
+        <:item title="Age group"><%= @option.age_group %></:item>
+        <:item title="Course"><%= @option.course %></:item>
         <:item title="Order"><%= @option.order %></:item>
-        <:item title="Description"><%= @option.description %></:item>
       </.list>
       <.link patch={~p"/manage/menu/#{@option}/edit?return_to=show"} class="button">
         Edit

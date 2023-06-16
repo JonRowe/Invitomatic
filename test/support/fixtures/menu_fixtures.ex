@@ -11,7 +11,8 @@ defmodule Invitomatic.MenuFixtures do
     {:ok, option} =
       attrs
       |> Enum.into(%{
-        description: "some description",
+        age_group: :adult,
+        course: :main,
         name: "some name"
       })
       |> Invitomatic.Menu.add_option()

@@ -2,6 +2,7 @@ defmodule InvitomaticWeb.Live.MenuManager.FormComponent do
   use InvitomaticWeb, :live_component
 
   alias Invitomatic.Menu
+  alias Invitomatic.Menu.Option
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"option" => option_params}, socket) do
@@ -15,6 +16,14 @@ defmodule InvitomaticWeb.Live.MenuManager.FormComponent do
 
   def handle_event("save", %{"option" => option_params}, socket) do
     save_option(socket, socket.assigns.action, option_params)
+  end
+
+  @impl Phoenix.LiveComponent
+  def mount(socket) do
+    socket
+    |> assign(ages: Option.enum_options(:age_group))
+    |> assign(courses: Option.enum_options(:course))
+    |> then(&{:ok, &1})
   end
 
   @impl Phoenix.LiveComponent
@@ -38,7 +47,9 @@ defmodule InvitomaticWeb.Live.MenuManager.FormComponent do
 
       <.simple_form for={@form} id="option-form" phx-target={@myself} phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} label="Name" />
-        <.input field={@form[:description]} label="Description" type="textarea" />
+        <.input field={@form[:course]} label="Course" type="select" options={@courses} />
+        <.input field={@form[:age_group]} label="Age Group" type="select" options={@ages} />
+        <.input field={@form[:order]} label="Order" type="number"/>
         <:actions>
           <.button phx-disable-with="Saving...">Save</.button>
         </:actions>

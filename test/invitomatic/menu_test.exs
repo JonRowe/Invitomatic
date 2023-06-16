@@ -6,14 +6,13 @@ defmodule Invitomatic.MenuTest do
 
   import Invitomatic.MenuFixtures
 
-  @invalid_option_attrs %{description: nil, name: nil}
+  @invalid_option_attrs %{name: nil}
 
   describe "add_option/1" do
     test "with valid data creates a menu option" do
-      valid_attrs = %{description: "some description", name: "some name", order: 2}
+      valid_attrs = %{age_group: :adult, course: :main, name: "some name", order: 2}
 
       assert {:ok, %Option{} = option} = Menu.add_option(valid_attrs)
-      assert option.description == "some description"
       assert option.name == "some name"
       assert option.order == 2
     end
@@ -47,20 +46,21 @@ defmodule Invitomatic.MenuTest do
 
   describe "list/0" do
     test "returns all menu options" do
-      option_two = menu_option_fixture(order: 2)
-      option_one = menu_option_fixture(order: 1)
+      option_four = menu_option_fixture(course: :dessert, age_group: :child,  order: 1)
+      option_three = menu_option_fixture(course: :dessert, age_group: :adult,  order: 1)
+      option_two = menu_option_fixture(course: :main, age_group: :adult, order: 2)
+      option_one = menu_option_fixture(course: :main, age_group: :adult, order: 1)
 
-      assert Menu.list() == [option_one, option_two]
+      assert Menu.list() == [option_one, option_two, option_three, option_four]
     end
   end
 
   describe "update_option/2" do
     test "with valid data updates the menu option" do
       option = menu_option_fixture()
-      update_attrs = %{description: "some updated description", name: "some updated name"}
+      update_attrs = %{name: "some updated name"}
 
       assert {:ok, %Option{} = option} = Menu.update_option(option, update_attrs)
-      assert option.description == "some updated description"
       assert option.name == "some updated name"
     end
 

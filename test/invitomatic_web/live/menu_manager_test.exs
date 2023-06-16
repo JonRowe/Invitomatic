@@ -5,9 +5,9 @@ defmodule InvitomaticWeb.Live.MenuManagerTest do
   import Invitomatic.AccountsFixtures
   import Invitomatic.MenuFixtures
 
-  @create_attrs %{name: "Main", description: "Not vegan"}
-  @update_attrs %{name: "Vegan", description: "Vegan powers"}
-  @invalid_attrs %{name: "", description: ""}
+  @create_attrs %{age_group: :adult, course: :main, name: "Main"}
+  @update_attrs %{name: "Vegan"}
+  @invalid_attrs %{name: ""}
 
   describe "managing menu options" do
     setup do
@@ -15,9 +15,10 @@ defmodule InvitomaticWeb.Live.MenuManagerTest do
     end
 
     test "renders the index table", %{conn: conn} do
-      menu_option_fixture(name: "Item One", description: "The main menu", order: 1)
-      menu_option_fixture(name: "Item Three", description: "Strangely Satisfying", order: 3)
-      menu_option_fixture(name: "Item Two", description: "Very Tasty", order: 2)
+      menu_option_fixture(name: "Very Tasty", order: 2)
+      menu_option_fixture(name: "The main menu", order: 1)
+      menu_option_fixture(name: "Strangely Satisfying", course: :dessert, order: 1)
+      menu_option_fixture(name: "Strangely Satisfying", age_group: :child, course: :dessert, order: 1)
 
       {:ok, view, html} =
         conn
@@ -26,11 +27,12 @@ defmodule InvitomaticWeb.Live.MenuManagerTest do
 
       assert html =~ "Menu Options"
 
-      [row_one, row_two, row_three | _] = render_rows(view)
+      [row_one, row_two, _, row_three, row_four | _] = render_rows(view)
 
-      assert row_one =~ "Item One | The main menu | 1"
-      assert row_two =~ "Item Two | Very Tasty | 2"
-      assert row_three =~ "Item Three | Strangely Satisfying | 3"
+      assert row_one =~ "The main menu | main | adult | 1"
+      assert row_two =~ "Very Tasty | main | adult | 2"
+      assert row_three =~ "Strangely Satisfying | dessert | adult | 1"
+      assert row_four =~ "Strangely Satisfying | dessert | child | 1"
     end
 
     test "redirects if not an admin", %{conn: conn} do
@@ -59,7 +61,6 @@ defmodule InvitomaticWeb.Live.MenuManagerTest do
       html = render(element(index_live, "#option-modal"))
 
       assert html =~ option.name
-      assert html =~ option.description
       assert html =~ to_string(option.order)
     end
 

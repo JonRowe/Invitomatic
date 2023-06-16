@@ -81,7 +81,7 @@ defmodule Invitomatic.Menu do
 
   """
   def list do
-    Repo.all(from option in Option, order_by: option.order)
+    Repo.all(from option in Option, order_by: option.course, order_by: option.age_group, order_by: option.order)
   end
 
   @doc """

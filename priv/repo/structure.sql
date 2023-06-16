@@ -69,6 +69,17 @@ CREATE TYPE public.content_section AS ENUM (
 
 
 --
+-- Name: menu_course_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.menu_course_enum AS ENUM (
+    'starter',
+    'main',
+    'dessert'
+);
+
+
+--
 -- Name: rsvp_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -166,10 +177,11 @@ CREATE TABLE public.login_token (
 CREATE TABLE public.menu_option (
     id uuid NOT NULL,
     name character varying(255) NOT NULL,
-    description text NOT NULL,
     "order" smallint NOT NULL,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL
+    updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    age_group public.age_enum NOT NULL,
+    course public.menu_course_enum NOT NULL
 );
 
 
@@ -323,10 +335,10 @@ CREATE UNIQUE INDEX login_invite_id_primary_index ON public.login USING btree (i
 
 
 --
--- Name: menu_option_order_index; Type: INDEX; Schema: public; Owner: -
+-- Name: menu_option_age_group_course_order_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX menu_option_order_index ON public.menu_option USING btree ("order");
+CREATE UNIQUE INDEX menu_option_age_group_course_order_index ON public.menu_option USING btree (age_group, course, "order");
 
 
 --
@@ -379,3 +391,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230612121215);
 INSERT INTO public."schema_migrations" (version) VALUES (20230613202844);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614202355);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614205044);
+INSERT INTO public."schema_migrations" (version) VALUES (20230616183307);
