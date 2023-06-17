@@ -49,7 +49,7 @@ defmodule InvitomaticWeb.Live.MenuManager.FormComponent do
         <.input field={@form[:name]} label="Name" />
         <.input field={@form[:course]} label="Course" type="select" options={@courses} />
         <.input field={@form[:age_group]} label="Age Group" type="select" options={@ages} />
-        <.input field={@form[:order]} label="Order" type="number"/>
+        <.input field={@form[:order]} label="Order" type="number" />
         <:actions>
           <.button phx-disable-with="Saving...">Save</.button>
         </:actions>

@@ -83,7 +83,9 @@ defmodule Invitomatic.Invites do
   Returns an invite with guests and logins preloaded.
   """
   def get(id) do
-    guests = from(g in Guest, preload: [:menu_option], order_by: g.inserted_at)
+    guests =
+      from(g in Guest, preload: [:starter_menu_option, :main_menu_option, :dessert_menu_option], order_by: g.inserted_at)
+
     Repo.one(from invite in Invite, where: invite.id == ^id, preload: [:logins, guests: ^guests])
   end
 
@@ -104,7 +106,12 @@ defmodule Invitomatic.Invites do
       nil
   """
   def get_guest(%Invite{id: invite_id}, id) do
-    Repo.one(from(guest in Guest, where: guest.invite_id == ^invite_id and guest.id == ^id, preload: [:menu_option]))
+    Repo.one(
+      from(guest in Guest,
+        where: guest.invite_id == ^invite_id and guest.id == ^id,
+        preload: [:starter_menu_option, :main_menu_option, :dessert_menu_option]
+      )
+    )
   end
 
   @doc """

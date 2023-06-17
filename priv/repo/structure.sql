@@ -122,8 +122,10 @@ CREATE TABLE public.guest (
     invite_id uuid,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    menu_option_id uuid,
-    dietary_requirements text DEFAULT ''::text NOT NULL
+    main_menu_option_id uuid,
+    dietary_requirements text DEFAULT ''::text NOT NULL,
+    starter_menu_option_id uuid,
+    dessert_menu_option_id uuid
 );
 
 
@@ -286,6 +288,13 @@ CREATE UNIQUE INDEX content_slug_index ON public.content USING btree (slug);
 
 
 --
+-- Name: guest_dessert_menu_option_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX guest_dessert_menu_option_id_index ON public.guest USING btree (dessert_menu_option_id);
+
+
+--
 -- Name: guest_email_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -303,7 +312,14 @@ CREATE INDEX guest_invite_id_index ON public.guest USING btree (invite_id);
 -- Name: guest_menu_option_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX guest_menu_option_id_index ON public.guest USING btree (menu_option_id);
+CREATE INDEX guest_menu_option_id_index ON public.guest USING btree (main_menu_option_id);
+
+
+--
+-- Name: guest_starter_menu_option_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX guest_starter_menu_option_id_index ON public.guest USING btree (starter_menu_option_id);
 
 
 --
@@ -342,6 +358,14 @@ CREATE UNIQUE INDEX menu_option_age_group_course_order_index ON public.menu_opti
 
 
 --
+-- Name: guest guest_dessert_menu_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.guest
+    ADD CONSTRAINT guest_dessert_menu_option_id_fkey FOREIGN KEY (dessert_menu_option_id) REFERENCES public.menu_option(id);
+
+
+--
 -- Name: guest guest_invite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -354,7 +378,15 @@ ALTER TABLE ONLY public.guest
 --
 
 ALTER TABLE ONLY public.guest
-    ADD CONSTRAINT guest_menu_option_id_fkey FOREIGN KEY (menu_option_id) REFERENCES public.menu_option(id);
+    ADD CONSTRAINT guest_menu_option_id_fkey FOREIGN KEY (main_menu_option_id) REFERENCES public.menu_option(id);
+
+
+--
+-- Name: guest guest_starter_menu_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.guest
+    ADD CONSTRAINT guest_starter_menu_option_id_fkey FOREIGN KEY (starter_menu_option_id) REFERENCES public.menu_option(id);
 
 
 --
@@ -392,3 +424,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230613202844);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614202355);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614205044);
 INSERT INTO public."schema_migrations" (version) VALUES (20230616183307);
+INSERT INTO public."schema_migrations" (version) VALUES (20230617203421);

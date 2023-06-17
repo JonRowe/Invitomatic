@@ -51,7 +51,9 @@ defmodule Invitomatic.InvitesFixtures do
     Enum.into(attrs, %{
       age: :adult,
       name: unique_name(),
-      menu_option: nil
+      starter_menu_option: nil,
+      main_menu_option: nil,
+      dessert_menu_option: nil
     })
   end
 

@@ -16,6 +16,7 @@ defmodule Invitomatic.Repo.Migrations.AddEnumsToMenu do
       modify :age_group, :age_enum, null: false
       modify :course, :menu_course_enum, null: false
     end
+
     drop index(:menu_option, :order)
     create index(:menu_option, [:age_group, :course, :order], unique: true)
   end

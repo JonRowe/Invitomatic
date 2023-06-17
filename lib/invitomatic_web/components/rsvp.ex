@@ -3,6 +3,7 @@ defmodule InvitomaticWeb.Components.RSVP do
 
   alias Invitomatic.Invites
   alias Invitomatic.Menu
+  alias Invitomatic.Menu.Option
 
   @rsvp_options [
     {"Please select your rsvp...", ""},
@@ -30,8 +31,11 @@ defmodule InvitomaticWeb.Components.RSVP do
 
   @impl Phoenix.LiveComponent
   def mount(socket) do
-    menu = Enum.map(Menu.list(), &{&1.name, &1.id})
-    {:ok, socket |> assign(dietary_open: false, menu_options: menu, rsvp_options: @rsvp_options)}
+    socket
+    |> assign(dietary_open: false, rsvp_options: @rsvp_options)
+    |> assign(courses: Option.enum_options(:course))
+    |> assign(menu_options: Enum.group_by(Menu.list(), & &1.course, &{&1.name, &1.id}))
+    |> then(&{:ok, &1})
   end
 
   @impl Phoenix.LiveComponent
@@ -56,17 +60,19 @@ defmodule InvitomaticWeb.Components.RSVP do
         <.link patch={~p"/guests/#{@guest.id}/edit"} role="edit-guest" class="icon">
           <img src={~p"/images/gear.svg"} alt="Settings" />
         </.link>
-        <.input
-          :if={@guest.rsvp in [:yes, :maybe]}
-          field={form[:menu_option_id]}
-          id={ "guest-rsvp-#{@guest.id}-menu" }
-          label="Menu Choice"
-          options={@menu_options}
-          phx-change="save_menu_option"
-          phx-target={@myself}
-          prompt="Please select a menu option"
-          type="select"
-        />
+        <%= for {course_name, course} <- @courses do %>
+          <.input
+            :if={@guest.rsvp in [:yes, :maybe]}
+            field={form[:"#{course}_menu_option_id"]}
+            id={ "guest-rsvp-#{@guest.id}-menu-#{course}" }
+            label={course_name}
+            options={@menu_options[course] || []}
+            phx-change="save_menu_option"
+            phx-target={@myself}
+            prompt={ "Please select a #{course}" }
+            type="select"
+          />
+        <% end %>
       </.simple_form>
       <.simple_form
         :let={form}

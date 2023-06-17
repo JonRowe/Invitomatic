@@ -46,8 +46,8 @@ defmodule Invitomatic.MenuTest do
 
   describe "list/0" do
     test "returns all menu options" do
-      option_four = menu_option_fixture(course: :dessert, age_group: :child,  order: 1)
-      option_three = menu_option_fixture(course: :dessert, age_group: :adult,  order: 1)
+      option_four = menu_option_fixture(course: :dessert, age_group: :child, order: 1)
+      option_three = menu_option_fixture(course: :dessert, age_group: :adult, order: 1)
       option_two = menu_option_fixture(course: :main, age_group: :adult, order: 2)
       option_one = menu_option_fixture(course: :main, age_group: :adult, order: 1)
 

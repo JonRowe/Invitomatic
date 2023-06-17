@@ -110,8 +110,10 @@ defmodule InvitomaticWeb.Live.InvitationTest do
     test "if you've rsvp'd you can set food choices", %{conn: conn, invite: invite, login: login} do
       %{guests: [guest | _]} = invite
 
-      menu_option_one = menu_option_fixture()
-      menu_option_two = menu_option_fixture()
+      starter_option = menu_option_fixture(course: :starter)
+      main_option_one = menu_option_fixture(course: :main)
+      main_option_two = menu_option_fixture(course: :main)
+      dessert_option = menu_option_fixture(course: :dessert)
 
       {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
 
@@ -120,22 +122,33 @@ defmodule InvitomaticWeb.Live.InvitationTest do
         |> element("button", ~r/rsvp/i)
         |> render_click()
 
-      refute rsvp_form =~ menu_option_one.name
-      refute rsvp_form =~ menu_option_two.name
+      refute rsvp_form =~ main_option_one.name
+      refute rsvp_form =~ main_option_two.name
 
       rsvp_set_form =
         index_live
         |> element("#guest-rsvp-#{guest.id}-rsvp")
         |> render_change(%{guest: %{rsvp: :yes}})
 
-      assert rsvp_set_form =~ menu_option_one.name
-      assert rsvp_set_form =~ menu_option_two.name
+      assert rsvp_set_form =~ main_option_one.name
+      assert rsvp_set_form =~ main_option_two.name
 
       index_live
-      |> element("#guest-rsvp-#{guest.id}-menu")
-      |> render_change(%{guest: %{menu_option_id: menu_option_one.id}})
+      |> element("#guest-rsvp-#{guest.id}-menu-starter")
+      |> render_change(%{guest: %{starter_menu_option_id: starter_option.id}})
 
-      assert Invites.get_guest(invite, guest.id).menu_option == menu_option_one
+      index_live
+      |> element("#guest-rsvp-#{guest.id}-menu-main")
+      |> render_change(%{guest: %{main_menu_option_id: main_option_one.id}})
+
+      index_live
+      |> element("#guest-rsvp-#{guest.id}-menu-dessert")
+      |> render_change(%{guest: %{dessert_menu_option_id: dessert_option.id}})
+
+      invite = Invites.get_guest(invite, guest.id)
+      assert invite.starter_menu_option == starter_option
+      assert invite.main_menu_option == main_option_one
+      assert invite.dessert_menu_option == dessert_option
     end
 
     test "guests can change their details", %{conn: conn, invite: invite, login: login} do

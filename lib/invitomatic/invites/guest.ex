@@ -9,7 +9,9 @@ defmodule Invitomatic.Invites.Guest do
   @foreign_key_type :binary_id
   schema "guest" do
     belongs_to :invite, Invite
-    belongs_to :menu_option, Invitomatic.Menu.Option
+    belongs_to :starter_menu_option, Invitomatic.Menu.Option
+    belongs_to :main_menu_option, Invitomatic.Menu.Option
+    belongs_to :dessert_menu_option, Invitomatic.Menu.Option
 
     field :name, :string
     field :age, Ecto.Enum, values: [:adult, :child, :under_three]
@@ -22,8 +24,18 @@ defmodule Invitomatic.Invites.Guest do
   @doc false
   def changeset(guest, attrs) do
     guest
-    |> cast(attrs, [:name, :age, :rsvp, :dietary_requirements, :menu_option_id])
-    |> cast_assoc(:menu_option)
+    |> cast(attrs, [
+      :name,
+      :age,
+      :rsvp,
+      :dietary_requirements,
+      :starter_menu_option_id,
+      :main_menu_option_id,
+      :dessert_menu_option_id
+    ])
+    |> cast_assoc(:starter_menu_option)
+    |> cast_assoc(:main_menu_option)
+    |> cast_assoc(:dessert_menu_option)
     |> validate_required([:name, :age])
   end
 
