@@ -66,21 +66,23 @@ defmodule InvitomaticWeb.Live.Settings do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.header>
-      Account Settings
-      <:subtitle>Manage your account email address.</:subtitle>
-    </.header>
+    <.modal id="login-prompt" show on_cancel={JS.navigate(~p"/")}>
+      <.header>
+        Account Settings
+        <:subtitle>Manage your account email address.</:subtitle>
+      </.header>
 
-    <div>
       <div>
-        <.simple_form for={@email_form} id="email_form" phx-submit="update_email" phx-change="validate_email">
-          <.input field={@email_form[:email]} type="email" label="Email" required />
-          <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
-          </:actions>
-        </.simple_form>
+        <div>
+          <.simple_form for={@email_form} id="email_form" phx-submit="update_email" phx-change="validate_email">
+            <.input field={@email_form[:email]} type="email" label="Email" required />
+            <:actions>
+              <.button phx-disable-with="Changing...">Change Email</.button>
+            </:actions>
+          </.simple_form>
+        </div>
       </div>
-    </div>
+    </.modal>
     """
   end
 end
