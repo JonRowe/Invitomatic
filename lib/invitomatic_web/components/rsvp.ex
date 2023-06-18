@@ -94,8 +94,8 @@ defmodule InvitomaticWeb.Components.RSVP do
           prompt="Please enter any specifc dietary requirements you have!"
           type="textarea"
         />
-        <div :if={!@dietary_open} phx-feedback-for={form[:dietary_requirements].name}>
-          <label>Dietary Requirements</label>
+        <div :if={!@dietary_open && @guest.dietary_requirements != ""} phx-feedback-for={form[:dietary_requirements].name}>
+          <label for={form[:dietary_requirements].name}>Dietary Requirements</label>
           <p><%= @guest.dietary_requirements %></p>
         </div>
         <:actions>
