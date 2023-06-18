@@ -389,6 +389,38 @@ form .guest button {
   width: calc(65% - 1em);
 }
 
+@media (max-width: 640px) {
+  .rsvp {
+    position: relative;
+  }
+
+  .rsvp .icon {
+    position: absolute;
+    width: 2em;
+    height: 2em;
+    top: -.5em;
+    right: 2em;
+  }
+
+  .rsvp form label {
+    text-align: left;
+    width: 100%;
+  }
+
+  .rsvp form input, .rsvp form select, .rsvp form button {
+    width: 100% !important;
+  }
+
+  .rsvp form button {
+    margin: 0 !important;
+  }
+
+  .rsvp div[phx-feedback-for], .rsvp .actions {
+  display: block;
+  width: 100%;
+  }
+}
+
 .rsvp form label[for*="dietary_requirements"] {
   vertical-align: top;
 }
