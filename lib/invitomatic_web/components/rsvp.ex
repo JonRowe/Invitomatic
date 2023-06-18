@@ -34,7 +34,13 @@ defmodule InvitomaticWeb.Components.RSVP do
     socket
     |> assign(dietary_open: false, rsvp_options: @rsvp_options)
     |> assign(courses: Option.enum_options(:course))
-    |> assign(menu_options: Enum.group_by(Menu.list(), & &1.course, &{&1.name, &1.id}))
+    |> assign(
+      menu_options:
+        Menu.list()
+        |> Enum.group_by(& &1.course)
+        |> Enum.map(fn {course, list} -> {course, Enum.group_by(list, & &1.age_group, &{&1.name, &1.id})} end)
+        |> Enum.into(%{})
+    )
     |> then(&{:ok, &1})
   end
 
@@ -66,7 +72,7 @@ defmodule InvitomaticWeb.Components.RSVP do
             field={form[:"#{course}_menu_option_id"]}
             id={ "guest-rsvp-#{@guest.id}-menu-#{course}" }
             label={course_name}
-            options={@menu_options[course] || []}
+            options={Map.get(Map.get(@menu_options, course, %{}), @guest.age, [])}
             phx-change="save_menu_option"
             phx-target={@myself}
             prompt={ "Please select a #{course}" }

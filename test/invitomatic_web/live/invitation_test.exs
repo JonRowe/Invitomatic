@@ -113,6 +113,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       starter_option = menu_option_fixture(course: :starter)
       main_option_one = menu_option_fixture(course: :main)
       main_option_two = menu_option_fixture(course: :main)
+      main_option_three = menu_option_fixture(name: "smol portion", age_group: :child, course: :main)
       dessert_option = menu_option_fixture(course: :dessert)
 
       {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
@@ -132,6 +133,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
 
       assert rsvp_set_form =~ main_option_one.name
       assert rsvp_set_form =~ main_option_two.name
+      refute rsvp_set_form =~ main_option_three.name
 
       index_live
       |> element("#guest-rsvp-#{guest.id}-menu-starter")
