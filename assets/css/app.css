@@ -294,12 +294,19 @@ table tbody:hover {
     font-size: 4em;
     padding-bottom: 1em;
   }
+
   .content.invite h2 {
     font-size: 1.2em;
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 500px) {
+  main nav a {
+    width: 100%;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 720px) {
   main nav a {
     width: 45%;
   }
@@ -361,6 +368,7 @@ form .guest button {
 }
 
 .rsvp {
+  position: relative;
   text-align: left;
 }
 
@@ -374,30 +382,40 @@ form .guest button {
 
 .rsvp div[phx-feedback-for], .rsvp .actions {
   display: inline-block;
-  width: calc(100% - 5em);
+  width: calc(100% - 1em);
 }
 
-.rsvp form a img {
+.rsvp .icon {
+  height: 2em;
   width: 2em;
-  height: 2.2em;
+  right: calc(30% - 4em);
   position: absolute;
 }
 
 .rsvp form label {
   text-align: right;
   padding-right: 1em;
-  width: calc(65% - 1em);
+  width: 30%;
+}
+
+.rsvp form label[for*="dietary_requirements"] {
+  vertical-align: top;
+}
+
+.rsvp form button {
+  margin-left: 30%;
+  min-width: 22em;
+  width: 45%;
+  text-align: center;
+  padding: 0;
+}
+
+.rsvp form select, .rsvp form textarea, .rsvp form p {
+  width: 45%;
 }
 
 @media (max-width: 640px) {
-  .rsvp {
-    position: relative;
-  }
-
   .rsvp .icon {
-    position: absolute;
-    width: 2em;
-    height: 2em;
     top: -.5em;
     right: 2em;
   }
@@ -416,22 +434,7 @@ form .guest button {
   }
 
   .rsvp div[phx-feedback-for], .rsvp .actions {
-  display: block;
-  width: 100%;
+    display: block;
+    width: 100%;
   }
-}
-
-.rsvp form label[for*="dietary_requirements"] {
-  vertical-align: top;
-}
-
-.rsvp form button {
-  margin-left: calc(65% - 1em);
-  width: 35%;
-  text-align: center;
-  padding: 0;
-}
-
-.rsvp form select, .rsvp form textarea, .rsvp form p {
-  width: 35%;
 }
