@@ -8,8 +8,7 @@ defmodule InvitomaticWeb.Components.RSVP do
   @rsvp_options [
     {"Please select your rsvp...", ""},
     {"Yes I'm going", :yes},
-    {"Sadly I can't make it", :no},
-    {"I'm not sure", :maybe}
+    {"Sadly I can't make it", :no}
   ]
 
   @impl Phoenix.LiveComponent
