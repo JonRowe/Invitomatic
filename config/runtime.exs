@@ -80,7 +80,8 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   config :invitomatic, Invitomatic.Mailer,
-    adapter: Swoosh.Adapters.Mailgun,
-    api_key: System.get_env("MAILGUN_API_KEY"),
-    domain: System.get_env("MAILGUN_DOMAIN")
+    adapter: Swoosh.Adapters.AmazonSES,
+    region: "us-east-1",
+    access_key: System.get_env("SES_ACCESS_KEY"),
+    secret: System.get_env("SES_SECRET_KEY")
 end
