@@ -5,12 +5,22 @@ defmodule Invitomatic.Accounts.Notifier do
   @doc """
   Deliver magic link to login.
   """
-  def deliver_magic_link(login, url) do
+  def deliver_magic_link(raw_login, url) do
+    login = maybe_preload_invite(raw_login)
+
     Email.send(
-      to: sender_for(login),
-      subject: "Sign in to",
+      to: {login.invite.name, login.email},
+      subject: "Sign in to manage your invite",
+      html: """
+      <table>
+        <tr><td><h3>Hi #{login.invite.name}</h3></td></tr>
+        <tr><td>You can access your invite by clicking the button below:</td></tr>
+        <tr><td>#{Email.button(url, "Manage your invitation")}</td></tr>
+        <tr><td>(or if this is does not work, you can visit <a href="#{url}">#{url}</a> directly).</td></tr>
+      </table>
+      """,
       text: """
-      Hi #{login.email},
+      Hi #{login.invite.name},
 
       You can access your invite by visiting the URL below:
 
@@ -24,26 +34,32 @@ defmodule Invitomatic.Accounts.Notifier do
   @doc """
   Deliver instructions to update a login's email.
   """
-  def deliver_update_email_instructions(login, url) do
-    Email.send(
-      to: sender_for(login),
-      subject: "Update email instructions",
-      text: """
-      ==============================
+  def deliver_update_email_instructions(raw_login, url) do
+    login = maybe_preload_invite(raw_login)
 
-      Hi #{login.email},
+    Email.send(
+      to: {login.invite.name, login.email},
+      subject: "Update email instructions",
+      html: """
+      <table>
+        <tr><td><h3>Hi #{login.invite.name}</h3></td></tr>
+        <tr><td>You can change your email by visiting the URL below:</td></tr>
+        <tr><td>#{Email.button(url, "Change Email")}</td></tr>
+        <tr><td>If you didn't request this change, please ignore this.</td></tr>
+      </table>
+      """,
+      text: """
+      Hi #{login.invite.name},
 
       You can change your email by visiting the URL below:
 
       #{url}
 
       If you didn't request this change, please ignore this.
-
-      ==============================
       """
     )
   end
 
-  defp sender_for(%{invite: %{name: name}, email: email}), do: {name, email}
-  defp sender_for(%{email: _email} = login), do: sender_for(Repo.preload(login, :invite))
+  defp maybe_preload_invite(%{invite: %{name: _name}, email: _email} = login), do: login
+  defp maybe_preload_invite(%{email: _email} = login), do: Repo.preload(login, :invite)
 end

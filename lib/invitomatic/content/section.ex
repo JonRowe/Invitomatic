@@ -7,7 +7,7 @@ defmodule Invitomatic.Content.Section do
   @foreign_key_type :binary_id
   schema "content" do
     field :type, Ecto.Enum,
-      values: [:invitation, :rsvp, :other, :stylesheet, :accommodation],
+      values: [:invitation, :rsvp, :other, :stylesheet, :accommodation, :email_stylesheet],
       source: :section,
       default: :other
 

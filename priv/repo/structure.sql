@@ -64,7 +64,8 @@ CREATE TYPE public.content_section AS ENUM (
     'rsvp',
     'other',
     'stylesheet',
-    'accommodation'
+    'accommodation',
+    'email_stylesheet'
 );
 
 
@@ -425,3 +426,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230614202355);
 INSERT INTO public."schema_migrations" (version) VALUES (20230614205044);
 INSERT INTO public."schema_migrations" (version) VALUES (20230616183307);
 INSERT INTO public."schema_migrations" (version) VALUES (20230617203421);
+INSERT INTO public."schema_migrations" (version) VALUES (20230619211002);
