@@ -80,7 +80,7 @@ defmodule InvitomaticWeb.Live.Invitation do
     <section class="content invite">
       <ContentComponent.render content={@content} invite={@invite} />
       <ContentComponent.render :if={@extra_content} content={@extra_content} invite={@invite} />
-      <button :if={!@open} phx-click="rsvp" type="button">RSVP</button>
+      <button :if={!@open} phx-click="rsvp" type="button">Enter</button>
     </section>
     <nav :if={@open} class="tabs">
       <.link patch={~p"/"} class="button">RSVP</.link>

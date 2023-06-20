@@ -53,7 +53,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
 
       rsvp =
         index_live
-        |> element("button", ~r/rsvp/i)
+        |> element("button", ~r/enter/i)
         |> render_click()
 
       refute rsvp =~ "Taxi!"
@@ -73,7 +73,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
 
       index_live
-      |> element("button", ~r/rsvp/i)
+      |> element("button", ~r/enter/i)
       |> render_click()
 
       index_live
@@ -120,7 +120,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
 
       rsvp_form =
         index_live
-        |> element("button", ~r/rsvp/i)
+        |> element("button", ~r/enter/i)
         |> render_click()
 
       refute rsvp_form =~ main_option_one.name
@@ -159,7 +159,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
 
       index_live
-      |> element("button", ~r/rsvp/i)
+      |> element("button", ~r/enter/i)
       |> render_click()
 
       assert index_live
@@ -181,7 +181,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
 
       index_live
-      |> element("button", ~r/rsvp/i)
+      |> element("button", ~r/enter/i)
       |> render_click()
 
       index_live
