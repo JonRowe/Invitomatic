@@ -8,6 +8,28 @@ defmodule InvitomaticWeb.Live.InvitationManager do
   alias InvitomaticWeb.Live.InvitiationManager.FormComponent
 
   @impl Phoenix.LiveView
+  def handle_event("send_invite", %{"id" => id}, socket) do
+    case Invites.deliver_invite(Invites.get(id), &url(~p"/log_in/#{&1}")) do
+      {:ok, updated_invite} ->
+        socket
+        |> stream(:invites, [updated_invite])
+        |> put_flash(:info, "Invite sent!")
+        |> then(&{:noreply, &1})
+
+      _ ->
+        socket
+        |> put_flash(:error, "Could not send invite?")
+        |> then(&{:noreply, &1})
+    end
+  end
+
+  @impl Phoenix.LiveView
+  # This is a test hack, rather than turn off swooshs adapter we can use this to assert emails are sent
+  def handle_info({:email, email}, %{assigns: %{test: pid}} = socket),
+    do: send(pid, {:email, email}) && {:noreply, socket}
+
+  def handle_info({:test, pid}, socket), do: {:noreply, assign(socket, :test, pid)}
+
   def handle_info({FormComponent, {:saved, invite}}, socket) do
     {:noreply, stream_insert(socket, :invites, invite)}
   end
@@ -56,6 +78,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <td><%= format_age(guest) %></td>
           <td><%= format_rsvp(guest) %></td>
           <td :if={index == 0} rowspan={length(invite.guests)} class="actions">
+            <a phx-click="send_invite" phx-value-id={invite.id}>
+              <%= if invite.sent_at, do: "Resend Invite", else: "Send Invite" %>
+            </a>
             <div class="sr-only">
               <.link patch={~p"/manage/invites/#{invite}"}>Show</.link>
             </div>

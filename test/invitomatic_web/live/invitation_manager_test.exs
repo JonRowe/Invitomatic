@@ -4,6 +4,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
   import Phoenix.LiveViewTest
   import Invitomatic.AccountsFixtures
   import Invitomatic.InvitesFixtures
+  import Swoosh.TestAssertions
 
   alias Invitomatic.Accounts.Login
   alias Invitomatic.Repo
@@ -188,6 +189,19 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert [guest_one, guest_two] = get_invite(email: guest.email).guests
       assert guest_one.name == "Name 1"
       assert guest_two.name == "Name 3"
+    end
+
+    test "it can send invites", %{conn: conn, invite: invite} do
+      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
+      send(index_live.pid, {:test, self()})
+
+      assert index_live |> element("#invite-#{invite.id} a", "Send") |> render_click()
+      assert_email_sent()
+      assert render(index_live) =~ "Invite sent!"
+
+      assert index_live |> element("#invite-#{invite.id} a", "Resend") |> render_click()
+      assert render(index_live) =~ "Invite sent!"
+      assert_email_sent()
     end
   end
 
