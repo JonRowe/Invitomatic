@@ -68,7 +68,7 @@ defmodule Invitomatic.Email do
 
           h1, h2, h3, h4, h5, h6 {color: #606c76 !important;}
           h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active { color: #cbe2f0 !important; }
-          h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited, a { color: #a3c2d5 !important; }
+          h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited, a { color: #606c76 !important; font-weight: bold;}
           td table tr td { padding: 1em 0; }
 
           #{content}
