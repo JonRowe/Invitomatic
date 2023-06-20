@@ -206,7 +206,6 @@ defmodule Invitomatic.Accounts do
          {:ok, %{login: confirmed_login}} <-
            Ecto.Multi.new()
            |> Ecto.Multi.update(:login, Login.confirm_changeset(login))
-           |> Ecto.Multi.delete_all(:tokens, Token.magic_link_query(token))
            |> Repo.transaction() do
       {:ok, confirmed_login}
     else

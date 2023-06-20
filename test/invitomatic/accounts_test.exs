@@ -295,7 +295,8 @@ defmodule Invitomatic.AccountsTest do
       assert returned_login.confirmed_at != login.confirmed_at
     end
 
-    test "only removes the token for the used magic link", %{login: login, token: token} do
+    # This isn't best practise but for our purposes were people might share links we allow this
+    test "doesnt removes the token for the magic link", %{login: login, token: token} do
       other_token = extract_token(&Accounts.deliver_magic_link(login, &1))
 
       assert {:ok, _login} = Accounts.get_login_from_magic_link_token(token)
@@ -303,7 +304,7 @@ defmodule Invitomatic.AccountsTest do
       {:ok, db_token} = Token.decode_url_token(token)
       {:ok, other_db_token} = Token.decode_url_token(other_token)
 
-      refute Repo.get_by(Token, token: db_token)
+      assert Repo.get_by(Token, token: db_token)
       assert Repo.get_by(Token, token: other_db_token)
     end
 
