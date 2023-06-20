@@ -201,6 +201,10 @@ nav {
   text-align: right;
 }
 
+nav p {
+  float: left;
+}
+
 /* .list */
 
 dl dt {

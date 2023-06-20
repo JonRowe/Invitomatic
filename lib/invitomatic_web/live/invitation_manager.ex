@@ -66,6 +66,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
       socket
       |> stream(:invites, updated_invites)
+      |> assign(:unsent, Enum.count(Invites.list(), &(&1.sent_at == nil)))
       |> put_flash(type, message)
       |> then(&{:noreply, &1})
     else
@@ -91,7 +92,16 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, socket |> stream_configure(:invites, dom_id: &"invite-#{&1.id}") |> stream(:invites, Invites.list())}
+    invites = Invites.list()
+
+    socket
+    |> stream_configure(:invites, dom_id: &"invite-#{&1.id}")
+    |> stream(:invites, invites)
+    |> assign(:count, Enum.count(invites))
+    |> assign(:offered_accommodation, Enum.count(invites, &(&1.extra_content == :accommodation)))
+    |> assign(:rsvped, Enum.count(invites, &Enum.any?(&1.guests, fn guest -> guest.rsvp != nil end)))
+    |> assign(:unsent, Enum.count(invites, &(&1.sent_at == nil)))
+    |> then(&{:ok, &1})
   end
 
   @impl Phoenix.LiveView
@@ -99,6 +109,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     ~H"""
     <.header>Invitation Management</.header>
     <nav>
+      <p>
+        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation.
+      </p>
       <a class="button" phx-click="send_all">Send all unsent invites</a>
       <.link class="button" patch={~p"/manage/invites/new"}>New Invite</.link>
     </nav>
