@@ -44,7 +44,7 @@ defmodule InvitomaticWeb.Live.ContentManager do
       <:col :let={{_id, section}} label="Index"><%= section.other_index %></:col>
       <:col :let={{_id, section}} label="Title"><%= section.title %></:col>
       <:col :let={{_id, section}} label="Slug"><%= section.slug %></:col>
-      <:col :let={{_id, section}} label="Text"><%= section.text %></:col>
+      <:col :let={{_id, section}} label="Text" class="raw_content"><%= section.text %></:col>
       <:action :let={{_id, section}}>
         <.link patch={~p"/manage/content/#{section}/edit"}>Edit</.link>
       </:action>

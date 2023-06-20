@@ -265,6 +265,11 @@ table tbody:hover {
 
 /* components */
 
+td.raw_content {
+  word-break: break-all;
+  width: 50%;
+}
+
 .content {
   margin: 0 auto;
   text-align: center;

@@ -452,6 +452,7 @@ defmodule InvitomaticWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :class, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -472,7 +473,11 @@ defmodule InvitomaticWeb.CoreComponents do
       </thead>
       <tbody id={@id} phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}>
         <tr :for={row <- @rows} id={@row_id && @row_id.(row)}>
-          <td :for={{col, _i} <- Enum.with_index(@col)} phx-click={@row_click && @row_click.(row)}>
+          <td
+            :for={{col, _i} <- Enum.with_index(@col)}
+            phx-click={@row_click && @row_click.(row)}
+            class={Map.get(col, :class, "")}
+          >
             <%= render_slot(col, @row_item.(row)) %>
           </td>
           <td :if={@action != []}>
