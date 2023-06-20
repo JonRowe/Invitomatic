@@ -1,6 +1,8 @@
 defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
   use InvitomaticWeb, :html
 
+  alias Invitomatic.Menu.Option
+
   attr :invite, :map
 
   def details(assigns) do
@@ -30,6 +32,9 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
             <:col :let={guest} label="Name"><%= guest.name %></:col>
             <:col :let={guest} label="Age"><%= guest.age %></:col>
             <:col :let={guest} label="RSVP"><%= guest.rsvp %></:col>
+            <:col :let={guest} :for={{course_name, course} <- Option.enum_options(:course)} label={course_name}>
+              <%= if Map.get(guest, course), do: Map.get(guest, course).name, else: "Not picked" %>
+            </:col>
           </.table>
         </:item>
       </.list>
