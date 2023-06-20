@@ -91,7 +91,7 @@ defmodule Invitomatic.Content do
 
   """
   def list do
-    Repo.all(Section)
+    Repo.all(from s in Section, order_by: :inserted_at)
   end
 
   @doc """

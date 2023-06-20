@@ -136,7 +136,7 @@ defmodule Invitomatic.Invites do
 
   """
   def list do
-    Repo.all(from invite in Invite, preload: [:guests, :logins])
+    Repo.all(from invite in Invite, preload: [:guests, :logins], order_by: :inserted_at)
   end
 
   @doc """
