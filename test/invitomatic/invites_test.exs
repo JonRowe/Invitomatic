@@ -65,6 +65,13 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "deliver_invite/2" do
+    test "it sets invite send_at" do
+      assert {:ok, invite} = Invites.deliver_invite(invite_fixture(%{send_at: nil}), & &1)
+      assert NaiveDateTime.compare(invite.sent_at, NaiveDateTime.add(NaiveDateTime.utc_now(), -1, :minute)) == :gt
+    end
+  end
+
   describe "get/1" do
     test "it returns the invite with guests and logins preloaded" do
       fixture = invite_fixture()

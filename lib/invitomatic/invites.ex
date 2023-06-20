@@ -5,6 +5,7 @@ defmodule Invitomatic.Invites do
 
   import Ecto.Query, warn: false
 
+  alias Invitomatic.Accounts
   alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
   alias Invitomatic.Repo
@@ -77,6 +78,17 @@ defmodule Invitomatic.Invites do
     else
       _ -> {:error, Ecto.Changeset.add_error(Ecto.Changeset.change(%Guest{}), :invite, "did not match", [])}
     end
+  end
+
+  @doc """
+  Sends an invite email.
+  """
+  def deliver_invite(%Invite{} = invite, url_fun) when is_function(url_fun, 1) do
+    for %Accounts.Login{} = login <- invite.logins do
+      Accounts.deliver_invite(login, url_fun)
+    end
+
+    Repo.update(Ecto.Changeset.change(invite, sent_at: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)))
   end
 
   @doc """

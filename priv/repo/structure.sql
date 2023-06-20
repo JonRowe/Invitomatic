@@ -139,7 +139,8 @@ CREATE TABLE public.invite (
     name text NOT NULL,
     inserted_at timestamp(0) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(0) without time zone DEFAULT now() NOT NULL,
-    extra_content public.content_section
+    extra_content public.content_section,
+    sent_at timestamp(0) without time zone
 );
 
 
@@ -427,3 +428,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230614205044);
 INSERT INTO public."schema_migrations" (version) VALUES (20230616183307);
 INSERT INTO public."schema_migrations" (version) VALUES (20230617203421);
 INSERT INTO public."schema_migrations" (version) VALUES (20230619211002);
+INSERT INTO public."schema_migrations" (version) VALUES (20230620111740);

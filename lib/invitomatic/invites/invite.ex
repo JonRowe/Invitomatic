@@ -11,6 +11,7 @@ defmodule Invitomatic.Invites.Invite do
   schema "invite" do
     field :name, :string
     field :extra_content, Ecto.Enum, values: [:accommodation]
+    field :sent_at, :naive_datetime
 
     has_many :guests, Guest, on_replace: :delete
     has_many :logins, Login
