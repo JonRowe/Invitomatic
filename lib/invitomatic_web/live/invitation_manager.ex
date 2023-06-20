@@ -112,7 +112,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
       <p>
         Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation.
       </p>
-      <a class="button" phx-click="send_all">Send all unsent invites</a>
+      <a class="button" data-confirm={"Are you sure? This will send #{@unsent} emails"} phx-click="send_all">
+        Send all unsent invites
+      </a>
       <.link class="button" patch={~p"/manage/invites/new"}>New Invite</.link>
     </nav>
     <table id="guests" phx-update="stream">
