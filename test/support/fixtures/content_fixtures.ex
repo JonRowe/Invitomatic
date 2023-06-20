@@ -20,4 +20,9 @@ defmodule Invitomatic.ContentFixtures do
 
     section
   end
+
+  def extract_content(fun) do
+    {:ok, captured_email} = fun.()
+    captured_email.text_body
+  end
 end

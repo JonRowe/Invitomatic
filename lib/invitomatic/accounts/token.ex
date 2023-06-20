@@ -9,7 +9,7 @@ defmodule Invitomatic.Accounts.Token do
   @rand_size 32
 
   @change_email_validity {7, "day"}
-  @magic_link_validity {6, "hour"}
+  @magic_link_validity {90, "day"}
   @session_validity {60, "day"}
 
   @primary_key {:id, :binary_id, autogenerate: true}

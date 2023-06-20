@@ -6,6 +6,7 @@ defmodule Invitomatic.AccountsTest do
   alias Invitomatic.Accounts.Token
 
   import Invitomatic.AccountsFixtures
+  import Invitomatic.ContentFixtures
 
   describe "get_login_by_email/1" do
     test "does not return the login if the email does not exist" do
@@ -198,6 +199,37 @@ defmodule Invitomatic.AccountsTest do
     end
   end
 
+  describe "deliver_invite/1" do
+    setup do
+      %{login: login_fixture(), content: content_fixture(type: :invitation)}
+    end
+
+    test "sends token through notification", %{login: login} do
+      token =
+        extract_token(fn url ->
+          Accounts.deliver_invite(login, url)
+        end)
+
+      {:ok, token} = Base.url_decode64(token, padding: false)
+      assert login_token = Repo.get_by(Token, token: :crypto.hash(:sha256, token))
+      assert login_token.login_id == login.id
+      assert login_token.sent_to == login.email
+      assert login_token.context == "magic:link"
+    end
+
+    test "it includes the invitiation content", %{content: content, login: login} do
+      text = extract_content(fn -> Accounts.deliver_invite(login, & &1) end)
+      assert text =~ content.text
+    end
+
+    test "it includes the extra content if set", %{login: login} do
+      Repo.update_all(from(invite in "invite"), set: [extra_content: "accommodation"])
+      extra_content = content_fixture(type: :accommodation, text: "its here!")
+      text = extract_content(fn -> Accounts.deliver_invite(login, & &1) end)
+      assert text =~ extra_content.text
+    end
+  end
+
   describe "deliver_magic_link/1" do
     setup do
       %{login: login_fixture()}
@@ -247,6 +279,15 @@ defmodule Invitomatic.AccountsTest do
     end
 
     test "returns the login from a valid token", %{login: login, token: token} do
+      assert {:ok, returned_login} = Accounts.get_login_from_magic_link_token(token)
+      assert returned_login == Repo.get!(Login, login.id)
+      assert returned_login.email == login.email
+      assert returned_login.confirmed_at
+      assert returned_login.confirmed_at != login.confirmed_at
+    end
+
+    test "works with an invite token", %{login: login} do
+      token = extract_token(&Accounts.deliver_invite(login, &1))
       assert {:ok, returned_login} = Accounts.get_login_from_magic_link_token(token)
       assert returned_login == Repo.get!(Login, login.id)
       assert returned_login.email == login.email

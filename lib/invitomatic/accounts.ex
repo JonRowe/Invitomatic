@@ -160,6 +160,16 @@ defmodule Invitomatic.Accounts do
 
   ## Session
 
+  @doc """
+  Delivers an invite to the given login.
+  """
+  def deliver_invite(%Login{} = login, url_fun) when is_function(url_fun, 1) do
+    {encoded_token, login_token} = Token.build_email_token(login, "magic:link")
+
+    Repo.insert!(login_token)
+    Notifier.deliver_invite(login, url_fun.(encoded_token))
+  end
+
   @doc ~S"""
   Delivers a magic link to the given login.
 
