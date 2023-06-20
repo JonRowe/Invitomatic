@@ -193,7 +193,6 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
 
     test "it can send invites", %{conn: conn, invite: invite} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
-      send(index_live.pid, {:test, self()})
 
       assert index_live |> element("#invite-#{invite.id} a", "Send") |> render_click()
       assert_email_sent()
@@ -202,6 +201,21 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert index_live |> element("#invite-#{invite.id} a", "Resend") |> render_click()
       assert render(index_live) =~ "Invite sent!"
       assert_email_sent()
+    end
+
+    test "it can send all invites", %{conn: conn, invite: %{logins: [%{email: guest_email}]}} do
+      admin = %{email: admin_email} = admin_fixture()
+      {:ok, index_live, _html} = live(log_in(conn, admin), ~p"/manage")
+
+      assert index_live |> element("nav a", "Send all unsent") |> render_click()
+      assert_receive {:email, %_{to: [{_, ^guest_email}]}}
+      assert_receive {:email, %_{to: [{_, ^admin_email}]}}
+      assert render(index_live) =~ "2 invites sent!"
+
+      assert index_live |> element("nav a", "Send all unsent") |> render_click()
+      refute_receive {:email, %_{to: [{_, ^guest_email}]}}
+      refute_receive {:email, %_{to: [{_, ^admin_email}]}}
+      assert render(index_live) =~ "No unsent invites"
     end
   end
 

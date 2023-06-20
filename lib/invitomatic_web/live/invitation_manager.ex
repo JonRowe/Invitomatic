@@ -23,12 +23,46 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     end
   end
 
+  def handle_event("send_all", _, socket) do
+    with [_ | _] = invites <- Enum.filter(Invites.list(), &(&1.sent_at == nil)) do
+      %{updated: updated_invites, count: updated_count, failed: failed_count} =
+        Enum.reduce(
+          invites,
+          %{updated: [], count: 0, failed: 0},
+          fn invite, %{updated: updated, count: count, failed: failed} ->
+            case Invites.deliver_invite(invite, &url(~p"/log_in/#{&1}")) do
+              {:ok, updated_invite} ->
+                %{updated: updated ++ [updated_invite], count: count + 1, failed: failed}
+
+              _ ->
+                %{updated: updated, count: count, failed: failed + 1}
+            end
+          end
+        )
+
+      {type, message} =
+        case {updated_count, failed_count} do
+          {0, 0} -> {:info, "No unsent invites."}
+          {n, 0} -> {:info, "#{n} invites sent!"}
+          {0, n} -> {:info, "#{n} invites failed"}
+          {n, x} -> {:info, "#{n} invites sent, #{x} invites failed."}
+        end
+
+      socket
+      |> stream(:invites, updated_invites)
+      |> put_flash(type, message)
+      |> then(&{:noreply, &1})
+    else
+      [] ->
+        socket
+        |> put_flash(:error, "No unsent invites.")
+        |> then(&{:noreply, &1})
+    end
+  end
+
   @impl Phoenix.LiveView
   # This is a test hack, rather than turn off swooshs adapter we can use this to assert emails are sent
-  def handle_info({:email, email}, %{assigns: %{test: pid}} = socket),
-    do: send(pid, {:email, email}) && {:noreply, socket}
-
-  def handle_info({:test, pid}, socket), do: {:noreply, assign(socket, :test, pid)}
+  def handle_info({:email, _email}, socket), do: {:noreply, socket}
 
   def handle_info({FormComponent, {:saved, invite}}, socket) do
     {:noreply, stream_insert(socket, :invites, invite)}
@@ -49,6 +83,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     ~H"""
     <.header>Invitation Management</.header>
     <nav>
+      <a class="button" phx-click="send_all">Send all unsent invites</a>
       <.link class="button" patch={~p"/manage/invites/new"}>New Invite</.link>
     </nav>
     <table id="guests" phx-update="stream">
