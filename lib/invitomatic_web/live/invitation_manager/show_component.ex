@@ -5,7 +5,9 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
 
   attr :invite, :map
 
-  def details(assigns) do
+  def details(raw_assigns) do
+    courses = Enum.map(Option.enum_options(:course), fn {name, key} -> {name, :"#{key}_menu_option"} end)
+    assigns = assign_new(raw_assigns, :courses, fn -> courses end)
     ~H"""
     <div>
       <.header>
@@ -32,7 +34,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
             <:col :let={guest} label="Name"><%= guest.name %></:col>
             <:col :let={guest} label="Age"><%= guest.age %></:col>
             <:col :let={guest} label="RSVP"><%= guest.rsvp %></:col>
-            <:col :let={guest} :for={{course_name, course} <- Option.enum_options(:course)} label={course_name}>
+            <:col :let={guest} :for={{course_name, course} <- @courses} label={course_name}>
               <%= if Map.get(guest, course), do: Map.get(guest, course).name, else: "Not picked" %>
             </:col>
           </.table>
