@@ -18,7 +18,11 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
         </:item>
         <:item title="Emails that can login to the invite">
           <%= for login <- @invite.logins do %>
-            <%= login.email %><br />
+            <%= login.email %>
+            <a phx-click="send_invite_to_email" phx-value-email={login.email} phx-value-id={@invite.id}>
+              <%= if @invite.sent_at, do: "Resend", else: "Send" %> invite.
+            </a>
+            <br />
           <% end %>
         </:item>
         <:item title="Guests for this invite">

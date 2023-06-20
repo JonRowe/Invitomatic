@@ -217,6 +217,35 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       refute_receive {:email, %_{to: [{_, ^admin_email}]}}
       assert render(index_live) =~ "No unsent invites"
     end
+
+    test "it can send an invite to a specific login", %{conn: conn, invite: %{logins: [%{email: guest_email}]} = invite} do
+      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
+
+      index_live
+      |> element("#invite-#{invite.id} td:last-child a", "Edit")
+      |> render_click()
+
+      index_live |> element("button", "Add Guest") |> render_click()
+      index_live |> element("button", "Add Guest") |> render_click()
+
+      index_live
+      |> form("#invite-form", invite: @invite_multiple_guest_attrs)
+      |> render_submit()
+
+      assert length(get_invite(email: "another@example.com").guests) == 3
+
+      index_live
+      |> element("#invite-#{invite.id} td:last-child a", "Show")
+      |> render_click()
+
+      index_live
+      |> element("dd:fl-contains(\"another@example.com\") a", "Send invite")
+      |> render_click()
+
+      refute_receive {:email, %_{to: [{_, ^guest_email}]}}
+      assert_receive {:email, %_{to: [{_, "another@example.com"}]}}
+      assert render(index_live) =~ "Invite sent!"
+    end
   end
 
   defp get_invite(attrs), do: Repo.preload(Repo.get_by(Login, attrs), invite: [:guests]).invite

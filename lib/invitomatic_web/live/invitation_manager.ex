@@ -1,6 +1,7 @@
 defmodule InvitomaticWeb.Live.InvitationManager do
   use InvitomaticWeb, :live_view
 
+  alias Invitomatic.Accounts
   alias Invitomatic.Accounts.Login
   alias Invitomatic.Invites
   alias Invitomatic.Invites.Guest
@@ -16,6 +17,21 @@ defmodule InvitomaticWeb.Live.InvitationManager do
         |> put_flash(:info, "Invite sent!")
         |> then(&{:noreply, &1})
 
+      _ ->
+        socket
+        |> put_flash(:error, "Could not send invite?")
+        |> then(&{:noreply, &1})
+    end
+  end
+
+  def handle_event("send_invite_to_email", %{"id" => id, "email" => email}, socket) do
+    with %_{id: ^id, logins: logins} <- Invites.get(id),
+         %_{email: ^email} = login <- Enum.find(logins, &(&1.email == email)),
+         {:ok, _} = Accounts.deliver_invite(login, &url(~p"/log_in/#{&1}")) do
+      socket
+      |> put_flash(:info, "Invite sent!")
+      |> then(&{:noreply, &1})
+    else
       _ ->
         socket
         |> put_flash(:error, "Could not send invite?")
