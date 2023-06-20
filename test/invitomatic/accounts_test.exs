@@ -228,6 +228,13 @@ defmodule Invitomatic.AccountsTest do
       text = extract_content(fn -> Accounts.deliver_invite(login, & &1) end)
       assert text =~ extra_content.text
     end
+
+    test "it \"sanitizes\" the content", %{login: login} do
+      Repo.update_all(from(invite in "invite"), set: [extra_content: "accommodation"])
+      content_fixture(type: :accommodation, text: "<img alt=\"alttext\"/><h1>OMG</h1><br/>Text")
+      text = extract_content(fn -> Accounts.deliver_invite(login, & &1) end)
+      assert text =~ "alttext OMG\nText"
+    end
   end
 
   describe "deliver_magic_link/1" do

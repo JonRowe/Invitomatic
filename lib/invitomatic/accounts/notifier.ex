@@ -36,9 +36,7 @@ defmodule Invitomatic.Accounts.Notifier do
       text: """
       Hi #{login.invite.name},
 
-      #{content.text}
-
-      #{Enum.join(extra_lines, "\n")}
+      #{lines |> Enum.map(&sanitize/1) |> Enum.join("\n")}
 
       Please get back to use as soon as you can, ideally within 2 weeks, we understand if you can't make it.
 
@@ -109,4 +107,11 @@ defmodule Invitomatic.Accounts.Notifier do
 
   defp maybe_preload_invite(%{invite: %{name: _name}, email: _email} = login), do: login
   defp maybe_preload_invite(%{email: _email} = login), do: Repo.preload(login, :invite)
+
+  defp sanitize(string) do
+    string
+    |> String.replace(~r/<img[^>]*alt=['"]([^>]*)["'][^>]*>/, "\\1 ")
+    |> String.replace(~r/<br\/>/, "\n")
+    |> String.replace(~r/<[^>]+>/, "")
+  end
 end
