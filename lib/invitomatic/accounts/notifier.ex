@@ -28,9 +28,9 @@ defmodule Invitomatic.Accounts.Notifier do
       <table>
         <tr><td><h3>Hi #{login.invite.name}</h3></td></tr>
         #{Enum.map(lines, &"<tr><td>#{&1}</td></tr>") |> Enum.join("\n  ")}
-        <tr><td>Please get back to use as soon as you can, ideally within 2 weeks, we understand if you can't make it.</td></tr>
-        <tr><td>#{Email.button(url, "RSVP")}</td></tr>
-        <tr><td>(or if this is does not work, you can visit <a href="#{url}">#{url}</a> directly).</td></tr>
+        <tr><td>Please get back to us as soon as you can, ideally within 2 weeks, we understand if you can't make it.</td></tr>
+        <tr><td>#{Email.button(url, "For more information and to RSVP click here")}</td></tr>
+        <tr><td>(or if this does not work, you can visit <a href="#{url}">#{url}</a> directly).</td></tr>
       </table>
       """,
       text: """
