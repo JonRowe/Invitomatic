@@ -7,6 +7,10 @@ defmodule Invitomatic.Application do
 
   @impl Application
   def start(_type, _args) do
+    :opentelemetry_cowboy.setup()
+    OpentelemetryPhoenix.setup(adapter: :cowboy2)
+    OpentelemetryEcto.setup([:invitomatic, Invitomatic.Repo])
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     Supervisor.start_link(

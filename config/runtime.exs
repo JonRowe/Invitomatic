@@ -84,4 +84,13 @@ if config_env() == :prod do
     region: "us-east-1",
     access_key: System.get_env("SES_ACCESS_KEY"),
     secret: System.get_env("SES_SECRET_KEY")
+
+  config :opentelemetry,
+    span_processor: :batch,
+    traces_exporter: :otlp
+
+  config :opentelemetry_exporter,
+    otlp_protocol: :http_protobuf,
+    otlp_headers: [{"x-honeycomb-team", System.get_env("OTLP_API_KEY")}],
+    otlp_endpoint: System.get_env("OTLP_ENDPOINT")
 end

@@ -38,6 +38,12 @@ defmodule Invitomatic.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:gen_smtp, "~> 1.2.0"},
       {:jason, "~> 1.2"},
+      {:opentelemetry, "~> 1.3"},
+      {:opentelemetry_api, "~> 1.2"},
+      {:opentelemetry_ecto, "~> 1.1"},
+      {:opentelemetry_exporter, "~> 1.4"},
+      {:opentelemetry_phoenix, "~> 1.1"},
+      {:opentelemetry_cowboy, "~> 0.2"},
       {:plug_cowboy, "~> 2.5"},
       {:phoenix, "~> 1.7.2"},
       {:phoenix_ecto, "~> 4.4"},
@@ -73,7 +79,9 @@ defmodule Invitomatic.MixProject do
     [
       invitomatic: [
         applications: [
-          invitomatic: :permanent
+          invitomatic: :permanent,
+          opentelemetry_exporter: :permanent,
+          opentelemetry: :temporary
         ],
         include_executables_for: [:unix]
       ]
