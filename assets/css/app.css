@@ -4,6 +4,10 @@ html, html body {
   min-height: 100%;
 }
 
+p {
+  color: #333;
+}
+
 /* Theme override */
 a {
   color: #606c76;
