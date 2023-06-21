@@ -71,6 +71,17 @@ main {
   margin: 0;
 }
 
+/* Transitions */
+.fadeInThenOut {
+  opacity: 0;
+  animation: fade 1.5s linear;
+}
+
+@keyframes fade {
+  0%,100% { opacity: 0 }
+  5% { opacity: 1 }
+}
+
 /* Dropdown */
 .dropdown {
   display: inline-block;

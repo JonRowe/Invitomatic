@@ -297,6 +297,7 @@ defmodule InvitomaticWeb.CoreComponents do
   attr :field, Phoenix.HTML.FormField, doc: "a form field struct retrieved from the form, for example: @form[:email]"
 
   attr :errors, :list, default: []
+  attr :updated, :boolean, default: false
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
@@ -339,6 +340,7 @@ defmodule InvitomaticWeb.CoreComponents do
         <option :if={@prompt} value=""><%= @prompt %></option>
         <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
       </select>
+      <span :if={@updated} class="fadeInThenOut">Saved!</span>
       <.error :for={{msg, _} <- @errors}><%= msg %></.error>
     </div>
     """

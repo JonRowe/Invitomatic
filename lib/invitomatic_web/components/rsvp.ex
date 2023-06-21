@@ -31,14 +31,16 @@ defmodule InvitomaticWeb.Components.RSVP do
   @impl Phoenix.LiveComponent
   def mount(socket) do
     socket
-    |> assign(dietary_open: false, rsvp_options: @rsvp_options)
-    |> assign(courses: Option.enum_options(:course))
     |> assign(
+      courses: Option.enum_options(:course),
+      dietary_open: false,
       menu_options:
         Menu.list()
         |> Enum.group_by(& &1.course)
         |> Enum.map(fn {course, list} -> {course, Enum.group_by(list, & &1.age_group, &{&1.name, &1.id})} end)
-        |> Enum.into(%{})
+        |> Enum.into(%{}),
+      rsvp_options: @rsvp_options,
+      updated: []
     )
     |> then(&{:ok, &1})
   end
@@ -76,6 +78,7 @@ defmodule InvitomaticWeb.Components.RSVP do
             phx-target={@myself}
             prompt={ "Please select a #{course}" }
             type="select"
+            updated={Enum.find(@updated, &(&1 == :"#{course}_menu_option_id"))}
           />
         <% end %>
       </.simple_form>
@@ -111,6 +114,12 @@ defmodule InvitomaticWeb.Components.RSVP do
     """
   end
 
+  defp diff(struct_a, struct_b) do
+    Enum.reduce(Map.keys(struct_a), [], fn key, keys ->
+      if Map.get(struct_a, key) != Map.get(struct_b, key), do: [key | keys], else: keys
+    end)
+  end
+
   defp diet_message(_guest), do: "Dietary requirements choice saved!"
   defp menu_message(_guest), do: "Menu choice saved!"
 
@@ -122,7 +131,11 @@ defmodule InvitomaticWeb.Components.RSVP do
     with {:ok, updated_guest} <- Invites.update_guest(guest, params) do
       send(self(), {:rsvp, message_generator.(updated_guest)})
 
-      assign(socket, guest: updated_guest, form: Invites.change_guest(updated_guest, %{}))
+      assign(socket,
+        guest: updated_guest,
+        form: Invites.change_guest(updated_guest, %{}),
+        updated: diff(guest, updated_guest)
+      )
     else
       {:error, changeset} ->
         send(self(), {:error, "Something went wrong..."})
