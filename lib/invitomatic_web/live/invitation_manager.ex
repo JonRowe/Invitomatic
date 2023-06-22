@@ -133,7 +133,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
       <tbody :for={{row_id, invite} <- @streams.invites} id={row_id}>
         <tr :for={{guest, index} <- Enum.with_index(invite.guests)} phx-click={JS.patch(~p"/manage/invites/#{invite}")}>
           <td :if={index == 0} rowspan={length(invite.guests)}>
-            <%= List.first(invite.logins).email %>
+            <.primary_email logins={invite.logins} />
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <%= invite.name %>
@@ -204,4 +204,12 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   defp format_rsvp(%Guest{rsvp: nil}), do: "Not replied"
   defp format_rsvp(%Guest{rsvp: rsvp}), do: String.capitalize(to_string(rsvp))
+
+  defp primary_email(%{logins: [_]} = assigns), do: ~H"<%= List.first(@logins).email %>"
+
+  defp primary_email(%{logins: [login | _] = logins} = raw_assigns) do
+    primary = Enum.find(logins, login, & &1.primary)
+    assigns = assign_new(raw_assigns, :email, fn -> primary.email end)
+    ~H"<%= @email %>"
+  end
 end

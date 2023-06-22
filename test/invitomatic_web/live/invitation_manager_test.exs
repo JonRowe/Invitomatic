@@ -43,7 +43,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
           valid_guest_attributes(%{name: "Invite 1 Guest 2", age: :child, rsvp: :maybe}),
           valid_guest_attributes(%{name: "Invite 1 Guest 3", age: :under_three, rsvp: :no})
         ],
-        logins: [%{email: "invitee_1@example.com"}]
+        logins: [%{email: "invitee_1@example.com", primary: true}, %{email: "other@example.com"}]
       })
 
       invite_fixture(%{
