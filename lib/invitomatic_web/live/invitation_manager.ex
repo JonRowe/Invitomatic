@@ -124,6 +124,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <th>Invite Name</th>
           <th>Content</th>
           <th>Sent At</th>
+          <th>Last Seen At</th>
           <th>Guest Name</th>
           <th>Age</th>
           <th>RSVP</th>
@@ -143,6 +144,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <%= invite.sent_at %>
+          </td>
+          <td :if={index == 0} rowspan={length(invite.guests)}>
+            <.last_seen_at logins={invite.logins} />
           </td>
           <td><%= guest.name %></td>
           <td><%= format_age(guest) %></td>
@@ -204,6 +208,28 @@ defmodule InvitomaticWeb.Live.InvitationManager do
 
   defp format_rsvp(%Guest{rsvp: nil}), do: "Not replied"
   defp format_rsvp(%Guest{rsvp: rsvp}), do: String.capitalize(to_string(rsvp))
+
+  defp last_seen_at(%{logins: [_login]} = assigns) do
+    ~H"<%= List.first(@logins).confirmed_at %>"
+  end
+
+  defp last_seen_at(%{logins: logins} = raw_assigns) do
+    assigns =
+      raw_assigns
+      |> assign_new(:count, fn -> length(logins) end)
+      |> assign_new(:seen, fn -> Enum.count(logins, & &1.confirmed_at) end)
+      |> assign_new(:last_login, fn ->
+        Enum.max(logins, fn
+          %{confirmed_at: nil}, _ -> true
+          _, %{confirmed_at: nil} -> false
+          a, b -> NaiveDateTime.compare(a.confirmed_at, b.confirmed_at) == :gt
+        end)
+      end)
+
+    ~H"""
+    <%= @last_login.confirmed_at %> (<%= @seen %>/<%= @count %>)
+    """
+  end
 
   defp primary_email(%{logins: [_]} = assigns), do: ~H"<%= List.first(@logins).email %>"
 
