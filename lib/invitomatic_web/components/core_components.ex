@@ -173,18 +173,18 @@ defmodule InvitomaticWeb.CoreComponents do
         @kind == :info && "info",
         @kind == :error && "error"
       ]}
+      phx-click={
+        JS.push("lv:clear-flash")
+        |> JS.remove_class("fade-in")
+        |> JS.hide(to: "#flash", time: 2000, transition: "fade-out")
+      }
       {@rest}
     >
       <p :if={@title}>
         <%= @title %>
       </p>
       <p class=""><%= msg %></p>
-      <button
-        type="button"
-        phx-click={JS.push("lv:clear-flash") |> JS.hide(to: "#flash", time: 2000, transition: "fade-out")}
-      >
-        x
-      </button>
+      <button type="button">x</button>
     </div>
     """
   end
