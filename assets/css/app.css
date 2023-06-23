@@ -72,6 +72,7 @@ main {
 }
 
 /* Transitions */
+
 .fadeInThenOut {
   opacity: 0;
   animation: fade 1.5s linear;
@@ -82,7 +83,14 @@ main {
   5% { opacity: 1 }
 }
 
+.fade-out {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+
 /* Dropdown */
+
 .dropdown {
   display: inline-block;
   position: relative;
@@ -115,6 +123,7 @@ main {
 }
 
 /* Modal */
+
 .modal {
   position: relative;
   z-index: 50;
@@ -264,11 +273,6 @@ table tbody:hover {
 }
 
 /* Utility */
-.fade-out {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 2s, opacity 2s linear;
-}
 
 .sr-only {
   position: absolute;
