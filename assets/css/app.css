@@ -54,6 +54,11 @@ main {
   color: white;
   margin: 1em 0;
   text-align: center;
+  position: fixed;
+  left: 1em;
+  right: 1em;
+  top: 2em;
+  z-index: 100;
 }
 
 #flash p, #disconnected p {
