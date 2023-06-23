@@ -179,6 +179,7 @@ defmodule InvitomaticWeb.CoreComponents do
         |> JS.remove_class("fade-in")
         |> JS.hide(to: "#flash", time: 2000, transition: "fade-out")
       }
+      phx-hook="Flash"
       {@rest}
     >
       <p :if={@title}>
