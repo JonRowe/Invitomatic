@@ -146,7 +146,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
             <.check at={invite.sent_at} id={"#{row_id}-sent-at-check"} />
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
-            <.last_seen_at logins={invite.logins} />
+            <.last_seen_at logins={invite.logins} id={"#{row_id}-seen-at-check"} />
           </td>
           <td><%= guest.name %></td>
           <td><%= format_age(guest) %></td>
@@ -218,7 +218,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
   defp format_rsvp(%Guest{rsvp: rsvp}), do: String.capitalize(to_string(rsvp))
 
   defp last_seen_at(%{logins: [_login]} = assigns) do
-    ~H"<%= List.first(@logins).confirmed_at %>"
+    ~H"<.check at={List.first(@logins).confirmed_at} id={@id} />"
   end
 
   defp last_seen_at(%{logins: logins} = raw_assigns) do
@@ -235,7 +235,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
       end)
 
     ~H"""
-    <%= @last_login.confirmed_at %> (<%= @seen %>/<%= @count %>)
+    <.check at={@last_login.confirmed_at} id={@id} /> (<%= @seen %>/<%= @count %>)
     """
   end
 
