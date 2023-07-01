@@ -241,8 +241,8 @@ defmodule InvitomaticWeb.Live.InvitationManager do
       |> assign_new(:seen, fn -> Enum.count(logins, & &1.confirmed_at) end)
       |> assign_new(:last_login, fn ->
         Enum.max(logins, fn
-          %{confirmed_at: nil}, _ -> true
-          _, %{confirmed_at: nil} -> false
+          %{confirmed_at: nil}, _ -> false
+          _, %{confirmed_at: nil} -> true
           a, b -> NaiveDateTime.compare(a.confirmed_at, b.confirmed_at) == :gt
         end)
       end)
