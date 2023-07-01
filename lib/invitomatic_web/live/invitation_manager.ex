@@ -123,8 +123,8 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <th>Email</th>
           <th>Invite Name</th>
           <th>Content</th>
-          <th>Sent At</th>
-          <th>Last Seen At</th>
+          <th>Sent</th>
+          <th>Seen</th>
           <th>Guest Name</th>
           <th>Age</th>
           <th>RSVP</th>
