@@ -127,6 +127,7 @@ main {
   position: absolute;
   text-align: left;
   top: 2em;
+  z-index: 1000;
 }
 
 .dropdown.open div[role="menu"] a {
