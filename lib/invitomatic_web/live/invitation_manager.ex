@@ -143,7 +143,7 @@ defmodule InvitomaticWeb.Live.InvitationManager do
             <%= invite.extra_content %>
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
-            <%= invite.sent_at %>
+            <.check at={invite.sent_at} id={"#{row_id}-sent-at-check"} />
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <.last_seen_at logins={invite.logins} />
@@ -201,6 +201,14 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     socket
     |> assign(:page_title, "Listing Guest")
     |> assign(:invite, nil)
+  end
+
+  defp check(%{at: nil} = assigns), do: ~H""
+
+  defp check(%{at: _} = assigns) do
+    ~H"""
+    <img src={~p"/images/tick.svg"} alt={@at} phx-hook="Tooltip" id={@id} />
+    """
   end
 
   defp format_age(%Guest{age: :under_three}), do: "< 3"

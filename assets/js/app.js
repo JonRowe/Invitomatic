@@ -11,6 +11,29 @@ import topbar from "../vendor/topbar"
 
 let Hooks = {};
 
+Hooks.Tooltip = {
+  mounted() {
+    let text = (this.el.getAttribute('alt') || this.el.getAttribute('phx-tooltip')).trim();
+
+    let tooltip = document.createElement("div");
+    tooltip.setAttribute("class", "tooltip");
+    tooltip.appendChild(document.createTextNode(text));
+
+    this.el.addEventListener("mousemove", (event) => {
+      let scrollY = window.scrollY || window.pageYOffset;
+      let scrollX = window.scrollX || window.pageXOffset;
+      let tooltipTop = (event.pageY - scrollY + tooltip.offsetHeight + 20 >= window.innerHeight ? (event.pageY - tooltip.offsetHeight - 20) : event.pageY);
+      let tooltipLeft = (event.pageX - scrollX + tooltip.offsetWidth + 20 >= window.innerWidth ? (event.pageX - tooltip.offsetWidth - 20) : event.pageX);
+
+      tooltip.style.top = tooltipTop + "px";
+      tooltip.style.left = tooltipLeft + "px";
+    });
+
+    this.el.addEventListener("mouseover", () => { document.querySelector("body").appendChild(tooltip); });
+    this.el.addEventListener("mouseout", () => {	document.querySelector("body").removeChild(tooltip); });
+  }
+}
+
 Hooks.Flash = {
   mounted(){
     let hide = () => liveSocket.execJS(this.el, this.el.getAttribute("phx-click"))
