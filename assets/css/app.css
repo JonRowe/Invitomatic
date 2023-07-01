@@ -243,6 +243,7 @@ nav {
 }
 
 nav p {
+  text-align: left;
   float: left;
 }
 

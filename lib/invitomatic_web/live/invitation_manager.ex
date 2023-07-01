@@ -93,14 +93,26 @@ defmodule InvitomaticWeb.Live.InvitationManager do
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     invites = Invites.list()
+    rsvped_guests = Enum.flat_map(invites, &Enum.filter(&1.guests, fn guest -> guest.rsvp == :yes end))
 
     socket
     |> stream_configure(:invites, dom_id: &"invite-#{&1.id}")
     |> stream(:invites, invites)
     |> assign(:count, Enum.count(invites))
     |> assign(:offered_accommodation, Enum.count(invites, &(&1.extra_content == :accommodation)))
+    |> assign(
+      :accommodation_rsvped,
+      Enum.count(
+        invites,
+        fn invite ->
+          invite.extra_content == :accommodation && Enum.any?(invite.guests, &(&1.rsvp == :yes))
+        end
+      )
+    )
     |> assign(:rsvped, Enum.count(invites, &Enum.any?(&1.guests, fn guest -> guest.rsvp != nil end)))
     |> assign(:unsent, Enum.count(invites, &(&1.sent_at == nil)))
+    |> assign(:total_adults, Enum.count(Enum.filter(rsvped_guests, &(&1.age == :adult))))
+    |> assign(:total_guests, Enum.count(rsvped_guests))
     |> then(&{:ok, &1})
   end
 
@@ -110,7 +122,8 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     <.header>Invitation Management</.header>
     <nav>
       <p>
-        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation.
+        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation, <%= @accommodation_rsvped %> taken.
+        <br /> Guests: <%= @total_guests %>, <%= @total_adults %> adults, <%= @total_guests - @total_adults %> children.
       </p>
       <a class="button" data-confirm={"Are you sure? This will send #{@unsent} emails"} phx-click="send_all">
         Send all unsent invites
