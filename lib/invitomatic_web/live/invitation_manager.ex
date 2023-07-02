@@ -109,6 +109,15 @@ defmodule InvitomaticWeb.Live.InvitationManager do
         end
       )
     )
+    |> assign(
+      :accommodation_refused,
+      Enum.count(
+        invites,
+        fn invite ->
+          invite.extra_content == :accommodation && Enum.any?(invite.guests, &(&1.rsvp == :no))
+        end
+      )
+    )
     |> assign(:rsvped, Enum.count(invites, &Enum.any?(&1.guests, fn guest -> guest.rsvp != nil end)))
     |> assign(:unsent, Enum.count(invites, &(&1.sent_at == nil)))
     |> assign(:total_adults, Enum.count(Enum.filter(rsvped_guests, &(&1.age == :adult))))
@@ -122,8 +131,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     <.header>Invitation Management</.header>
     <nav>
       <p>
-        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation, <%= @accommodation_rsvped %> taken.
-        <br /> Guests: <%= @total_guests %>, <%= @total_adults %> adults, <%= @total_guests - @total_adults %> children.
+        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation, <%= @accommodation_rsvped %> taken, <%= @accommodation_refused %> refused, <%= @offered_accommodation -
+          (@accommodation_rsvped + @accommodation_refused) %> to answer. <br />
+        Guests: <%= @total_guests %>, <%= @total_adults %> adults, <%= @total_guests - @total_adults %> children.
       </p>
       <a class="button" data-confirm={"Are you sure? This will send #{@unsent} emails"} phx-click="send_all">
         Send all unsent invites
