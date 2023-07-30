@@ -401,7 +401,7 @@ td.raw_content {
 
 form .guest .name {
   display: inline-block;
-  width: calc(100% - 18em);
+  width: calc(100% - 48em);
 }
 
 form .guest .age {
@@ -409,6 +409,13 @@ form .guest .age {
   width: 8em;
   vertical-align: top;
 }
+
+form .guest .course {
+  display: inline-block;
+  width: 10em;
+  vertical-align: top;
+}
+
 
 form .guest .rsvp {
   display: inline-block;

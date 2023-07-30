@@ -4,6 +4,8 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
   alias Invitomatic.Invites
   alias Invitomatic.Invites.Guest
   alias Invitomatic.Invites.Invite
+  alias Invitomatic.Menu
+  alias Invitomatic.Menu.Option
 
   @impl Phoenix.LiveComponent
   def handle_event("add_guest", _, %{assigns: %{form: %{source: changeset}}} = socket) do
@@ -64,6 +66,17 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
             <div class="age">
               <.input field={form[:age]} label="Age" type="select" options={Guest.enum_options(:age)} />
             </div>
+            <%= for {course_name, course} <- Option.enum_options(:course) do %>
+              <div class="course">
+                <.input
+                  field={form[:"#{course}_menu_option_id"]}
+                  label={course_name}
+                  type="select"
+                  options={Map.get(Map.get(@menu_options, course, %{}), form[:age].value, [])}
+                  prompt=""
+                />
+              </div>
+            <% end %>
             <.button phx-click="remove_guest" phx-value-index={form.index} phx-target={@myself} type="button">
               X
             </.button>
@@ -86,6 +99,13 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(
+       menu_options:
+         Menu.list()
+         |> Enum.group_by(& &1.course)
+         |> Enum.map(fn {course, list} -> {course, Enum.group_by(list, & &1.age_group, &{&1.name, &1.id})} end)
+         |> Enum.into(%{})
+     )
      |> assign_form(changeset)}
   end
 
