@@ -92,7 +92,7 @@ defmodule InvitomaticWeb.Live.Invitation do
       <section class="hero rsvp-group">
         <h1>Your Guests:</h1>
         <%= for guest <- @invite.guests do %>
-          <.live_component module={RSVP} id={ "rsvp-#{guest.id}" } guest={guest} />
+          <.live_component module={RSVP} id={ "rsvp-#{guest.id}" } guest={guest} locked={@invite.locked} />
         <% end %>
       </section>
     <% end %>

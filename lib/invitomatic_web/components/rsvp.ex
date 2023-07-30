@@ -63,6 +63,7 @@ defmodule InvitomaticWeb.Components.RSVP do
           phx-change="rsvp"
           phx-target={@myself}
           type="select"
+          disabled={@locked}
         />
         <.link patch={~p"/guests/#{@guest.id}/edit"} role="edit-guest" class="icon">
           <img src={~p"/images/gear.svg"} alt="Settings" />
@@ -79,6 +80,7 @@ defmodule InvitomaticWeb.Components.RSVP do
             prompt={ "Please select a #{course}" }
             type="select"
             updated={Enum.find(@updated, &(&1 == :"#{course}_menu_option_id"))}
+            disabled={@locked}
           />
         <% end %>
       </.simple_form>
@@ -101,7 +103,7 @@ defmodule InvitomaticWeb.Components.RSVP do
           <label for={form[:dietary_requirements].name}>Dietary Requirements</label>
           <p><%= @guest.dietary_requirements %></p>
         </div>
-        <:actions>
+        <:actions :if={!@locked}>
           <button :if={!@dietary_open} phx-click="open_dietary_requirements" phx-target={@myself} type="button">
             <%= if @guest.dietary_requirements == "", do: "Add", else: "Edit" %> dietary requirements
           </button>

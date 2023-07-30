@@ -206,6 +206,22 @@ defmodule InvitomaticWeb.Live.InvitationTest do
                ~r/Dietary Requirements(.*\n)*Vegan/
     end
 
+    test "guests cannot change details when invite is locked", %{conn: conn} do
+      guest_attrs = [
+        valid_guest_attributes(age: :adult, rsvp: :yes),
+        valid_guest_attributes(age: :adult, rsvp: :no)
+      ]
+
+      %{guests: [guest | _], logins: [login | _]} = invite_fixture(%{guests: guest_attrs, locked: true})
+
+      {:ok, index_live, _html} = live(log_in(conn, login), ~p"/")
+
+      assert has_element?(index_live, "#guest-rsvp-#{guest.id}-rsvp[disabled]")
+      assert has_element?(index_live, "#guest-rsvp-#{guest.id}-menu-starter[disabled]")
+      assert has_element?(index_live, "#guest-rsvp-#{guest.id}-menu-main[disabled]")
+      assert has_element?(index_live, "#guest-rsvp-#{guest.id}-menu-dessert[disabled]")
+    end
+
     test "redirects if not logged in", %{conn: conn} do
       assert {:error, redirect} = live(conn, ~p"/")
 
