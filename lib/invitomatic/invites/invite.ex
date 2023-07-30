@@ -24,7 +24,7 @@ defmodule Invitomatic.Invites.Invite do
   @doc false
   def changeset(invite, attrs) do
     invite
-    |> cast(attrs, [:name, :extra_content])
+    |> cast(attrs, [:name, :extra_content, :locked])
     |> validate_required([:name])
     |> cast_assoc(:guests, required: true)
     |> cast_assoc(:logins, required: true, with: &Login.registration_changeset/2)
