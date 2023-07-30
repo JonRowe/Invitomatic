@@ -58,6 +58,9 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
             <div class="name">
               <.input field={form[:name]} label="Name" />
             </div>
+            <div class="rsvp">
+              <.input field={form[:rsvp]} label="RSVP" type="select" options={Guest.enum_options(:rsvp)} />
+            </div>
             <div class="age">
               <.input field={form[:age]} label="Age" type="select" options={Guest.enum_options(:age)} />
             </div>

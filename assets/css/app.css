@@ -401,12 +401,18 @@ td.raw_content {
 
 form .guest .name {
   display: inline-block;
-  width: calc(100% - 11em);
+  width: calc(100% - 18em);
 }
 
 form .guest .age {
   display: inline-block;
   width: 8em;
+  vertical-align: top;
+}
+
+form .guest .rsvp {
+  display: inline-block;
+  width: 6em;
   vertical-align: top;
 }
 
