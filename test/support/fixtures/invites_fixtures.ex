@@ -26,7 +26,7 @@ defmodule Invitomatic.InvitesFixtures do
       |> valid_invite_attributes()
       |> Invites.create()
 
-    invite
+    Repo.preload(invite, [:guests, guests: :invite])
   end
 
   @doc """

@@ -96,7 +96,11 @@ defmodule Invitomatic.Invites do
   """
   def get(id) do
     guests =
-      from(g in Guest, preload: [:starter_menu_option, :main_menu_option, :dessert_menu_option], order_by: g.inserted_at)
+      from(
+        g in Guest,
+        preload: [:invite, :starter_menu_option, :main_menu_option, :dessert_menu_option],
+        order_by: g.inserted_at
+      )
 
     Repo.one(from invite in Invite, where: invite.id == ^id, preload: [:logins, guests: ^guests])
   end
