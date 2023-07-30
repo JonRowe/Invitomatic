@@ -26,6 +26,20 @@ defmodule Invitomatic.Invites.Guest do
   @doc false
   def changeset(guest, attrs) do
     guest
+    |> common_changeset(attrs)
+    |> validate_invite_unlocked()
+  end
+
+  def enum_options(field) do
+    __MODULE__
+    |> Ecto.Enum.values(field)
+    |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
+  end
+
+  def management_changeset(guest, attrs), do: common_changeset(guest, attrs)
+
+  defp common_changeset(guest, attrs) do
+    guest
     |> cast(attrs, [
       :name,
       :age,
@@ -39,13 +53,6 @@ defmodule Invitomatic.Invites.Guest do
     |> cast_assoc(:main_menu_option)
     |> cast_assoc(:dessert_menu_option)
     |> validate_required([:name, :age])
-    |> validate_invite_unlocked()
-  end
-
-  def enum_options(field) do
-    __MODULE__
-    |> Ecto.Enum.values(field)
-    |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
   end
 
   defp validate_invite_unlocked(%Changeset{data: %Guest{invite: %Invite{locked: true}}} = changeset) do

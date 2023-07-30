@@ -143,6 +143,29 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert html =~ "Invite updated successfully"
     end
 
+    test "it can update a locked invite", %{conn: conn} do
+      invite = invite_fixture(%{locked: true})
+      {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
+
+      assert index_live |> element("#invite-#{invite.id} a", "Edit") |> render_click() =~
+               "Edit Invite"
+
+      assert_patch(index_live, ~p"/manage/invites/#{invite}/edit")
+
+      assert index_live
+             |> form("#invite-form", invite: @invite_invalid_attrs)
+             |> render_change() =~ "can&#39;t be blank"
+
+      assert index_live
+             |> form("#invite-form", invite: @invite_update_attrs)
+             |> render_submit()
+
+      assert_patch(index_live, ~p"/manage")
+
+      html = render(index_live)
+      assert html =~ "Invite updated successfully"
+    end
+
     test "it can add multiple guests to a new invite", %{conn: conn} do
       {:ok, index_live, _html} = live(log_in(conn, admin_fixture()), ~p"/manage")
 

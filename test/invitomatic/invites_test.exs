@@ -136,6 +136,40 @@ defmodule Invitomatic.InvitesTest do
     end
   end
 
+  describe "management_update/2" do
+    test "with valid data updates the invite" do
+      invite = invite_fixture()
+      update_attrs = %{name: "Nu Name"}
+
+      assert {:ok, %Invite{} = updated_invite} = Invites.management_update(invite, update_attrs)
+      assert updated_invite.name != invite.name
+      assert updated_invite.name == "Nu Name"
+    end
+
+    test "it can lock an invite" do
+      invite = invite_fixture()
+
+      refute invite.locked
+      assert {:ok, %Invite{} = updated_invite} = Invites.management_update(invite, %{locked: true})
+      assert updated_invite.locked
+    end
+
+    test "with valid data updates the invite even if locked" do
+      invite = invite_fixture(%{locked: true})
+      update_attrs = %{name: "Nu Name"}
+
+      assert {:ok, %Invite{} = updated_invite} = Invites.management_update(invite, update_attrs)
+      assert updated_invite.name != invite.name
+      assert updated_invite.name == "Nu Name"
+    end
+
+    test "with invalid data returns error changeset" do
+      invite = invite_fixture()
+      assert {:error, %Ecto.Changeset{}} = Invites.management_update(invite, @invalid_attrs)
+      assert invite == Invites.get(invite.id)
+    end
+  end
+
   describe "update_guest/2" do
     setup do: %{guest: guest_fixture()}
 

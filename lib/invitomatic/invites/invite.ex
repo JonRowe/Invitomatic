@@ -22,17 +22,21 @@ defmodule Invitomatic.Invites.Invite do
   end
 
   @doc false
-  def changeset(invite, attrs) do
-    invite
-    |> cast(attrs, [:name, :extra_content, :locked])
-    |> validate_required([:name])
-    |> cast_assoc(:guests, required: true)
-    |> cast_assoc(:logins, required: true, with: &Login.registration_changeset/2)
-  end
+  def changeset(invite, attrs), do: changeset_common(invite, attrs, &Guest.changeset/2)
 
   def enum_options(field) do
     __MODULE__
     |> Ecto.Enum.values(field)
     |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
+  end
+
+  def management_changeset(invite, attrs), do: changeset_common(invite, attrs, &Guest.management_changeset/2)
+
+  defp changeset_common(invite, attrs, guest_with) do
+    invite
+    |> cast(attrs, [:name, :extra_content, :locked])
+    |> validate_required([:name])
+    |> cast_assoc(:guests, required: true, with: guest_with)
+    |> cast_assoc(:logins, required: true, with: &Login.registration_changeset/2)
   end
 end

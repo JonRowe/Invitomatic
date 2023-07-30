@@ -144,6 +144,24 @@ defmodule Invitomatic.Invites do
   end
 
   @doc """
+  Updates an invite from the management page.
+
+  ## Examples
+
+      iex> update(invite, %{name: new_value})
+      {:ok, %Invite{}}
+
+      iex> update(invite, %{name: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def management_update(%Invite{} = invite, attrs) do
+    invite
+    |> Invite.management_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Updates a guest.
 
   ## Examples
