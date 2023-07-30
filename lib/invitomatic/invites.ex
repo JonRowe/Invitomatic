@@ -125,7 +125,7 @@ defmodule Invitomatic.Invites do
     Repo.one(
       from(guest in Guest,
         where: guest.invite_id == ^invite_id and guest.id == ^id,
-        preload: [:starter_menu_option, :main_menu_option, :dessert_menu_option]
+        preload: [:invite, :starter_menu_option, :main_menu_option, :dessert_menu_option]
       )
     )
   end
