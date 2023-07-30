@@ -69,10 +69,11 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
             <%= for {course_name, course} <- Option.enum_options(:course) do %>
               <div class="course">
                 <.input
+                  id={ "guest-#{form.data.id}-menu-#{course}" }
                   field={form[:"#{course}_menu_option_id"]}
                   label={course_name}
                   type="select"
-                  options={Map.get(Map.get(@menu_options, course, %{}), form[:age].value, [])}
+                  options={get_menu_options(@menu_options, course, form[:age])}
                   prompt=""
                 />
               </div>
@@ -117,6 +118,18 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
     with nil <- Ecto.Changeset.get_change(changeset, field) do
       Ecto.Changeset.get_field(changeset, field, default)
     end
+  end
+
+  defp get_menu_options(all_options, course, age) when is_atom(age) do
+    Map.get(Map.get(all_options, course, %{}), age, [])
+  end
+
+  defp get_menu_options(all_options, course, %{value: age}) when is_atom(age) do
+    get_menu_options(all_options, course, age)
+  end
+
+  defp get_menu_options(all_options, course, %{value: age}) when is_binary(age) do
+    get_menu_options(all_options, course, String.to_existing_atom(age))
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
