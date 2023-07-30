@@ -3,7 +3,9 @@ defmodule Invitomatic.Invites.Guest do
 
   import Ecto.Changeset
 
+  alias Ecto.Changeset
   alias Invitomatic.Invites.Invite
+  alias __MODULE__
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -37,6 +39,7 @@ defmodule Invitomatic.Invites.Guest do
     |> cast_assoc(:main_menu_option)
     |> cast_assoc(:dessert_menu_option)
     |> validate_required([:name, :age])
+    |> validate_invite_unlocked()
   end
 
   def enum_options(field) do
@@ -44,4 +47,11 @@ defmodule Invitomatic.Invites.Guest do
     |> Ecto.Enum.values(field)
     |> Enum.map(&{String.capitalize(String.replace(to_string(&1), "_", " ")), &1})
   end
+
+  defp validate_invite_unlocked(%Changeset{data: %Guest{invite: %Invite{locked: true}}} = changeset) do
+    add_error(changeset, :invite, "is locked")
+  end
+
+  defp validate_invite_unlocked(%Changeset{data: %Guest{invite: %Invite{locked: false}}} = changeset), do: changeset
+  defp validate_invite_unlocked(%Changeset{data: %Guest{invite_id: nil}} = changeset), do: changeset
 end

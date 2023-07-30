@@ -147,6 +147,11 @@ defmodule Invitomatic.InvitesTest do
     test "with invalid data returns error changeset", %{guest: guest} do
       assert {:error, %Ecto.Changeset{}} = Invites.update_guest(guest, %{rsvp: :not_valid})
     end
+
+    test "with a locked invite returns an error changeset" do
+      %{guests: [guest], locked: true} = invite_fixture(%{locked: true})
+      assert {:error, %Ecto.Changeset{}} = Invites.update_guest(guest, %{rsvp: "yes"})
+    end
   end
 
   describe "update/2" do
