@@ -67,7 +67,7 @@ defmodule InvitomaticWeb.Components.Content do
           engine: Phoenix.LiveView.TagEngine,
           line: 1,
           trim: Application.get_env(:phoenix, :trim_on_html_eex_engine, true),
-          caller: __MODULE__,
+          caller: __ENV__,
           source: source,
           tag_handler: Phoenix.LiveView.HTMLEngine
         ),

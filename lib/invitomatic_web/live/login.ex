@@ -3,7 +3,7 @@ defmodule InvitomaticWeb.Live.Login do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    email = live_flash(socket.assigns.flash, :email)
+    email = Phoenix.Flash.get(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "guest")
     {:ok, assign(socket, modal_open: true, form: form), temporary_assigns: [form: form]}
   end
