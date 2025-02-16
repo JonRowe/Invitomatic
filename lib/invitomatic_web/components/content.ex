@@ -9,7 +9,7 @@ defmodule InvitomaticWeb.Components.Content do
   def render(%{content: %Section{text: raw}} = bindings) do
     case EarmarkParser.as_ast(raw) do
       {:ok, ast, deprecations} ->
-        maybe_log_message("deprecations", deprecations, &Logger.warn/1)
+        maybe_log_message("deprecations", deprecations, &Logger.warning/1)
         render_ast(ast, bindings)
 
       {:error, ast, errors} ->
