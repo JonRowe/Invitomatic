@@ -9,7 +9,7 @@ on:
 jobs:
   mix_format:
     name: mix format
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: erlef/setup-elixir@v1
@@ -23,7 +23,7 @@ jobs:
 
   mix_test:
     name: mix test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         env:
