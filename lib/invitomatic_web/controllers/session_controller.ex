@@ -12,7 +12,7 @@ defmodule InvitomaticWeb.SessionController do
     if login = Accounts.get_login_by_email(email) do
       _ = Accounts.deliver_magic_link(login, &url(~p"/log_in/#{&1}/"))
     else
-      Logger.warn("Warning login attempt for #{email} and no login found.")
+      Logger.warning("Warning login attempt for #{email} and no login found.")
     end
 
     conn
