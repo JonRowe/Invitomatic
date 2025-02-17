@@ -42,7 +42,7 @@ defmodule Invitomatic.MixProject do
       {:opentelemetry_api, "~> 1.2"},
       {:opentelemetry_ecto, "~> 1.1"},
       {:opentelemetry_exporter, "~> 1.4"},
-      {:opentelemetry_phoenix, "~> 1.1"},
+      {:opentelemetry_phoenix, "~> 2.0"},
       {:opentelemetry_cowboy, "~> 0.2"},
       {:plug_cowboy, "~> 2.5"},
       {:phoenix, "~> 1.7.2"},
