@@ -159,7 +159,7 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> put_session(:login_token, token) |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in", status: 302}}
       assert updated_socket.assigns.current_login == nil
     end
 
@@ -167,7 +167,7 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated, %{}, session, socket())
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in", status: 302}}
       assert updated_socket.assigns.current_login == nil
     end
   end
@@ -190,7 +190,7 @@ defmodule InvitomaticWeb.AuthTest do
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
 
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/", status: 302}}
       assert updated_socket.assigns.current_login.id == login.id
       assert updated_socket.assigns.current_login.admin == false
     end
@@ -200,7 +200,7 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> put_session(:login_token, token) |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in", status: 302}}
       assert updated_socket.assigns.current_login == nil
     end
 
@@ -208,7 +208,7 @@ defmodule InvitomaticWeb.AuthTest do
       session = conn |> get_session()
 
       {:halt, updated_socket} = Auth.on_mount(:ensure_authenticated_admin, %{}, session, socket())
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/log_in", status: 302}}
       assert updated_socket.assigns.current_login == nil
     end
   end
@@ -226,7 +226,7 @@ defmodule InvitomaticWeb.AuthTest do
                  socket()
                )
 
-      assert updated_socket.redirected == {:redirect, %{to: ~p"/"}}
+      assert updated_socket.redirected == {:redirect, %{to: ~p"/", status: 302}}
     end
 
     test "Don't redirect is there is no authenticated login", %{conn: conn} do
