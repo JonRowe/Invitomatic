@@ -41,7 +41,7 @@ defmodule InvitomaticWeb.Live.MenuManager.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
         <:subtitle>Use this form to manage menu options.</:subtitle>
       </.header>
 

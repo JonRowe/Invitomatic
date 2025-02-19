@@ -20,34 +20,34 @@ defmodule InvitomaticWeb.Live.InvitiationManager.ShowComponent do
       </.header>
       <.list>
         <:item title="Name for invite">
-          <%= @invite.name %>
+          {@invite.name}
         </:item>
         <:item title="Extra content">
-          <%= @invite.extra_content %>
+          {@invite.extra_content}
         </:item>
         <:item title="Emails that can login to the invite">
           <%= for login <- @invite.logins do %>
-            <%= login.email %>
+            {login.email}
             <a phx-click="send_invite_to_email" phx-value-email={login.email} phx-value-id={@invite.id}>
-              <%= if @invite.sent_at, do: "Resend", else: "Send" %> invite.
+              {if @invite.sent_at, do: "Resend", else: "Send"} invite.
             </a>
             <br />
           <% end %>
         </:item>
         <:item title="Guests for this invite">
           <.table id={"invite-#{@invite.id}-guests"} rows={@invite.guests}>
-            <:col :let={guest} label="Name"><%= guest.name %></:col>
-            <:col :let={guest} label="Age"><%= guest.age %></:col>
-            <:col :let={guest} label="RSVP"><%= guest.rsvp %></:col>
+            <:col :let={guest} label="Name">{guest.name}</:col>
+            <:col :let={guest} label="Age">{guest.age}</:col>
+            <:col :let={guest} label="RSVP">{guest.rsvp}</:col>
             <:col :let={guest} :for={{course_name, course} <- @courses} label={course_name}>
-              <%= if Map.get(guest, course), do: Map.get(guest, course).name, else: "Not picked" %>
+              {if Map.get(guest, course), do: Map.get(guest, course).name, else: "Not picked"}
             </:col>
           </.table>
         </:item>
         <:item title="Dietary requirements for this invite">
           <.table id={"invite-#{@invite.id}-guests-dietary-req"} rows={@guests_with_dietary_reqs}>
-            <:col :let={guest} label="Name"><%= guest.name %></:col>
-            <:col :let={guest} label="Dietary Requirements"><%= guest.dietary_requirements %></:col>
+            <:col :let={guest} label="Name">{guest.name}</:col>
+            <:col :let={guest} label="Dietary Requirements">{guest.dietary_requirements}</:col>
           </.table>
         </:item>
       </.list>

@@ -30,13 +30,13 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <div class="dropdown" id={"#{@id}-dropdown"}>
       <a id={@id} phx-click={show_dropdown("##{@id}-dropdown")} aria-haspopup="true">
-        <%= render_slot(@title) %>
+        {render_slot(@title)}
       </a>
       <div phx-click-away={hide_dropdown("##{@id}-dropdown")} role="menu" aria-labelledby={@id}>
         <div role="none">
           <%= for link <- @link do %>
             <.link tabindex="-1" role="menuitem" {link}>
-              <%= render_slot(link) %>
+              {render_slot(link)}
             </.link>
           <% end %>
         </div>
@@ -59,7 +59,7 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <nav>
       <.link href={~p"/"}>
-        <%= @current_login.email %>
+        {@current_login.email}
       </.link>
       <.dropdown :if={@current_login.admin} id="manage-dropdown">
         <:title>Manage</:title>
@@ -137,7 +137,7 @@ defmodule InvitomaticWeb.CoreComponents do
                 </button>
               </div>
               <div id={"#{@id}-content"}>
-                <%= render_slot(@inner_block) %>
+                {render_slot(@inner_block)}
               </div>
             </.focus_wrap>
           </div>
@@ -183,9 +183,9 @@ defmodule InvitomaticWeb.CoreComponents do
       {@rest}
     >
       <p :if={@title}>
-        <%= @title %>
+        {@title}
       </p>
-      <p class=""><%= msg %></p>
+      <p class="">{msg}</p>
       <button type="button">x</button>
     </div>
     """
@@ -202,8 +202,8 @@ defmodule InvitomaticWeb.CoreComponents do
 
   def flash_group(assigns) do
     ~H"""
-    <.flash kind={:info} title="Success!" flash={@flash} />
-    <.flash kind={:error} title="Error!" flash={@flash} />
+    <.flash id="info" kind={:info} title="Success!" flash={@flash} />
+    <.flash id="error" kind={:error} title="Error!" flash={@flash} />
     <.flash
       id="disconnected"
       kind={:error}
@@ -243,9 +243,9 @@ defmodule InvitomaticWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <%= render_slot(@inner_block, f) %>
+      {render_slot(@inner_block, f)}
       <div :for={action <- @actions} class="actions">
-        <%= render_slot(action, f) %>
+        {render_slot(action, f)}
       </div>
     </.form>
     """
@@ -274,7 +274,7 @@ defmodule InvitomaticWeb.CoreComponents do
       ]}
       {@rest}
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </button>
     """
   end
@@ -332,9 +332,9 @@ defmodule InvitomaticWeb.CoreComponents do
       <label>
         <input type="hidden" name={@name} value="false" />
         <input type="checkbox" id={@id} name={@name} value="true" checked={@checked} {@rest} />
-        <%= @label %>
+        {@label}
       </label>
-      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -342,13 +342,13 @@ defmodule InvitomaticWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <select id={@id} name={@name} multiple={@multiple} {@rest}>
-        <option :if={@prompt} value=""><%= @prompt %></option>
-        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>
       <span :if={@updated} class="fadeInThenOut">Saved!</span>
-      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -356,7 +356,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
@@ -365,7 +365,7 @@ defmodule InvitomaticWeb.CoreComponents do
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -374,7 +374,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -385,7 +385,7 @@ defmodule InvitomaticWeb.CoreComponents do
         ]}
         {@rest}
       />
-      <.error :for={{msg, _} <- @errors}><%= msg %></.error>
+      <.error :for={{msg, _} <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -399,7 +399,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def label(assigns) do
     ~H"""
     <label for={@for}>
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </label>
     """
   end
@@ -412,7 +412,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def error(assigns) do
     ~H"""
     <p class="phx-no-feedback:hidden">
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end
@@ -430,12 +430,12 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <header class={[@class]}>
       <div>
-        <h1><%= render_slot(@inner_block) %></h1>
+        <h1>{render_slot(@inner_block)}</h1>
         <p :if={@subtitle != []}>
-          <%= render_slot(@subtitle) %>
+          {render_slot(@subtitle)}
         </p>
       </div>
-      <div class="flex-none"><%= render_slot(@actions) %></div>
+      <div class="flex-none">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -476,7 +476,7 @@ defmodule InvitomaticWeb.CoreComponents do
     <table>
       <thead>
         <tr>
-          <th :for={col <- @col}><%= col[:label] %></th>
+          <th :for={col <- @col}>{col[:label]}</th>
           <th :if={@action != []}><span class="sr-only">Actions</span></th>
         </tr>
       </thead>
@@ -487,11 +487,11 @@ defmodule InvitomaticWeb.CoreComponents do
             phx-click={@row_click && @row_click.(row)}
             class={Map.get(col, :class, "")}
           >
-            <%= render_slot(col, @row_item.(row)) %>
+            {render_slot(col, @row_item.(row))}
           </td>
           <td :if={@action != []}>
             <span :for={action <- @action}>
-              <%= render_slot(action, @row_item.(row)) %>
+              {render_slot(action, @row_item.(row))}
             </span>
           </td>
         </tr>
@@ -518,8 +518,8 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <dl>
       <%= for item <- @item do %>
-        <dt><%= item.title %></dt>
-        <dd><%= render_slot(item) %></dd>
+        <dt>{item.title}</dt>
+        <dd>{render_slot(item)}</dd>
       <% end %>
     </dl>
     """
@@ -538,7 +538,7 @@ defmodule InvitomaticWeb.CoreComponents do
   def back(assigns) do
     ~H"""
     <.link navigate={@navigate}>
-      &lt;- <%= render_slot(@inner_block) %>
+      &lt;- {render_slot(@inner_block)}
     </.link>
     """
   end
