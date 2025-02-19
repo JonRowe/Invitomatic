@@ -69,7 +69,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
             <%= for {course_name, course} <- Option.enum_options(:course) do %>
               <div class="course">
                 <.input
-                  id={ "guest-#{form.data.id}-menu-#{course}" }
+                  id={ "guest-#{form.data.id || Ecto.UUID.generate()}-menu-#{course}" }
                   field={form[:"#{course}_menu_option_id"]}
                   label={course_name}
                   type="select"

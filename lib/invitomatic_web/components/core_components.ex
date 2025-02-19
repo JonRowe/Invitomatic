@@ -202,8 +202,8 @@ defmodule InvitomaticWeb.CoreComponents do
 
   def flash_group(assigns) do
     ~H"""
-    <.flash kind={:info} title="Success!" flash={@flash} />
-    <.flash kind={:error} title="Error!" flash={@flash} />
+    <.flash id="info" kind={:info} title="Success!" flash={@flash} />
+    <.flash id="error" kind={:error} title="Error!" flash={@flash} />
     <.flash
       id="disconnected"
       kind={:error}
