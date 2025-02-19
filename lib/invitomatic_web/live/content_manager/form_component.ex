@@ -22,7 +22,7 @@ defmodule InvitomaticWeb.Live.ContentManager.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
         <:subtitle>Use this form to manage section records in your database.</:subtitle>
       </.header>
 

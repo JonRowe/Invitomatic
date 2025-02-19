@@ -85,7 +85,7 @@ defmodule InvitomaticWeb.Live.Invitation do
     <nav :if={@open} class="tabs">
       <.link patch={~p"/"} class="button">RSVP</.link>
       <%= for {slug, content} <- @other_content do %>
-        <.link patch={~p"/#{slug}"} class="button"><%= content.title %></.link>
+        <.link patch={~p"/#{slug}"} class="button">{content.title}</.link>
       <% end %>
     </nav>
     <%= if @open && !@selected_content do %>

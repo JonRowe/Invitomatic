@@ -131,9 +131,9 @@ defmodule InvitomaticWeb.Live.InvitationManager do
     <.header>Invitation Management</.header>
     <nav>
       <p>
-        Awaiting <%= @count - @rsvped %> replies, <%= @unsent %> invites unsent, <%= @offered_accommodation %> offered accommodation, <%= @accommodation_rsvped %> taken, <%= @accommodation_refused %> refused, <%= @offered_accommodation -
-          (@accommodation_rsvped + @accommodation_refused) %> to answer. <br />
-        Guests: <%= @total_guests %>, <%= @total_adults %> adults, <%= @total_guests - @total_adults %> children.
+        Awaiting {@count - @rsvped} replies, {@unsent} invites unsent, {@offered_accommodation} offered accommodation, {@accommodation_rsvped} taken, {@accommodation_refused} refused, {@offered_accommodation -
+          (@accommodation_rsvped + @accommodation_refused)} to answer. <br />
+        Guests: {@total_guests}, {@total_adults} adults, {@total_guests - @total_adults} children.
       </p>
       <a class="button" data-confirm={"Are you sure? This will send #{@unsent} emails"} phx-click="send_all">
         Send all unsent invites
@@ -160,10 +160,10 @@ defmodule InvitomaticWeb.Live.InvitationManager do
             <.primary_email logins={invite.logins} />
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
-            <%= invite.name %>
+            {invite.name}
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
-            <%= invite.extra_content %>
+            {invite.extra_content}
           </td>
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <.check at={invite.sent_at} id={"#{row_id}-sent-at-check"} />
@@ -171,12 +171,12 @@ defmodule InvitomaticWeb.Live.InvitationManager do
           <td :if={index == 0} rowspan={length(invite.guests)}>
             <.last_seen_at logins={invite.logins} id={"#{row_id}-seen-at-check"} />
           </td>
-          <td><%= guest.name %></td>
-          <td><%= format_age(guest) %></td>
-          <td><%= format_rsvp(guest) %></td>
+          <td>{guest.name}</td>
+          <td>{format_age(guest)}</td>
+          <td>{format_rsvp(guest)}</td>
           <td :if={index == 0} rowspan={length(invite.guests)} class="actions">
             <a phx-click="send_invite" phx-value-id={invite.id}>
-              <%= if invite.sent_at, do: "Resend Invite", else: "Send Invite" %>
+              {if invite.sent_at, do: "Resend Invite", else: "Send Invite"}
             </a>
             <div class="sr-only">
               <.link patch={~p"/manage/invites/#{invite}"}>Show</.link>
@@ -258,15 +258,15 @@ defmodule InvitomaticWeb.Live.InvitationManager do
       end)
 
     ~H"""
-    <.check at={@last_login.confirmed_at} id={@id} /> (<%= @seen %>/<%= @count %>)
+    <.check at={@last_login.confirmed_at} id={@id} /> ({@seen}/{@count})
     """
   end
 
-  defp primary_email(%{logins: [_]} = assigns), do: ~H"<%= List.first(@logins).email %>"
+  defp primary_email(%{logins: [_]} = assigns), do: ~H"{List.first(@logins).email}"
 
   defp primary_email(%{logins: [login | _] = logins} = raw_assigns) do
     primary = Enum.find(logins, login, & &1.primary)
     assigns = assign_new(raw_assigns, :email, fn -> primary.email end)
-    ~H"<%= @email %>"
+    ~H"{@email}"
   end
 end

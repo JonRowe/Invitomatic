@@ -40,7 +40,7 @@ defmodule InvitomaticWeb.Live.InvitiationManager.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.simple_form for={@form} id="invite-form" phx-target={@myself} phx-change="validate" phx-submit="save">

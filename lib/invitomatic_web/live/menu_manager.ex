@@ -46,10 +46,10 @@ defmodule InvitomaticWeb.Live.MenuManager do
     </.header>
 
     <.table id="option" rows={@streams.options} row_click={fn {_id, option} -> JS.patch(~p"/manage/menu/#{option}") end}>
-      <:col :let={{_id, option}} label="Title"><%= option.name %></:col>
-      <:col :let={{_id, option}} label="Course"><%= option.course %></:col>
-      <:col :let={{_id, option}} label="Age group"><%= option.age_group %></:col>
-      <:col :let={{_id, option}} label="Order"><%= option.order %></:col>
+      <:col :let={{_id, option}} label="Title">{option.name}</:col>
+      <:col :let={{_id, option}} label="Course">{option.course}</:col>
+      <:col :let={{_id, option}} label="Age group">{option.age_group}</:col>
+      <:col :let={{_id, option}} label="Order">{option.order}</:col>
       <:action :let={{_id, option}}>
         <div class="sr-only">
           <.link patch={~p"/manage/menu/#{option}"}>Show</.link>

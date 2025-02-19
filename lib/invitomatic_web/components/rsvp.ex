@@ -101,11 +101,11 @@ defmodule InvitomaticWeb.Components.RSVP do
         />
         <div :if={!@dietary_open && @guest.dietary_requirements != ""} phx-feedback-for={form[:dietary_requirements].name}>
           <label for={form[:dietary_requirements].name}>Dietary Requirements</label>
-          <p><%= @guest.dietary_requirements %></p>
+          <p>{@guest.dietary_requirements}</p>
         </div>
         <:actions :if={!@locked}>
           <button :if={!@dietary_open} phx-click="open_dietary_requirements" phx-target={@myself} type="button">
-            <%= if @guest.dietary_requirements == "", do: "Add", else: "Edit" %> dietary requirements
+            {if @guest.dietary_requirements == "", do: "Add", else: "Edit"} dietary requirements
           </button>
           <button :if={@dietary_open} type="submit">
             Save dietary requirements
