@@ -203,7 +203,7 @@ defmodule InvitomaticWeb.Live.InvitationTest do
       assert render(index_live) =~ ~r/Success!/
 
       assert render(element(index_live, "*[phx-feedback-for=\"guest[dietary_requirements]\"]")) =~
-               ~r/Dietary Requirements(.*\n)*Vegan/
+               ~r/Dietary Requirements(.*\n.*)*Vegan/
     end
 
     test "guests cannot change details when invite is locked", %{conn: conn} do
