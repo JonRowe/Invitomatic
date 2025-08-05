@@ -206,7 +206,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       assert index_live |> element("#invite-#{invite.id} a", "Edit") |> render_click() =~
                "Edit Invite"
 
-      assert index_live |> element("button[phx-value-index=1]", "X") |> render_click()
+      assert index_live |> element("button[phx-value-index='1']", "X") |> render_click()
       assert index_live |> form("#invite-form") |> render_submit()
 
       assert [guest_one, guest_two] = get_invite(email: guest.email).guests
@@ -262,7 +262,7 @@ defmodule InvitomaticWeb.Live.InvitationManagerTest do
       |> render_click()
 
       index_live
-      |> element("dd:fl-contains(\"another@example.com\") a", "Send invite")
+      |> element("a[phx-value-id='#{invite.id}']", "Send invite")
       |> render_click()
 
       refute_receive {:email, %_{to: [{_, ^guest_email}]}}

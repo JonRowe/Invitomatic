@@ -38,6 +38,7 @@ defmodule Invitomatic.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:gen_smtp, "~> 1.3.0"},
       {:jason, "~> 1.2"},
+      {:lazy_html, ">= 0.1.0", only: :test},
       {:opentelemetry, "~> 1.3"},
       {:opentelemetry_api, "~> 1.2"},
       {:opentelemetry_ecto, "~> 1.1"},
