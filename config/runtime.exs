@@ -29,7 +29,7 @@ if config_env() != :test do
 end
 
 if config_env() == :prod do
-  config :invitomatic, InvitomaticWeb.Endpoint, server: true, force_ssl: [hsts: true]
+  config :invitomatic, InvitomaticWeb.Endpoint, server: true
 
   database_url =
     System.get_env("DATABASE_URL") ||

@@ -14,7 +14,8 @@ config :invitomatic, InvitomaticWeb.Endpoint,
   check_origin: [
     "https://#{System.get_env("PHX_HOST")}",
     "https://www.#{System.get_env("PHX_HOST")}"
-  ]
+  ],
+  force_ssl: [hsts: true, rewrite_on: [:x_forwarded_proto]]
 
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Invitomatic.Finch
