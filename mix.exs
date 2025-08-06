@@ -11,7 +11,8 @@ defmodule Invitomatic.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      releases: releases()
+      releases: releases(),
+      compilers: [:phoenix_live_view] ++ Mix.compilers()
     ]
   end
 
