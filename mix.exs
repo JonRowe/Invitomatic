@@ -46,7 +46,7 @@ defmodule Invitomatic.MixProject do
       {:opentelemetry_phoenix, "~> 2.0"},
       {:opentelemetry_cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 2.5"},
-      {:phoenix, "~> 1.7.2"},
+      {:phoenix, "~> 1.8.0"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 4.2"},
       {:phoenix_live_dashboard, "~> 0.8.0"},
