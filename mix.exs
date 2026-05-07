@@ -32,6 +32,7 @@ defmodule Invitomatic.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:decimal, "~> 3.0", override: true},
       {:ecto_sql, "~> 3.6"},
       {:earmark_parser, "~> 1.4"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
