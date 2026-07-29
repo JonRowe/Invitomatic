@@ -14,6 +14,7 @@ config :invitomatic, :generators, binary_id: true
 
 # Configures the endpoint
 config :invitomatic, InvitomaticWeb.Endpoint,
+  adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
   render_errors: [
     formats: [html: InvitomaticWeb.ErrorHTML],
