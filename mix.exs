@@ -51,7 +51,7 @@ defmodule Invitomatic.MixProject do
       {:phoenix, "~> 1.8.0"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 4.2"},
-      {:phoenix_live_dashboard, "~> 0.8.0"},
+      {:phoenix_live_dashboard, "~> 0.9.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.2.0"},
       {:postgrex, ">= 0.0.0"},
