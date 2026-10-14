@@ -62,13 +62,11 @@ defmodule InvitomaticWeb.Components.Content do
 
     {result, _result_binding} =
       Code.eval_quoted(
-        EEx.compile_string(
+        Phoenix.LiveView.TagEngine.compile(
           source,
-          engine: Phoenix.LiveView.TagEngine,
           line: 1,
           trim: Application.get_env(:phoenix, :trim_on_html_eex_engine, true),
           caller: __ENV__,
-          source: source,
           tag_handler: Phoenix.LiveView.HTMLEngine
         ),
         assigns: bindings
