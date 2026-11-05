@@ -11,7 +11,7 @@ defmodule InvitomaticWeb.Live.Login do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.modal id="login-prompt" show no_cancel>
+    <.modal id="login-prompt" show_always no_cancel>
       <.header>
         Sign in
         <:subtitle>

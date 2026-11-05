@@ -66,7 +66,7 @@ defmodule InvitomaticWeb.Live.Settings do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.modal id="login-prompt" show on_cancel={JS.navigate(~p"/")}>
+    <.modal id="login-prompt" show_always on_cancel={JS.navigate(~p"/")}>
       <.header>
         Account Settings
         <:subtitle>Manage your account email address.</:subtitle>

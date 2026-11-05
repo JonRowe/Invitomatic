@@ -55,7 +55,7 @@ defmodule InvitomaticWeb.Live.ContentManager do
       </:action>
     </.table>
 
-    <.modal :if={@live_action in [:new, :edit]} id="content-modal" show on_cancel={JS.patch(~p"/manage/content")}>
+    <.modal :if={@live_action in [:new, :edit]} id="content-modal" on_cancel={JS.patch(~p"/manage/content")}>
       <.live_component
         module={InvitomaticWeb.Live.ContentManager.FormComponent}
         id={@section.id || :new}

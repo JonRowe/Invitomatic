@@ -186,10 +186,10 @@ defmodule InvitomaticWeb.Live.InvitationManager do
         </tr>
       </tbody>
     </table>
-    <.modal :if={@live_action == :show} id="invite-modal" show on_cancel={JS.patch(~p"/manage")}>
+    <.modal :if={@live_action == :show} id="invite-modal" on_cancel={JS.patch(~p"/manage")}>
       <InvitomaticWeb.Live.InvitiationManager.ShowComponent.details invite={@invite} />
     </.modal>
-    <.modal :if={@live_action in [:new, :edit]} id="invite-form-modal" show on_cancel={JS.patch(~p"/manage")}>
+    <.modal :if={@live_action in [:new, :edit]} id="invite-form-modal" on_cancel={JS.patch(~p"/manage")}>
       <.live_component
         module={InvitomaticWeb.Live.InvitiationManager.FormComponent}
         id={@invite.id || :new}

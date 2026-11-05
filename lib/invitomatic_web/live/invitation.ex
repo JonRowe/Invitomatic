@@ -99,7 +99,7 @@ defmodule InvitomaticWeb.Live.Invitation do
     <section :if={@selected_content} class="content hero other">
       <ContentComponent.render content={@selected_content} invite={@invite} />
     </section>
-    <.modal :if={@live_action == :edit} id="invite-guest-edit-form-modal" show on_cancel={JS.patch(~p"/")}>
+    <.modal :if={@live_action == :edit} id="invite-guest-edit-form-modal" on_cancel={JS.patch(~p"/")}>
       <.live_component module={GuestFormComponent} id={ "edit-guest-#{@guest.id}" } guest={@guest} patch={~p"/"} />
     </.modal>
     """

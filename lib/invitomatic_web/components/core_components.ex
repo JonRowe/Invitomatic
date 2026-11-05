@@ -99,7 +99,7 @@ defmodule InvitomaticWeb.CoreComponents do
 
   """
   attr :id, :string, required: true
-  attr :show, :boolean, default: false
+  attr :show_always, :boolean, default: false
   attr :no_cancel, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
@@ -108,10 +108,13 @@ defmodule InvitomaticWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
+      phx-mounted={!@show_always && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={!@no_cancel && JS.exec(@on_cancel, "phx-remove")}
-      class="modal"
+      class={[
+        "modal",
+        @show_always && "open"
+      ]}
     >
       <div id={"#{@id}-bg"} class="background" aria-hidden="true" />
       <div

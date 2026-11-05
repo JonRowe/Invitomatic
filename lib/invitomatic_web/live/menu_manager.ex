@@ -62,10 +62,10 @@ defmodule InvitomaticWeb.Live.MenuManager do
         </.link>
       </:action>
     </.table>
-    <.modal :if={@live_action == :show} id="option-modal" show on_cancel={JS.patch(~p"/manage/menu")}>
+    <.modal :if={@live_action == :show} id="option-modal" on_cancel={JS.patch(~p"/manage/menu")}>
       <InvitomaticWeb.Live.MenuManager.ShowComponent.render option={@option} />
     </.modal>
-    <.modal :if={@live_action in [:new, :edit]} id="option-modal" show on_cancel={JS.patch(~p"/manage/menu")}>
+    <.modal :if={@live_action in [:new, :edit]} id="option-modal" on_cancel={JS.patch(~p"/manage/menu")}>
       <.live_component
         module={InvitomaticWeb.Live.MenuManager.FormComponent}
         id={@option.id || :new}

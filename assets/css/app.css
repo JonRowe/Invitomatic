@@ -144,7 +144,6 @@ main {
 .modal {
   position: relative;
   z-index: 50;
-  display: hidden;
 }
 
 .modal .background {
@@ -205,6 +204,10 @@ main {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.modal.open .focus-wrap {
+  display: block;
 }
 
 .modal .close {
