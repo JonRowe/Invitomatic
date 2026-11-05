@@ -47,9 +47,9 @@ main {
 }
 
 /* Flash CSS */
-#flash, #disconnected {
-  background: #cbe2f0;
-  border: 1px solid #a3c2d5;
+
+.flash {
+  border: 1px solid;
   border-radius: .5em;
   color: white;
   margin: 1em 0;
@@ -59,21 +59,40 @@ main {
   right: 1em;
   top: 2em;
   z-index: 100;
+
+  &.error {
+    background: #FFF1F2;
+    border-color: #F43F5E;
+    color: #18181B;
+
+    & button {
+      color: #18181B;
+    }
+  }
+
+  &.info {
+    background: #cbe2f0;
+    border-color: #a3c2d5;
+  }
+
+  & p {
+    display: inline-block;
+    margin: 0;
+    padding: 0.5em 0;
+  }
+
+  & button {
+    float: right;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0 2em;
+    margin: 0;
+  }
 }
 
-#flash p, #disconnected p {
-  display: inline-block;
-  margin: 0;
-  padding: 0.5em 0;
-}
-
-#flash button, #disconnected button {
-  float: right;
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 0 2em;
-  margin: 0;
+.modal .flash {
+  position: unset;
 }
 
 /* Transitions */

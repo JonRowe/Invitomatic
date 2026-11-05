@@ -173,6 +173,7 @@ defmodule InvitomaticWeb.CoreComponents do
       id={@id}
       role="alert"
       class={[
+        "flash",
         "fade-in",
         @kind == :info && "info",
         @kind == :error && "error"
