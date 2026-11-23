@@ -31,7 +31,7 @@ defmodule Invitomatic.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 3.0"},
+      {:bcrypt_elixir, "~> 4.0"},
       {:decimal, "~> 3.0", override: true},
       {:ecto_sql, "~> 3.6"},
       {:earmark_parser, "~> 1.4"},
